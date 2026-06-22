@@ -1,0 +1,242 @@
+{
+    "info": {
+        "name": "Etstur Price Bot",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "apiKey",
+            "value": "test-api-key-123"
+        }
+    ],
+    "item": [
+        {
+            "name": "Health Check",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/health"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Fiyat Sorgulama",
+            "item": [
+                {
+                    "name": "Tek Otel Fiyat Sorgula",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/prices?hotelId=hotel-1&checkIn=2026-06-24&checkOut=2026-06-25&adults=3&children=0",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "prices"
+                            ],
+                            "query": [
+                                {
+                                    "key": "hotelId",
+                                    "value": "hotel-1"
+                                },
+                                {
+                                    "key": "checkIn",
+                                    "value": "2026-06-24"
+                                },
+                                {
+                                    "key": "checkOut",
+                                    "value": "2026-06-25"
+                                },
+                                {
+                                    "key": "adults",
+                                    "value": "3"
+                                },
+                                {
+                                    "key": "children",
+                                    "value": "0"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Toplu Fiyat Sorgula",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/prices/bulk",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"hotelIds\": [\"hotel-1\", \"hotel-2\", \"hotel-3\"],\n  \"checkIn\": \"2026-06-24\",\n  \"checkOut\": \"2026-06-25\",\n  \"adults\": 3,\n  \"children\": 0\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin - Otel Eslestirme",
+            "item": [
+                {
+                    "name": "Tum Eslestirmeleri Listele",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/admin/mappings",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Eslestirme Ara (search)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mappings?search=otel",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mappings"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "otel"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Sadece Aktif Eslestirmeler",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/mappings?active=true",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "mappings"
+                            ],
+                            "query": [
+                                {
+                                    "key": "active",
+                                    "value": "true"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Tek Eslestirme Ekle",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/admin/mappings",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"internalHotelId\": \"hotel-99\",\n  \"etsturHotelId\": \"swr922thyt19\",\n  \"destinationUrl\": \"Kemer-Otelleri\",\n  \"hotelName\": \"Mirage Park Resort\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Toplu Eslestirme Ekle",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/admin/mappings/bulk",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"mappings\": [\n    {\n      \"internalHotelId\": \"hotel-10\",\n      \"etsturHotelId\": \"swr922thyt19\",\n      \"destinationUrl\": \"Kemer-Otelleri\",\n      \"hotelName\": \"Mirage Park Resort\"\n    },\n    {\n      \"internalHotelId\": \"hotel-11\",\n      \"etsturHotelId\": \"swr012ayht19\",\n      \"destinationUrl\": \"Belek-Otelleri\",\n      \"hotelName\": \"Granada Luxury Belek\"\n    }\n  ]\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Eslestirme Guncelle",
+                    "request": {
+                        "method": "PUT",
+                        "url": "{{baseUrl}}/api/admin/mappings/1",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"internalHotelId\": null,\n  \"etsturHotelId\": \"swr922thyt19\",\n  \"destinationUrl\": \"Kemer-Otelleri\",\n  \"hotelName\": \"Mirage Park Resort\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Eslestirme Sil",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/admin/mappings/1",
+                        "header": [
+                            {
+                                "key": "x-api-key",
+                                "value": "{{apiKey}}"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
