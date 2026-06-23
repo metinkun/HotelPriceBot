@@ -31,16 +31,57 @@ Her otel için 3 bilgi saklanır:
 > `v2/hotels` isteğinin yanıtında oteli bul; `hotelId` alanı = `etsturHotelId`,
 > sayfanın slug'ı = `destinationUrl`.
 
-## Kurulum
+## Kurulum (Geliştirici / Local Test)
 
 ```bash
 npm install
 docker compose up -d          # PostgreSQL (port 5433)
-cp .env.example .env          # gerekirse düzenle (cookie opsiyonel)
+cp .env.example .env          # değerleri ayarla (aşağıya bak)
 npm run prisma:generate
-npm run prisma:migrate
+npm run prisma:migrate        # tabloları oluşturur (boş başlar!)
 npm run dev                   # http://localhost:3000/docs
 ```
+
+`.env` içinde en azından şunlar olmalı:
+```
+PORT=3000
+DATABASE_URL="postgresql://botuser:botpass123@localhost:5433/etstur_bot?schema=public"
+ADMIN_API_KEY="test-api-key-123"   # admin uçları için; istediğini koy
+ETSTUR_COOKIE=""                   # opsiyonel, boş bırakılabilir
+```
+
+### ⚠️ Önce otel eşleştirmesi ekle (yoksa "otel eslestirmesi bulunamadi" hatası alırsın)
+
+Otel eşleştirmeleri **veritabanında** tutulur ve git ile gelmez. Yeni kurulan
+veritabanı **boştur**; bu yüzden fiyat/paket sorgusundan **önce** eşleştirme eklemelisin.
+Aksi halde `{"error":"Otel eslestirmesi bulunamadi: hotel-cy-1"}` döner.
+
+Toplu örnek seed (admin, `x-api-key` gerekli):
+```bash
+curl -X POST http://localhost:3000/api/admin/mappings/bulk \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: test-api-key-123" \
+  -d '{"mappings":[
+    {"internalHotelId":"hotel-1","etsturHotelId":"swr922thyt19","destinationUrl":"Kemer-Otelleri","hotelName":"Mirage Park Resort"},
+    {"internalHotelId":"hotel-cy-1","etsturHotelId":"61b893df0b29","destinationUrl":"Kibris-Otelleri","hotelName":"Acapulco Resort Convention Spa"}
+  ]}'
+```
+
+Ardından fiyat/paket sorguları çalışır:
+```bash
+curl "http://localhost:3000/api/prices?hotelId=hotel-1&checkIn=2026-07-07&checkOut=2026-07-10&adults=2"
+curl "http://localhost:3000/api/packages?hotelId=hotel-cy-1&airportCode=IST&checkIn=2026-07-07&checkOut=2026-07-18&adults=2"
+```
+
+### Kimlik Doğrulama (Authentication)
+
+| Uç nokta | Kimlik doğrulama |
+|----------|------------------|
+| `GET /api/prices`, `POST /api/prices/bulk`, `GET /api/packages` | **Yok (public)** |
+| `GET/POST/PUT/DELETE /api/admin/mappings*` | **`x-api-key` header = `ADMIN_API_KEY`** |
+
+Etstur'a giden dış istekler **cookie/oturum gerektirmez**. Yani uygulamanın kendi
+kullanıcı girişi/JWT'si yoktur; sadece admin (eşleştirme yönetimi) uçları API key ile korunur.
 
 ## Uç Noktalar
 
