@@ -16,6 +16,17 @@ export interface BulkPriceQuery {
   childAges?: number[];
 }
 
+// Otel + Ucak + Transfer paket sorgusu
+export interface PackageQuery {
+  hotelId: string;
+  airportCode: string; // kalkis havalimani, ornek: IST
+  checkIn: string; // yyyy-MM-dd
+  checkOut: string; // yyyy-MM-dd
+  adults: number;
+  children: number;
+  childAges?: number[];
+}
+
 // Etstur arama endpoint'ine (services/api/search/v2/hotels) gonderilen govde.
 export interface EtsturRoomRequest {
   adultCount: number;
@@ -105,4 +116,62 @@ export interface NormalizedPrice {
   bankCampaignPrice: number | null; // campaignHighlightedPrice
   bankCampaignLabel: string | null;
   minStayNights: number | null;
+}
+
+// ---- Paket akisi: /services/api/room ve /services/api/room/package ----
+export interface EtsturRoomSearchResponse {
+  success: boolean;
+  errorCode: string | null;
+  errorMessage: string | null;
+  result?: {
+    roomSearchId: string;
+    checkIn?: string;
+    checkOut?: string;
+    rooms?: any[];
+  };
+}
+
+export interface EtsturPackageBoard {
+  id: string;
+  boardType?: { code: string; label: string };
+  price: EtsturPriceBlock;
+  cancellation?: string;
+  availability?: { type: string };
+}
+
+export interface EtsturPackageRoom {
+  roomId: string;
+  roomName: string;
+  roomSize?: number;
+  nightCount?: number;
+  nightlyMinPrice?: EtsturPriceBlock;
+  subBoards?: EtsturPackageBoard[];
+}
+
+export interface EtsturPackageResponse {
+  success: boolean;
+  errorCode: string | null;
+  errorMessage: string | null;
+  result?: {
+    roomSearchId: string;
+    rooms?: EtsturPackageRoom[];
+  };
+}
+
+// Bizim API'mizin dondurecegi sade paket ozeti
+export interface NormalizedPackageBoard {
+  boardType: string | null; // ornek: "Yarim Pansiyon"
+  currency: string | null;
+  listPrice: number | null; // amount
+  price: number | null; // discountedPrice ?? amount (otel+ucak+transfer dahil)
+  discountRate: number;
+  cancellation: string | null;
+}
+
+export interface NormalizedPackageRoom {
+  roomId: string;
+  roomName: string;
+  roomSize: number | null;
+  nightCount: number | null;
+  boards: NormalizedPackageBoard[];
 }

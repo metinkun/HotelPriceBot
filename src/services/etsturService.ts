@@ -5,11 +5,20 @@ import {
   EtsturSearchResponse,
   EtsturHotel,
   NormalizedPrice,
+  EtsturRoomSearchResponse,
+  EtsturPackageResponse,
+  EtsturPackageRoom,
+  NormalizedPackageRoom,
 } from "../types";
 
 // Etstur otel arama / fiyat endpoint'i (DevTools'tan dogrulandi, cookie gerekmez).
 const ETSTUR_SEARCH_URL =
   "https://www.etstur.com/services/api/search/v2/hotels";
+
+// Paket akisi: once /room (roomSearchId + oturum uretir), sonra /room/package.
+const ETSTUR_ROOM_URL = "https://www.etstur.com/services/api/room";
+const ETSTUR_PACKAGE_URL =
+  "https://www.etstur.com/services/api/room/package";
 
 const PAGE_LIMIT = 100; // tek istekte cekilen otel sayisi (test edildi: 100 calisiyor)
 const MAX_PAGES = 20; // guvenlik siniri (max 2000 otel taranir)
@@ -46,6 +55,11 @@ export function toEtsturDate(input: string): string {
     );
   }
   return `${y}-${m}-${d}T00:00:00.000`;
+}
+
+/** "2026-06-24" veya "24.06.2026" -> "2026-06-24" (paket /room icin saatsiz) */
+export function toRoomDate(input: string): string {
+  return toEtsturDate(input).slice(0, 10);
 }
 
 /** Arama endpoint'i icin istek govdesini olusturur (gercek payload yapisi). */
@@ -153,5 +167,91 @@ export function normalizeHotel(hotel: EtsturHotel): NormalizedPrice {
     bankCampaignPrice: room?.campaignHighlightedPrice?.price?.amount ?? null,
     bankCampaignLabel: room?.campaignHighlightedPrice?.label ?? null,
     minStayNights: room?.availability?.nightCount ?? null,
+  };
+}
+
+// ---- PAKET AKISI (Otel + Ucak + Transfer) ----
+// 1) POST /room  -> oturum cookie'si + roomSearchId uretir
+// 2) POST /room/package -> ayni oturumla paket fiyatlarini doner
+// roomSearchId SESSION cookie'sine bagli oldugu icin iki cagri ayni
+// oturumu (Set-Cookie -> Cookie) paylasmak zorundadir.
+
+/** axios yanitindaki Set-Cookie dizisini "ad=deger; ad=deger" basligina cevirir. */
+function cookieHeaderFrom(setCookie: string[] | undefined): string {
+  if (!setCookie?.length) return "";
+  return setCookie.map((c) => c.split(";")[0]).join("; ");
+}
+
+/**
+ * Bir otel icin oda aramasi yapar; roomSearchId ile birlikte olusan oturum
+ * cookie'sini de doner (paket cagrisinda kullanilacak).
+ */
+export async function fetchRoomSearch(
+  etsturHotelId: string,
+  occ: DateOccupancy
+): Promise<{ roomSearchId: string; cookie: string }> {
+  const body = {
+    hotelId: etsturHotelId,
+    checkIn: toRoomDate(occ.checkIn),
+    checkOut: toRoomDate(occ.checkOut),
+    room: {
+      adultCount: occ.adults,
+      childCount: occ.children,
+      childAges: occ.childAges,
+      infantCount: 0,
+    },
+  };
+
+  const response = await axios.post<EtsturRoomSearchResponse>(
+    ETSTUR_ROOM_URL,
+    body,
+    { headers: { ...DEFAULT_HEADERS }, timeout: 20000 }
+  );
+
+  const data = response.data;
+  if (!data.success || !data.result?.roomSearchId) {
+    throw new Error(data.errorMessage || "Oda aramasi basarisiz (roomSearchId yok)");
+  }
+
+  return {
+    roomSearchId: data.result.roomSearchId,
+    cookie: cookieHeaderFrom(response.headers["set-cookie"] as string[]),
+  };
+}
+
+/** roomSearchId + havalimani ile paket (otel+ucak+transfer) fiyatlarini ceker. */
+export async function fetchPackage(
+  roomSearchId: string,
+  airportCode: string,
+  cookie: string
+): Promise<EtsturPackageResponse> {
+  const response = await axios.post<EtsturPackageResponse>(
+    ETSTUR_PACKAGE_URL,
+    { roomSearchId, airportCode },
+    {
+      headers: { ...DEFAULT_HEADERS, ...(cookie ? { cookie } : {}) },
+      timeout: 20000,
+    }
+  );
+  return response.data;
+}
+
+/** Bir paket odasini sade ozete cevirir (oda + her pansiyon tipi icin paket fiyat). */
+export function normalizePackageRoom(
+  room: EtsturPackageRoom
+): NormalizedPackageRoom {
+  return {
+    roomId: room.roomId,
+    roomName: room.roomName,
+    roomSize: room.roomSize ?? null,
+    nightCount: room.nightCount ?? null,
+    boards: (room.subBoards ?? []).map((sb) => ({
+      boardType: sb.boardType?.label ?? null,
+      currency: sb.price?.currency ?? null,
+      listPrice: sb.price?.amount ?? null,
+      price: sb.price ? sb.price.discountedPrice ?? sb.price.amount : null,
+      discountRate: sb.price?.discountRate ?? 0,
+      cancellation: sb.cancellation ?? null,
+    })),
   };
 }

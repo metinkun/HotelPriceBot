@@ -50,6 +50,17 @@ npm run dev                   # http://localhost:3000/docs
 
 Tarih formatı: `yyyy-MM-dd`. `childAges` opsiyonel (GET'te `5,8` / POST'ta `[5,8]`).
 
+**Paket — Otel + Uçak + Transfer (public):**
+- `GET /api/packages?hotelId=hotel-cy-1&airportCode=IST&checkIn=2026-07-07&checkOut=2026-07-18&adults=2&children=1&childAges=0`
+
+Kullanıcıdan **otel** (kendi ID'niz) + **kalkış havalimanı** (IATA, örn. `IST`, `ESB`, `ADB`) alır; paket oda/pansiyon fiyat listesini döner. Özellikle Kıbrıs otelleri için anlamlıdır. Paket sunulmayan otel/havalimanı kombinasyonunda `available:false` ve boş liste döner.
+
+> **Nasıl çalışır (iki aşamalı, tek mapping ile):**
+> 1. `POST /services/api/room` → otelin odalarını arar; **oturum cookie'si + `roomSearchId`** üretir.
+> 2. `POST /services/api/room/package` → aynı oturum + `roomSearchId` + `airportCode` ile paket fiyatlarını döner.
+>
+> `roomSearchId` SESSION cookie'sine bağlı olduğu için iki çağrı aynı oturumu paylaşır (Set-Cookie → Cookie). Mevcut `etsturHotelId` (arama API'sindeki `hotelId`) bu akışta da doğrudan kullanılır — ek alan gerekmez.
+
 **Admin — eşleştirme (x-api-key korumalı):**
 - `GET/POST/PUT/DELETE /api/admin/mappings`
 - `POST /api/admin/mappings/bulk`

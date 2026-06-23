@@ -101,6 +101,28 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
+      "/api/packages": {
+        get: {
+          tags: ["Paket (Otel + Ucak + Transfer)"],
+          summary: "Otel + Ucak + Transfer paket fiyatlari (orn. Kibris)",
+          description:
+            "Verilen otel ve kalkis havalimani icin paket (otel+ucak+transfer) oda/pansiyon fiyat listesini doner. Paket sunulmayan otel/havalimani kombinasyonlarinda available:false ve bos liste doner.",
+          parameters: [
+            { name: "hotelId", in: "query", required: true, schema: { type: "string" }, example: "hotel-cy-1" },
+            { name: "airportCode", in: "query", required: true, schema: { type: "string" }, description: "Kalkis havalimani IATA kodu", example: "IST" },
+            { name: "checkIn", in: "query", required: true, schema: { type: "string" }, example: "2026-07-07" },
+            { name: "checkOut", in: "query", required: true, schema: { type: "string" }, example: "2026-07-18" },
+            { name: "adults", in: "query", required: true, schema: { type: "integer" }, example: 2 },
+            { name: "children", in: "query", required: false, schema: { type: "integer", default: 0 }, example: 1 },
+            { name: "childAges", in: "query", required: false, schema: { type: "string" }, description: "Virgulle ayrilmis cocuk yaslari", example: "0" },
+          ],
+          responses: {
+            "200": { description: "Paket fiyat listesi" },
+            "400": { description: "Eksik parametre" },
+            "404": { description: "Otel eslestirmesi bulunamadi" },
+          },
+        },
+      },
       "/api/admin/mappings": {
         get: {
           tags: ["Admin - Otel Eslestirme"],

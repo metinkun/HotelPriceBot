@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import { config } from "./config";
 import { swaggerSpec } from "./swagger";
 import priceRoutes from "./routes/priceRoutes";
+import packageRoutes from "./routes/packageRoutes";
 import hotelMappingRoutes from "./routes/hotelMappingRoutes";
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api/prices", priceRoutes);
+app.use("/api/packages", packageRoutes);
 app.use("/api/admin/mappings", hotelMappingRoutes);
 
 // Health check
