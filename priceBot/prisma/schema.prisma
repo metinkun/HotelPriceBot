@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HotelMapping {
+  id              Int      @id @default(autoincrement())
+  provider        String   @map("provider")
+  internalHotelId String   @map("internal_hotel_id")
+  providerHotelId String   @map("provider_hotel_id")
+  hotelName       String?  @map("hotel_name")
+  metadata        Json?    @map("metadata")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([provider, internalHotelId])
+  @@index([provider, providerHotelId])
+  @@index([provider, isActive])
+  @@map("hotel_mappings")
+}

@@ -11,7 +11,21 @@
       "Bash(lsof:*)",
       "Bash(npx prisma migrate:*)",
       "Bash(npm run dev:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(git pull:*)",
+      "Bash(docker compose:*)",
+      "Bash(open:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(xargs kill:*)",
+      "Bash(node -e:*)",
+      "Bash(npx ts-node:*)",
+      "WebFetch(domain:proxy.webshare.io)",
+      "Bash(npm uninstall:*)",
+      "Bash(ssh:*)",
+      "Bash(rsync:*)",
+      "Bash(ls:*)",
+      "Bash(git add:*)"
     ]
   }
 }
