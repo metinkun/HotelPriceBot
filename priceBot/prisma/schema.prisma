@@ -23,3 +23,20 @@ model HotelMapping {
   @@index([provider, isActive])
   @@map("hotel_mappings")
 }
+
+model Proxy {
+  id                Int       @id @default(autoincrement())
+  webshareId        String    @unique @map("webshare_id")
+  proxyAddress      String    @map("proxy_address")
+  port              Int
+  username          String
+  password          String
+  countryCode       String?   @map("country_code")
+  valid             Boolean   @default(true)
+  lastVerification  DateTime? @map("last_verification")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@index([valid])
+  @@map("proxies")
+}

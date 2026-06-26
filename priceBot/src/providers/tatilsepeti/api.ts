@@ -1,13 +1,8 @@
-import axios, { AxiosProxyConfig } from "axios";
+import axios from "axios";
 import qs from "qs";
 import { config } from "../../config";
+import { getNextProxy } from "../../services/proxyService";
 import { TatilSepetiPriceRequest } from "../../types/tatilsepeti";
-
-function getProxyConfig(): AxiosProxyConfig | false {
-  const { host, port, username, password } = config.proxy;
-  if (!host || !port) return false;
-  return { host, port, auth: { username, password }, protocol: "http" };
-}
 
 const TATILSEPETI_URL =
   "https://www.tatilsepeti.com/hotel/GetHotelListPrice/";
@@ -59,7 +54,7 @@ export async function fetchPricesFromTatilSepeti(
         cookie: config.providers.tatilsepeti.cookie,
       },
       timeout: 15000,
-      proxy: getProxyConfig(),
+      proxy: getNextProxy(),
     }
   );
 
@@ -129,7 +124,7 @@ export async function fetchFlyingPackages(
   const response = await axios.post<FlyingPackagesRawResponse>(
     TATILSEPETI_PACKAGE_URL,
     body,
-    { headers, timeout: 30000, proxy: getProxyConfig() }
+    { headers, timeout: 30000, proxy: getNextProxy() }
   );
 
   return response.data;

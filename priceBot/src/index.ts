@@ -8,6 +8,7 @@ import priceRoutes from "./routes/priceRoutes";
 import packageRoutes from "./routes/packageRoutes";
 import mappingRoutes from "./routes/admin/mappingRoutes";
 import { closeBrowser } from "./services/puppeteer/manager";
+import { startProxySync, stopProxySync } from "./services/proxyService";
 
 const app = express();
 
@@ -30,12 +31,16 @@ app.get("/health", (_req, res) => {
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
+  stopProxySync();
   await closeBrowser();
   process.exit(0);
 });
 
-app.listen(config.port, () => {
+app.listen(config.port, async () => {
   console.log(`PriceBot ${config.port} portunda calisiyor`);
   console.log(`Providers: ${getAllProviderNames().join(", ")}`);
   console.log(`Swagger UI: http://localhost:${config.port}/docs`);
+
+  // Start proxy rotation sync
+  await startProxySync();
 });

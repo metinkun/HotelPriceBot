@@ -1,5 +1,6 @@
-import axios, { AxiosProxyConfig } from "axios";
+import axios from "axios";
 import { config } from "../../config";
+import { getNextProxy } from "../../services/proxyService";
 import {
   EtsturSearchRequest,
   EtsturSearchResponse,
@@ -7,12 +8,6 @@ import {
   EtsturRoomSearchResponse,
   EtsturPackageResponse,
 } from "../../types/etstur";
-
-function getProxyConfig(): AxiosProxyConfig | false {
-  const { host, port, username, password } = config.proxy;
-  if (!host || !port) return false;
-  return { host, port, auth: { username, password }, protocol: "http" };
-}
 
 const ETSTUR_SEARCH_URL =
   "https://www.etstur.com/services/api/search/v2/hotels";
@@ -107,7 +102,7 @@ export async function searchEtstur(
           : {}),
       },
       timeout: 20000,
-      proxy: getProxyConfig(),
+      proxy: getNextProxy(),
     }
   );
   return response.data;
@@ -172,7 +167,7 @@ export async function fetchRoomSearch(
   const response = await axios.post<EtsturRoomSearchResponse>(
     ETSTUR_ROOM_URL,
     body,
-    { headers: { ...DEFAULT_HEADERS }, timeout: 20000, proxy: getProxyConfig() }
+    { headers: { ...DEFAULT_HEADERS }, timeout: 20000, proxy: getNextProxy() }
   );
 
   const data = response.data;
@@ -199,7 +194,7 @@ export async function fetchPackage(
     {
       headers: { ...DEFAULT_HEADERS, ...(cookie ? { cookie } : {}) },
       timeout: 20000,
-      proxy: getProxyConfig(),
+      proxy: getNextProxy(),
     }
   );
   return response.data;

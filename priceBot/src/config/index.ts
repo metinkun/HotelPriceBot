@@ -22,6 +22,11 @@ export const config = {
     password: process.env.PROXY_PASSWORD || "",
   },
 
+  webshare: {
+    apiKey: process.env.WEBSHARE_API_KEY || "",
+    syncIntervalMs: parseInt(process.env.PROXY_SYNC_INTERVAL_MS || "300000", 10),
+  },
+
   puppeteer: {
     headless: process.env.PUPPETEER_HEADLESS !== "false",
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
