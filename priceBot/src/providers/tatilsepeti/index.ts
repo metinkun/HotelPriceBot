@@ -7,8 +7,9 @@ import {
   ProviderPackageResult,
 } from "../base";
 import { PriceQuery, BulkPriceQuery, PackageQuery } from "../../types";
-import { fetchPricesFromTatilSepeti, fetchFlyingPackages } from "./api";
+import { fetchPricesFromTatilSepeti, fetchFlyingPackages, resolveHotelFromUrl } from "./api";
 import { normalizeTatilSepetiResponse, parsePackageRoomList } from "./normalizer";
+import { ResolvedHotel } from "../base";
 
 function calculateNights(checkIn: string, checkOut: string): number {
   const d1 = new Date(checkIn);
@@ -103,5 +104,21 @@ export class TatilSepetiProvider extends BaseProvider {
     // destinationCode sadece paket sorgusu icin gerekli,
     // fiyat sorgusu icin metadata gerekmez
     return null;
+  }
+
+  async resolveFromUrl(url: string): Promise<ResolvedHotel> {
+    if (!/tatilsepeti\.com/i.test(url)) {
+      throw new Error("Gecersiz TatilSepeti URL'i (tatilsepeti.com bekleniyor)");
+    }
+    const r = await resolveHotelFromUrl(url);
+    return {
+      providerHotelId: r.providerHotelId,
+      hotelName: r.hotelName,
+      metadata: {
+        // destinationCode paket icin gerekli; bulunamazsa null (duz fiyat yine calisir)
+        destinationCode: r.destinationCode,
+        sourceUrl: url,
+      },
+    };
   }
 }

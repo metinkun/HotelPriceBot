@@ -11,9 +11,11 @@ import {
   collectHotelsByIds,
   fetchRoomSearch,
   fetchPackage,
+  resolveHotelFromUrl,
   DateOccupancy,
 } from "./api";
 import { normalizeHotel, normalizePackageRoom } from "./normalizer";
+import { ResolvedHotel } from "../base";
 
 function toOccupancy(query: { checkIn: string; checkOut: string; adults: number; children: number; childAges?: number[] }): DateOccupancy {
   return {
@@ -144,5 +146,26 @@ export class EtsturProvider extends BaseProvider {
 
   requiredMetadataFields(): string[] {
     return ["destinationUrl"];
+  }
+
+  async resolveFromUrl(url: string): Promise<ResolvedHotel> {
+    if (!/etstur\.com/i.test(url)) {
+      throw new Error("Gecersiz Etstur URL'i (etstur.com bekleniyor)");
+    }
+    const r = await resolveHotelFromUrl(url);
+    if (!r.destinationUrl) {
+      throw new Error(
+        "Etstur destinationUrl cozulemedi (otel detay sayfasi URL'i olmali)"
+      );
+    }
+    return {
+      providerHotelId: r.providerHotelId,
+      hotelName: r.hotelName,
+      metadata: {
+        destinationUrl: r.destinationUrl,
+        slug: r.slug,
+        sourceUrl: url,
+      },
+    };
   }
 }

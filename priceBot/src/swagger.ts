@@ -166,6 +166,28 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
+      "/api/prices/all": {
+        get: {
+          tags: ["Fiyat Sorgulama"],
+          summary: "Birlesik fiyat (tek otel -> tum sitelerden)",
+          description:
+            "Bir internalHotelId icin eslesen tum provider'lardan (etstur + tatilsepeti...) paralel fiyat doner. provider verilmezse otelin tum provider'lari sorgulanir.",
+          parameters: [
+            { name: "hotelId", in: "query", required: true, schema: { type: "string" }, example: "htl_a1b2c3d4" },
+            { name: "checkIn", in: "query", required: true, schema: { type: "string" }, example: "2026-07-07" },
+            { name: "checkOut", in: "query", required: true, schema: { type: "string" }, example: "2026-07-10" },
+            { name: "adults", in: "query", required: true, schema: { type: "integer" }, example: 2 },
+            { name: "children", in: "query", required: false, schema: { type: "integer", default: 0 } },
+            { name: "childAges", in: "query", required: false, schema: { type: "string" }, example: "5,8" },
+            { name: "provider", in: "query", required: false, schema: { type: "string" }, description: "Opsiyonel, virgulle: etstur,tatilsepeti" },
+          ],
+          responses: {
+            "200": { description: "Tum provider fiyatlari" },
+            "400": { description: "Eksik parametre" },
+            "404": { description: "Otel eslestirmesi bulunamadi" },
+          },
+        },
+      },
       "/api/packages": {
         get: {
           tags: ["Paket (Otel + Ucak + Transfer)"],
@@ -480,6 +502,92 @@ const options: swaggerJsdoc.Options = {
             "401": { description: "Gecersiz API anahtari" },
             "404": { description: "Eslestirme bulunamadi" },
           },
+        },
+      },
+      "/api/admin/hotels": {
+        post: {
+          tags: ["Admin - Otel (URL bazli)"],
+          summary: "URL'lerden otel ekle",
+          description:
+            "Kullanicidan her site icin sadece otel URL'i alir; providerHotelId/destinationUrl/destinationCode'u otomatik cozer. internalHotelId verilmezse otomatik uretilir.",
+          security: [{ ApiKeyAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["urls"],
+                  properties: {
+                    urls: {
+                      type: "object",
+                      example: {
+                        etstur: "https://www.etstur.com/Acapulco-Resort-Convention-Spa",
+                        tatilsepeti: "https://www.tatilsepeti.com/kaya-palazzo-resort",
+                      },
+                    },
+                    internalHotelId: { type: "string", description: "Opsiyonel; verilmezse otomatik" },
+                    hotelName: { type: "string", description: "Opsiyonel ortak ad" },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            "201": { description: "Otel eklendi (cozulen provider'lar + varsa hatalar)" },
+            "400": { description: "Eksik/gecersiz URL" },
+            "401": { description: "Gecersiz API anahtari" },
+          },
+        },
+        get: {
+          tags: ["Admin - Otel (URL bazli)"],
+          summary: "Sistemdeki otelleri listele",
+          security: [{ ApiKeyAuth: [] }],
+          parameters: [
+            { name: "search", in: "query", required: false, schema: { type: "string" } },
+            { name: "active", in: "query", required: false, schema: { type: "string", enum: ["true", "false"] } },
+          ],
+          responses: {
+            "200": { description: "Otel listesi (provider'lara gore gruplu)" },
+            "401": { description: "Gecersiz API anahtari" },
+          },
+        },
+      },
+      "/api/admin/hotels/{id}": {
+        get: {
+          tags: ["Admin - Otel (URL bazli)"],
+          summary: "Tek otel detayi",
+          security: [{ ApiKeyAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Otel detayi" }, "404": { description: "Bulunamadi" } },
+        },
+        put: {
+          tags: ["Admin - Otel (URL bazli)"],
+          summary: "Otel URL(ler)ini guncelle",
+          security: [{ ApiKeyAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    urls: { type: "object", example: { etstur: "https://www.etstur.com/..." } },
+                    hotelName: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+          responses: { "200": { description: "Guncellendi" }, "404": { description: "Bulunamadi" } },
+        },
+        delete: {
+          tags: ["Admin - Otel (URL bazli)"],
+          summary: "Oteli sil (tum provider eslestirmeleri)",
+          security: [{ ApiKeyAuth: [] }],
+          parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+          responses: { "200": { description: "Silindi" }, "404": { description: "Bulunamadi" } },
         },
       },
     },

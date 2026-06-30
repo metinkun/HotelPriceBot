@@ -43,6 +43,13 @@ export interface ProviderMappingInput {
   metadata?: Record<string, any>;
 }
 
+/** Bir provider URL'inden cozulen, mapping olusturmak icin gereken veri. */
+export interface ResolvedHotel {
+  providerHotelId: string;
+  hotelName: string | null;
+  metadata: Record<string, any>; // destinationUrl / destinationCode + sourceUrl
+}
+
 export interface ProviderCapabilities {
   supportsPackages: boolean;
   supportsBulkPrices: boolean;
@@ -65,6 +72,9 @@ export interface HotelProvider {
 
   /** Bu provider icin zorunlu metadata alanlari. */
   requiredMetadataFields(): string[];
+
+  /** Provider otel URL'inden mapping verisini cozer (providerHotelId, ad, metadata). */
+  resolveFromUrl?(url: string): Promise<ResolvedHotel>;
 }
 
 // ---- Base abstract class (default bulk fallback) ----

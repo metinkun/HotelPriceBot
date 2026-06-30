@@ -129,3 +129,64 @@ export async function fetchFlyingPackages(
 
   return response.data;
 }
+
+// ---- URL'den otel verisi cozme ----
+
+export interface TatilSepetiResolved {
+  providerHotelId: string;
+  hotelName: string | null;
+  destinationCode: string | null;
+}
+
+/**
+ * TatilSepeti otel detay sayfasini cekip
+ * providerHotelId (#hidHotelId), ad (<title>) ve
+ * destinationCode (#nereye[data-search-value]) cikarir.
+ */
+export async function resolveHotelFromUrl(
+  url: string
+): Promise<TatilSepetiResolved> {
+  // Tam HTML sayfa cekiyoruz: tarayici-gezinme header'lari (XHR/origin YOK),
+  // aksi halde site farkli/eksik icerik donebiliyor.
+  const response = await axios.get<string>(url, {
+    headers: {
+      accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      "accept-language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7",
+      "user-agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "none",
+      "upgrade-insecure-requests": "1",
+      ...(config.providers.tatilsepeti.cookie
+        ? { cookie: config.providers.tatilsepeti.cookie }
+        : {}),
+    },
+    timeout: 20000,
+    proxy: getNextProxy(),
+    responseType: "text",
+    transformResponse: (d) => d,
+  });
+
+  const html = response.data;
+
+  const idMatch = html.match(/hidHotelId"[^>]*value="(\d+)"/);
+  if (!idMatch) {
+    throw new Error(
+      "TatilSepeti sayfasinda hidHotelId bulunamadi (otel detay URL'i olmali)"
+    );
+  }
+
+  const destMatch = html.match(/id="nereye"[^>]*data-search-value="([^"]+)"/);
+  const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+  const hotelName = titleMatch
+    ? titleMatch[1].replace(/\s*[-|].*$/, "").trim()
+    : null;
+
+  return {
+    providerHotelId: idMatch[1],
+    hotelName,
+    destinationCode: destMatch ? destMatch[1] : null,
+  };
+}

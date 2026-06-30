@@ -7,6 +7,7 @@ import { getAllProviderNames } from "./providers";
 import priceRoutes from "./routes/priceRoutes";
 import packageRoutes from "./routes/packageRoutes";
 import mappingRoutes from "./routes/admin/mappingRoutes";
+import hotelRoutes from "./routes/admin/hotelRoutes";
 import { closeBrowser } from "./services/puppeteer/manager";
 import { startProxySync, stopProxySync } from "./services/proxyService";
 
@@ -23,6 +24,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/prices", priceRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/admin/mappings", mappingRoutes);
+app.use("/api/admin/hotels", hotelRoutes);
 
 // Health check
 app.get("/health", (_req, res) => {
