@@ -1,4 +1,5 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import { config } from "./config";
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -10,6 +11,7 @@ const options: swaggerJsdoc.Options = {
         "Unified hotel price bot - multiple providers (etstur, tatilsepeti, tatilbudur...)",
     },
     servers: [
+      { url: `http://localhost:${config.port}`, description: "Local" },
       { url: "https://hotel.alpkun.com", description: "Production" },
     ],
     components: {
@@ -517,7 +519,7 @@ const options: swaggerJsdoc.Options = {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: ["urls"],
+                  required: ["urls", "hotelName"],
                   properties: {
                     urls: {
                       type: "object",
@@ -526,8 +528,8 @@ const options: swaggerJsdoc.Options = {
                         tatilsepeti: "https://www.tatilsepeti.com/kaya-palazzo-resort",
                       },
                     },
+                    hotelName: { type: "string", description: "Otel adi (zorunlu)", example: "Acapulco Resort" },
                     internalHotelId: { type: "string", description: "Opsiyonel; verilmezse otomatik" },
-                    hotelName: { type: "string", description: "Opsiyonel ortak ad" },
                   },
                 },
               },

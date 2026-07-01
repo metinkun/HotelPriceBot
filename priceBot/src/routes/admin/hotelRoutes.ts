@@ -22,6 +22,10 @@ router.post("/", async (req: Request, res: Response) => {
       });
       return;
     }
+    if (!hotelName || !String(hotelName).trim()) {
+      res.status(400).json({ error: "hotelName zorunlu." });
+      return;
+    }
     const result = await addHotelFromUrls({ urls, internalHotelId, hotelName });
     res.status(201).json(result);
   } catch (err: any) {
