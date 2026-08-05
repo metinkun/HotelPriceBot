@@ -1,6 +1,7 @@
 import { HotelProvider } from "./base";
 import { EtsturProvider } from "./etstur";
 import { TatilSepetiProvider } from "./tatilsepeti";
+import { JollyProvider } from "./jolly";
 
 const providers = new Map<string, HotelProvider>();
 
@@ -11,6 +12,7 @@ function register(provider: HotelProvider) {
 // Provider'lari kaydet
 register(new EtsturProvider());
 register(new TatilSepetiProvider());
+register(new JollyProvider());
 
 export function getProvider(name: string): HotelProvider {
   const provider = providers.get(name);
