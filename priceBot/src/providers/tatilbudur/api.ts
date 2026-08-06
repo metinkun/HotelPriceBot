@@ -4,6 +4,7 @@ import { getNextProxy } from "../../services/proxyService";
 
 const BASE = "https://www.tatilbudur.com";
 const CALC_URL = `${BASE}/hotel/calculate-room-price`;
+const CALC_PACKAGE_URL = `${BASE}/hotel/calculate-package-room-price`;
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36";
@@ -79,20 +80,19 @@ export async function fetchTokenAndCookies(url: string): Promise<TokenSession> {
  * Bir otel + tarih + kisi icin oda fiyat yanitini (view HTML) ceker.
  * Akis: detay sayfasindan taze token+cookie -> calculate-room-price POST.
  */
-export async function fetchRoomPrice(
-  detailUrl: string,
+/** Iki fiyat cagrisinin da kullandigi ortak form govdesi (#allHotelTabForm). */
+function buildBaseForm(
+  token: string,
   providerHotelId: string,
   checkIn: string,
   checkOut: string,
   adults: number,
   children: number
-): Promise<TatilbudurRoomPriceResponse> {
-  const { token, cookie } = await fetchTokenAndCookies(detailUrl);
-
+): string {
   const quickPersonCount =
     `${adults} Yetişkin` + (children > 0 ? ` ${children} Çocuk` : "");
 
-  const body = qs.stringify({
+  return qs.stringify({
     _token: token,
     productType: "hotel",
     hotelId: providerHotelId,
@@ -121,24 +121,89 @@ export async function fetchRoomPrice(
     checkInDate: toDotDate(checkIn),
     checkOutDate: toDotDate(checkOut),
     quickPersonCount,
+    type: "",
   });
+}
+
+function priceHeaders(token: string, detailUrl: string, cookie: string) {
+  return {
+    "user-agent": UA,
+    "x-requested-with": "XMLHttpRequest",
+    "x-csrf-token": token,
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    accept: "*/*",
+    origin: BASE,
+    referer: detailUrl,
+    cookie,
+  };
+}
+
+export async function fetchRoomPrice(
+  detailUrl: string,
+  providerHotelId: string,
+  checkIn: string,
+  checkOut: string,
+  adults: number,
+  children: number
+): Promise<TatilbudurRoomPriceResponse> {
+  const { token, cookie } = await fetchTokenAndCookies(detailUrl);
+  const body = buildBaseForm(
+    token,
+    providerHotelId,
+    checkIn,
+    checkOut,
+    adults,
+    children
+  );
 
   const response = await axios.post<TatilbudurRoomPriceResponse>(CALC_URL, body, {
-    headers: {
-      "user-agent": UA,
-      "x-requested-with": "XMLHttpRequest",
-      "x-csrf-token": token,
-      "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      accept: "*/*",
-      origin: BASE,
-      referer: detailUrl,
-      cookie,
-    },
+    headers: priceHeaders(token, detailUrl, cookie),
     timeout: 30000,
     proxy: getNextProxy(),
   });
 
   return response.data;
+}
+
+/**
+ * Paket (Otel + Ucak + Transfer) fiyatlari.
+ * Oda fiyati ile ayni form + `to` (varis havalimani, sayfa JS'inden) ve
+ * `from` (kalkis havalimani, kullanicidan) parametreleri.
+ */
+export async function fetchPackagePrice(
+  detailUrl: string,
+  providerHotelId: string,
+  departureCode: string,
+  checkIn: string,
+  checkOut: string,
+  adults: number,
+  children: number
+): Promise<{ data: TatilbudurRoomPriceResponse; destinationCode: string | null }> {
+  const { token, cookie, html } = await fetchTokenAndCookies(detailUrl);
+
+  // Varis havalimani kodu sayfa JS'inde: formData += "&to=ECN&from="+...
+  const destinationCode = html.match(/&to=([A-Z]{3})&from=/)?.[1] ?? null;
+  if (!destinationCode) {
+    throw new Error(
+      "Tatilbudur varis havalimani kodu bulunamadi (bu otel icin paket sunulmuyor olabilir)"
+    );
+  }
+
+  const body =
+    buildBaseForm(token, providerHotelId, checkIn, checkOut, adults, children) +
+    `&to=${destinationCode}&from=${encodeURIComponent(departureCode.toUpperCase())}`;
+
+  const response = await axios.post<TatilbudurRoomPriceResponse>(
+    CALC_PACKAGE_URL,
+    body,
+    {
+      headers: priceHeaders(token, detailUrl, cookie),
+      timeout: 45000,
+      proxy: getNextProxy(),
+    }
+  );
+
+  return { data: response.data, destinationCode };
 }
 
 // ---- URL'den otel verisi cozme ----

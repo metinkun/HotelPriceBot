@@ -23,6 +23,8 @@ export interface ProviderPackageResult {
   roomCount: number;
   rooms: NormalizedPackageRoom[];
   durationMs?: number;
+  /** Provider'a ozgu uyari (orn. kalkis havalimani secimi desteklenmiyor). */
+  note?: string;
 }
 
 export interface ProviderMapping {

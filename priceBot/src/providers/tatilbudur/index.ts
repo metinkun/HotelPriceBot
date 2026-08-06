@@ -6,14 +6,15 @@ import {
   ProviderPriceResult,
   ResolvedHotel,
 } from "../base";
-import { PriceQuery } from "../../types";
-import { fetchRoomPrice, resolveHotelFromUrl } from "./api";
-import { normalizeTatilbudur } from "./normalizer";
+import { PriceQuery, PackageQuery } from "../../types";
+import { fetchRoomPrice, fetchPackagePrice, resolveHotelFromUrl } from "./api";
+import { normalizeTatilbudur, normalizeTatilbudurPackages } from "./normalizer";
+import { ProviderPackageResult } from "../base";
 
 export class TatilbudurProvider extends BaseProvider {
   readonly name = "tatilbudur";
   readonly capabilities: ProviderCapabilities = {
-    supportsPackages: false,
+    supportsPackages: true,
     supportsBulkPrices: false,
     requiresCookie: false,
     requiresPuppeteer: false,
@@ -43,6 +44,40 @@ export class TatilbudurProvider extends BaseProvider {
       hotelName: mapping.hotelName,
       found: price.available,
       price,
+    };
+  }
+
+  async getPackagePrices(
+    mapping: ProviderMapping,
+    query: PackageQuery
+  ): Promise<ProviderPackageResult> {
+    const sourceUrl = (mapping.metadata as any)?.sourceUrl;
+    if (!sourceUrl) {
+      throw new Error("Mapping metadata'da sourceUrl eksik (otel detay URL'i)");
+    }
+
+    const { data } = await fetchPackagePrice(
+      sourceUrl,
+      mapping.providerHotelId,
+      query.airportCode,
+      query.checkIn,
+      query.checkOut,
+      query.adults,
+      query.children
+    );
+
+    const rooms = normalizeTatilbudurPackages(data);
+
+    return {
+      internalHotelId: mapping.internalHotelId,
+      providerHotelId: mapping.providerHotelId,
+      hotelName: mapping.hotelName,
+      airportCode: query.airportCode,
+      checkIn: query.checkIn,
+      checkOut: query.checkOut,
+      available: rooms.length > 0,
+      roomCount: rooms.length,
+      rooms,
     };
   }
 

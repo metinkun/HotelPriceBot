@@ -57,6 +57,199 @@ async function acceptCookies(page: any): Promise<void> {
  * Otel sayfasini acar, tarih/kisi doldurup "Oda Ara" tetikler ve
  * olusan oda/paket fiyat bloklarini ham metin olarak doner.
  */
+/**
+ * Otel sayfasini acar, cerezleri kabul eder, tarih/kisi doldurup
+ * "Oda Ara" tetikler ve fiyatlarin yuklenmesini bekler.
+ * Hem oda hem paket akisi bu adimlari paylasir.
+ */
+async function openAndSearch(
+  page: any,
+  detailUrl: string,
+  checkIn: string,
+  checkOut: string,
+  adults: number,
+  children: number
+): Promise<void> {
+  await page.goto(detailUrl, { waitUntil: "networkidle2", timeout: 60000 });
+  await acceptCookies(page);
+  await new Promise((r) => setTimeout(r, 1500));
+
+  const ci = toTouristicaDate(checkIn);
+  const co = toTouristicaDate(checkOut);
+
+  await page.evaluate(
+    (inDate: string, outDate: string, ad: number, ch: number) => {
+      const set = (sel: string, val: string) => {
+        const el = document.querySelector(sel) as any;
+        if (el) {
+          el.value = val;
+          el.setAttribute("data-value", val);
+          el.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      };
+      set("#txtCheckInDate", inDate);
+      set("#txtCheckOutDate", outDate);
+      const adultEl = document.querySelector("#ddlAdultCount") as any;
+      if (adultEl) {
+        adultEl.value = String(ad);
+        adultEl.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      const childEl = document.querySelector("#ddlChildCount") as any;
+      if (childEl) {
+        childEl.value = String(ch);
+        childEl.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      const btn = Array.from(
+        document.querySelectorAll("button,a,input")
+      ).find((b: any) => /oda ara/i.test(b.textContent || b.value || ""));
+      if (btn) (btn as any).click();
+    },
+    ci,
+    co,
+    adults,
+    children
+  );
+
+  // Fiyatlarin yuklenmesini bekle (max ~20sn)
+  for (let i = 0; i < 20; i++) {
+    await new Promise((r) => setTimeout(r, 1000));
+    const ready = await page.evaluate(() =>
+      /Gecelik Toplam Fiyat|Otel \+ Uçak/i.test(document.body?.innerText || "")
+    );
+    if (ready) break;
+  }
+}
+
+/** Paket bloklari gorunene kadar bekler; gerekirse "Otel + Ucak" sekmesini tetikler. */
+async function waitForPackages(page: any, maxSeconds = 25): Promise<boolean> {
+  for (let i = 0; i < maxSeconds; i++) {
+    const has = await page.evaluate(() =>
+      /Otel \+ Uçak \+ Transfer Dahil\s*[\d.,]+\s*TL/i.test(
+        document.body?.innerText || ""
+      )
+    );
+    if (has) return true;
+
+    // Birkac denemede bir paket sekmesini tetikle (lazy yukleniyor olabilir)
+    if (i === 3 || i === 10) {
+      await page.evaluate(() => {
+        const tab = Array.from(
+          document.querySelectorAll("a,button,li")
+        ).find(
+          (e: any) =>
+            /otel\s*\+\s*uçak/i.test((e.textContent || "").trim()) &&
+            (e.textContent || "").length < 60
+        );
+        if (tab) (tab as any).click();
+      });
+    }
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  return false;
+}
+
+export interface TouristicaPackageCard {
+  roomName: string | null;
+  boardType: string | null;
+  price: number | null;
+}
+
+/**
+ * Paket (Otel + Ucak + Transfer) kartlarini doner.
+ * NOT: Touristica otel sayfasinda kalkis havalimani secici YOKTUR;
+ * paket fiyatlari sitenin varsayilan kalkisi ile gelir.
+ */
+export async function fetchPackagePrices(
+  detailUrl: string,
+  checkIn: string,
+  checkOut: string,
+  adults: number,
+  children: number
+): Promise<{ cards: TouristicaPackageCard[]; hotelName: string | null }> {
+  const page = await newPage();
+  try {
+    await openAndSearch(page, detailUrl, checkIn, checkOut, adults, children);
+    await waitForPackages(page);
+
+    const data = await page.evaluate(() => {
+      const BOARDS = [
+        "Ultra Her Şey Dahil",
+        "Her Şey Dahil",
+        "Tam Pansiyon Plus",
+        "Tam Pansiyon",
+        "Yarım Pansiyon",
+        "Oda Kahvaltı",
+        "Sadece Oda",
+      ];
+      const seen = new Set<string>();
+      const cards: any[] = [];
+
+      document.querySelectorAll("*").forEach((el: any) => {
+        const t = (el.innerText || "").replace(/\s+/g, " ").trim();
+        if (!/Otel \+ Uçak \+ Transfer Dahil/i.test(t)) return;
+        if (t.length > 400) return;
+
+        const priceM = t.match(/Otel \+ Uçak \+ Transfer Dahil\s*([\d.,]+)\s*TL/i);
+        if (!priceM) return;
+
+        // Oda adi: kart icindeki h4.accommodation-type basligi (en guvenilir)
+        let roomName: string | null = null;
+        let cardText = t;
+        let p: any = el;
+        for (let i = 0; i < 10 && p; i++) {
+          p = p.parentElement;
+          if (!p) break;
+          const head = p.querySelector(
+            'h4.accommodation-type, h2,h3,h4,[class*="room-name"],[class*="room-title"]'
+          );
+          if (head) {
+            const ht = (head.textContent || "").replace(/\s+/g, " ").trim();
+            if (ht && ht.length < 70) {
+              roomName = ht;
+              cardText = (p.innerText || "").replace(/\s+/g, " ").trim();
+              break;
+            }
+          }
+        }
+
+        // Pansiyon: kart metninden (oda adinda gecmiyorsa)
+        let boardType: string | null = null;
+        for (const b of BOARDS) {
+          if (cardText.includes(b)) {
+            boardType = b;
+            break;
+          }
+        }
+        if (roomName && boardType && roomName.includes(boardType)) {
+          roomName = roomName.split(boardType)[0].trim();
+        }
+
+        const key = `${roomName}|${boardType}|${priceM[1]}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        cards.push({ roomName, boardType, priceText: priceM[1] });
+      });
+
+      const h1 = document.querySelector("h1");
+      return {
+        cards,
+        hotelName: h1 ? (h1.textContent || "").trim() : null,
+      };
+    });
+
+    return {
+      cards: data.cards.map((c: any) => ({
+        roomName: c.roomName,
+        boardType: c.boardType,
+        price: Number(String(c.priceText).replace(/\./g, "").replace(",", ".")),
+      })),
+      hotelName: data.hotelName,
+    };
+  } finally {
+    await page.close();
+  }
+}
+
 export async function fetchRoomPrices(
   detailUrl: string,
   checkIn: string,
