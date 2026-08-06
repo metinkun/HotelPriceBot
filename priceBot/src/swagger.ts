@@ -79,7 +79,7 @@ const options: swaggerJsdoc.Options = {
               name: "provider",
               in: "query",
               required: true,
-              schema: { type: "string", enum: ["etstur", "tatilsepeti", "jolly", "tatilbudur"] },
+              schema: { type: "string", enum: ["etstur", "tatilsepeti", "jolly", "tatilbudur", "touristica"] },
               example: "etstur",
             },
             {
