@@ -1,0 +1,66 @@
+# Lokal gelistirme. Prod icin: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pricebot_go_db
+    environment:
+      POSTGRES_USER: botuser
+      POSTGRES_PASSWORD: botpass123
+      POSTGRES_DB: pricebot
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U botuser -d pricebot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  redis:
+    image: redis:7-alpine
+    container_name: pricebot_go_redis
+    command: ["redis-server", "--maxmemory", "200mb", "--maxmemory-policy", "volatile-lru", "--save", "60", "1000", "--appendonly", "no"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  app:
+    build: .
+    container_name: pricebot_go_app
+    env_file:
+      - .env
+    environment:
+      PORT: "3000"
+      DATABASE_URL: postgresql://botuser:botpass123@postgres:5432/pricebot
+      REDIS_URL: redis://redis:6379/0
+      BROWSER_EXECUTABLE_PATH: /usr/bin/chromium
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    shm_size: "512mb"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1200M
+
+volumes:
+  pgdata:
+  redisdata:

@@ -1,0 +1,2707 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hotel Price Bot API",
+    "version": "2.0.0",
+    "description": "Birlesik cok-saglayicili otel fiyat botu (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local"
+    },
+    {
+      "url": "https://hotel.alpkun.com",
+      "description": "Production"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Musteri API anahtari (pb_live_...) veya ADMIN_API_KEY"
+      },
+      "AdminBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "POST /api/admin/auth/login ile alinan token"
+      }
+    },
+    "schemas": {
+      "HotelMapping": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "provider": {
+            "type": "string",
+            "example": "etstur"
+          },
+          "internalHotelId": {
+            "type": "string",
+            "example": "hotel-1"
+          },
+          "providerHotelId": {
+            "type": "string",
+            "example": "swr922thyt19"
+          },
+          "hotelName": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "example": {
+              "destinationUrl": "Kemer-Otelleri"
+            }
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "details": {}
+        }
+      },
+      "NormalizedPrice": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "hotelName": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "roomName": {
+            "type": "string",
+            "nullable": true
+          },
+          "boardType": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "listPrice": {
+            "type": "number",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "nullable": true
+          },
+          "discountRate": {
+            "type": "number"
+          },
+          "minStayNights": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "ProviderPriceResult": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "internalHotelId": {
+            "type": "string"
+          },
+          "providerHotelId": {
+            "type": "string"
+          },
+          "hotelName": {
+            "type": "string",
+            "nullable": true
+          },
+          "found": {
+            "type": "boolean"
+          },
+          "price": {
+            "$ref": "#/components/schemas/NormalizedPrice"
+          },
+          "durationMs": {
+            "type": "integer"
+          },
+          "cached": {
+            "type": "boolean",
+            "description": "true: Redis cache'ten (0 kredi)"
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MultiPriceResult": {
+        "type": "object",
+        "properties": {
+          "hotelId": {
+            "type": "string"
+          },
+          "checkIn": {
+            "type": "string"
+          },
+          "checkOut": {
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderPriceResult"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string"
+                },
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "JobRequest": {
+        "type": "object",
+        "required": [
+          "hotelId",
+          "checkIn",
+          "checkOut",
+          "adults"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "prices",
+              "packages"
+            ],
+            "default": "prices"
+          },
+          "hotelId": {
+            "type": "string",
+            "example": "htl_test1"
+          },
+          "checkIn": {
+            "type": "string",
+            "example": "2026-11-20"
+          },
+          "checkOut": {
+            "type": "string",
+            "example": "2026-11-23"
+          },
+          "adults": {
+            "type": "integer",
+            "example": 2
+          },
+          "children": {
+            "type": "integer",
+            "default": 0
+          },
+          "childAges": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bos: planin izin verdigi tum provider'lar",
+            "example": [
+              "etstur",
+              "jolly"
+            ]
+          },
+          "airportCode": {
+            "type": "string",
+            "description": "packages icin zorunlu (IATA)",
+            "example": "SAW"
+          },
+          "fresh": {
+            "type": "boolean",
+            "description": "Cache'i atla (plan izni gerekir)"
+          }
+        }
+      },
+      "JobAccepted": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "example": "2bc27bc4740be88782cb59f7"
+          },
+          "status": {
+            "type": "string",
+            "example": "queued"
+          },
+          "deduplicated": {
+            "type": "boolean",
+            "description": "Ayni istek zaten kuyruktaydi; mevcut is dondu"
+          },
+          "pollAfterMs": {
+            "type": "integer",
+            "example": 1000
+          },
+          "statusUrl": {
+            "type": "string"
+          },
+          "expiresInSeconds": {
+            "type": "integer"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "failed"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "request": {
+            "$ref": "#/components/schemas/JobRequest"
+          },
+          "progress": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "running",
+                "done",
+                "error"
+              ]
+            },
+            "description": "provider -> durum"
+          },
+          "result": {
+            "description": "Kismi sonuc: biten provider'lar aninda gorunur",
+            "$ref": "#/components/schemas/MultiPriceResult"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string",
+            "example": "standard"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dailyQuota": {
+            "type": "integer",
+            "description": "kredi/gun; 0 = sinirsiz"
+          },
+          "allowedProviders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "bos = hepsi"
+          },
+          "allowPackages": {
+            "type": "boolean"
+          },
+          "allowFresh": {
+            "type": "boolean"
+          },
+          "maxConcurrency": {
+            "type": "integer"
+          },
+          "ratePerMinute": {
+            "type": "integer"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "planId": {
+            "type": "integer",
+            "nullable": true
+          },
+          "planCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "keyCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "clientId": {
+            "type": "integer"
+          },
+          "keyPrefix": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "revokedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Saglik kontrolu + provider listesi",
+        "responses": {
+          "200": {
+            "description": "Servis calisiyor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "providers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "etstur",
+                        "tatilsepeti",
+                        "jolly"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prices": {
+      "get": {
+        "tags": [
+          "Fiyat Sorgulama"
+        ],
+        "summary": "Tek otel fiyat sorgula",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "etstur",
+                "tatilsepeti",
+                "jolly",
+                "tatilbudur",
+                "touristica",
+                "setur",
+                "gezinomi"
+              ]
+            },
+            "example": "etstur"
+          },
+          {
+            "name": "hotelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "hotel-1"
+          },
+          {
+            "name": "checkIn",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-07"
+          },
+          {
+            "name": "checkOut",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-10"
+          },
+          {
+            "name": "adults",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2
+          },
+          {
+            "name": "children",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "childAges",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Virgulle ayrilmis cocuk yaslari"
+          },
+          {
+            "name": "fresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Cache'i atla (plan izni gerekir)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fiyat bilgisi"
+          },
+          "400": {
+            "description": "Eksik parametre veya gecersiz provider"
+          },
+          "404": {
+            "description": "Otel eslestirmesi bulunamadi"
+          },
+          "401": {
+            "description": "API anahtari gecersiz/eksik",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Plan bu provider/paket sorgusunu kapsamiyor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Gunluk kota veya dakikalik sinir asildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/prices/bulk": {
+      "post": {
+        "tags": [
+          "Fiyat Sorgulama"
+        ],
+        "summary": "Toplu otel fiyat sorgula",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "provider",
+                  "hotelIds",
+                  "checkIn",
+                  "checkOut",
+                  "adults"
+                ],
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "example": "etstur"
+                  },
+                  "hotelIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "hotel-1",
+                      "hotel-2"
+                    ]
+                  },
+                  "checkIn": {
+                    "type": "string",
+                    "example": "2026-07-07"
+                  },
+                  "checkOut": {
+                    "type": "string",
+                    "example": "2026-07-10"
+                  },
+                  "adults": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "children": {
+                    "type": "integer",
+                    "default": 0
+                  },
+                  "childAges": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Toplu fiyat bilgisi"
+          },
+          "400": {
+            "description": "Eksik parametre"
+          },
+          "401": {
+            "description": "API anahtari gecersiz/eksik",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Kota asildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/prices/all": {
+      "get": {
+        "tags": [
+          "Fiyat Sorgulama"
+        ],
+        "summary": "Birlesik fiyat (tek otel -> tum sitelerden)",
+        "description": "Bir internalHotelId icin eslesen tum provider'lardan (etstur + tatilsepeti...) paralel fiyat doner. provider verilmezse otelin tum provider'lari sorgulanir.",
+        "parameters": [
+          {
+            "name": "hotelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "htl_a1b2c3d4"
+          },
+          {
+            "name": "checkIn",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-07"
+          },
+          {
+            "name": "checkOut",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-10"
+          },
+          {
+            "name": "adults",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2
+          },
+          {
+            "name": "children",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "childAges",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "5,8"
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opsiyonel, virgulle: etstur,tatilsepeti"
+          },
+          {
+            "name": "fresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Cache'i atla (plan izni gerekir)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tum provider fiyatlari",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultiPriceResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Eksik parametre"
+          },
+          "404": {
+            "description": "Otel eslestirmesi bulunamadi"
+          },
+          "401": {
+            "description": "API anahtari gecersiz/eksik",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Plan bu provider/paket sorgusunu kapsamiyor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Gunluk kota veya dakikalik sinir asildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/packages": {
+      "get": {
+        "tags": [
+          "Paket (Otel + Ucak + Transfer)"
+        ],
+        "summary": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
+        "description": "Otel + Ucak + Transfer paket fiyatlarini sorgular.\n\n**Kullanim sekilleri:**\n- `?provider=etstur` — Tek provider'dan sorgula\n- `?provider=etstur,tatilbudur` — Birden fazla provider'dan paralel sorgula\n- Provider parametresi bos birakilirsa paket destekleyen **tum** provider'lar sorgulanir\n\nTek provider verildiginde dogrudan sonuc doner. Birden fazla veya hepsi secildiginde `{ hotelId, results: [...], errors?, notMapped? }` formatinda doner.",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+            "examples": {
+              "tek": {
+                "summary": "Tek provider",
+                "value": "etstur"
+              },
+              "coklu": {
+                "summary": "Birden fazla provider",
+                "value": "etstur,tatilsepeti"
+              },
+              "hepsi": {
+                "summary": "Tum provider'lar (bos birak)",
+                "value": ""
+              }
+            }
+          },
+          {
+            "name": "hotelId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "hotel-cy-1"
+          },
+          {
+            "name": "airportCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Kalkis havalimani IATA kodu",
+            "example": "IST"
+          },
+          {
+            "name": "checkIn",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-07"
+          },
+          {
+            "name": "checkOut",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-07-18"
+          },
+          {
+            "name": "adults",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2
+          },
+          {
+            "name": "children",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "childAges",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Virgulle ayrilmis cocuk yaslari"
+          },
+          {
+            "name": "fresh",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Cache'i atla (plan izni gerekir)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paket fiyat listesi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "tekProvider": {
+                    "summary": "Tek provider sonucu",
+                    "value": {
+                      "internalHotelId": "hotel-cy-1",
+                      "providerHotelId": "61b893df0b29",
+                      "hotelName": "Acapulco Resort",
+                      "airportCode": "IST",
+                      "available": true,
+                      "roomCount": 2,
+                      "rooms": [
+                        {
+                          "roomId": "6530",
+                          "roomName": "Villa - Yarim Pansiyon",
+                          "roomSize": 30,
+                          "nightCount": 11,
+                          "boards": [
+                            {
+                              "boardType": "Yarim Pansiyon",
+                              "currency": "TL",
+                              "listPrice": 352000,
+                              "price": 186027,
+                              "discountRate": 40,
+                              "cancellation": "FREE_CANCELLATION"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "multiProvider": {
+                    "summary": "Coklu provider sonucu",
+                    "value": {
+                      "hotelId": "hotel-cy-1",
+                      "results": [
+                        {
+                          "provider": "etstur",
+                          "available": true,
+                          "roomCount": 10,
+                          "rooms": [
+                            "..."
+                          ]
+                        },
+                        {
+                          "provider": "tatilsepeti",
+                          "available": true,
+                          "roomCount": 5,
+                          "rooms": [
+                            "..."
+                          ]
+                        }
+                      ],
+                      "notMapped": [
+                        "tatilbudur"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Eksik parametre veya provider desteklemiyor"
+          },
+          "404": {
+            "description": "Otel eslestirmesi bulunamadi"
+          },
+          "401": {
+            "description": "API anahtari gecersiz/eksik",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Plan bu provider/paket sorgusunu kapsamiyor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Gunluk kota veya dakikalik sinir asildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/mappings": {
+      "get": {
+        "tags": [
+          "Admin - Otel Eslestirme"
+        ],
+        "summary": "Eslestirmeleri listele / ara",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Provider'a gore filtrele"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eslestirme listesi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HotelMapping"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Otel Eslestirme"
+        ],
+        "summary": "Tek eslestirme ekle",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "provider",
+                  "internalHotelId",
+                  "providerHotelId"
+                ],
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "example": "etstur"
+                  },
+                  "internalHotelId": {
+                    "type": "string",
+                    "example": "hotel-99"
+                  },
+                  "providerHotelId": {
+                    "type": "string",
+                    "example": "swr922thyt19"
+                  },
+                  "hotelName": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "example": {
+                      "destinationUrl": "Kemer-Otelleri"
+                    }
+                  },
+                  "isActive": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Eslestirme olusturuldu"
+          },
+          "400": {
+            "description": "Eksik parametre veya validasyon hatasi"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          },
+          "409": {
+            "description": "Bu provider + internalHotelId zaten mevcut"
+          }
+        }
+      }
+    },
+    "/api/admin/mappings/bulk": {
+      "post": {
+        "tags": [
+          "Admin - Otel Eslestirme"
+        ],
+        "summary": "Toplu eslestirme ekle/guncelle (upsert)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "provider",
+                  "mappings"
+                ],
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "example": "etstur"
+                  },
+                  "mappings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "internalHotelId",
+                        "providerHotelId"
+                      ],
+                      "properties": {
+                        "internalHotelId": {
+                          "type": "string"
+                        },
+                        "providerHotelId": {
+                          "type": "string"
+                        },
+                        "hotelName": {
+                          "type": "string"
+                        },
+                        "metadata": {
+                          "type": "object"
+                        },
+                        "isActive": {
+                          "type": "boolean",
+                          "default": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Eslestirmeler olusturuldu"
+          },
+          "400": {
+            "description": "Eksik parametre veya validasyon hatasi"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          }
+        }
+      }
+    },
+    "/api/admin/mappings/{id}": {
+      "put": {
+        "tags": [
+          "Admin - Otel Eslestirme"
+        ],
+        "summary": "Eslestirme guncelle",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "internalHotelId": {
+                    "type": "string"
+                  },
+                  "providerHotelId": {
+                    "type": "string"
+                  },
+                  "hotelName": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "type": "object"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Eslestirme guncellendi"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          },
+          "404": {
+            "description": "Eslestirme bulunamadi"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin - Otel Eslestirme"
+        ],
+        "summary": "Eslestirme sil",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eslestirme silindi"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          },
+          "404": {
+            "description": "Eslestirme bulunamadi"
+          }
+        }
+      }
+    },
+    "/api/admin/hotels": {
+      "post": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "URL'lerden otel ekle",
+        "description": "Kullanicidan her site icin sadece otel URL'i alir; providerHotelId/destinationUrl/destinationCode'u otomatik cozer. internalHotelId verilmezse otomatik uretilir.",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "urls",
+                  "hotelName"
+                ],
+                "properties": {
+                  "urls": {
+                    "type": "object",
+                    "example": {
+                      "etstur": "https://www.etstur.com/Acapulco-Resort-Convention-Spa",
+                      "tatilsepeti": "https://www.tatilsepeti.com/kaya-palazzo-resort"
+                    }
+                  },
+                  "hotelName": {
+                    "type": "string",
+                    "description": "Otel adi (zorunlu)",
+                    "example": "Acapulco Resort"
+                  },
+                  "internalHotelId": {
+                    "type": "string",
+                    "description": "Opsiyonel; verilmezse otomatik"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Otel eklendi (cozulen provider'lar + varsa hatalar)"
+          },
+          "400": {
+            "description": "Eksik/gecersiz URL"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Sistemdeki otelleri listele",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Otel listesi (provider'lara gore gruplu)"
+          },
+          "401": {
+            "description": "Gecersiz API anahtari"
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/{id}": {
+      "get": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Tek otel detayi",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Otel detayi"
+          },
+          "404": {
+            "description": "Bulunamadi"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Otel URL(ler)ini guncelle",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "urls": {
+                    "type": "object",
+                    "example": {
+                      "etstur": "https://www.etstur.com/..."
+                    }
+                  },
+                  "hotelName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          },
+          "404": {
+            "description": "Bulunamadi"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Oteli sil (tum provider eslestirmeleri)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Silindi"
+          },
+          "404": {
+            "description": "Bulunamadi"
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Hazirlik kontrolu (Postgres zorunlu, Redis opsiyonel)",
+        "responses": {
+          "200": {
+            "description": "ok | degraded"
+          },
+          "503": {
+            "description": "Postgres erisilemiyor"
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "post": {
+        "tags": [
+          "Asenkron Is (v1)"
+        ],
+        "summary": "Is olustur (onerilen akis)",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Istegi kuyruga alir ve `requestId` doner. Ayni istek 10 dk icinde tekrar gelirse yeni is acilmaz, mevcut is doner (`deduplicated: true`, HTTP 200). Provider bazli eszamanlilik siniri (touristica 1, setur 3, digerleri 5) ve devre kesici uygulanir.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobRequest"
+              },
+              "examples": {
+                "fiyat": {
+                  "summary": "Birlesik fiyat",
+                  "value": {
+                    "type": "prices",
+                    "hotelId": "htl_test1",
+                    "checkIn": "2026-11-20",
+                    "checkOut": "2026-11-23",
+                    "adults": 2
+                  }
+                },
+                "paket": {
+                  "summary": "Paket (otel+ucak+transfer)",
+                  "value": {
+                    "type": "packages",
+                    "hotelId": "htl_test1",
+                    "airportCode": "SAW",
+                    "checkIn": "2026-11-20",
+                    "checkOut": "2026-11-23",
+                    "adults": 2,
+                    "providers": [
+                      "jolly",
+                      "tatilbudur"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Kuyruga alindi",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Ayni istek zaten kuyrukta (deduplicated)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Gecersiz parametre",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "API anahtari gecersiz/eksik",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Plan kisiti",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Kota/kuyruk dolu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Kuyruk etkin degil (Redis yok)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{id}": {
+      "get": {
+        "tags": [
+          "Asenkron Is (v1)"
+        ],
+        "summary": "Is durumu / sonucu",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "`wait` verilirse (max 30 sn) is bitene kadar bekler (uzun bekleme). Bitmemisse `Retry-After: 1` basligi doner. Kismi sonuclar `result` icinde biten provider'larla gorunur. Sonuc 1 saat saklanir.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wait",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30
+            },
+            "example": 20
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Is",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Is bulunamadi / suresi dolmus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "tags": [
+          "Asenkron Is (v1)"
+        ],
+        "summary": "Anahtar sahibi: plan, izinli provider'lar, bugunku kullanim",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kimlik ve plan"
+          },
+          "401": {
+            "description": "Gecersiz anahtar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/auth/login": {
+      "post": {
+        "tags": [
+          "Admin - Oturum"
+        ],
+        "summary": "Admin girisi (JWT)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "token, expiresAt, admin"
+          },
+          "401": {
+            "description": "E-posta veya sifre hatali",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Cok fazla deneme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/auth/me": {
+      "get": {
+        "tags": [
+          "Admin - Oturum"
+        ],
+        "summary": "Oturum bilgisi",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "/api/admin/admins": {
+      "get": {
+        "tags": [
+          "Admin - Oturum"
+        ],
+        "summary": "Adminleri listele",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Oturum"
+        ],
+        "summary": "Admin ekle",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Olusturuldu"
+          },
+          "409": {
+            "description": "E-posta kayitli",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/plans": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Planlari listele",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Plan olustur",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Olusturuldu"
+          },
+          "409": {
+            "description": "Plan kodu mevcut",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/plans/{id}": {
+      "put": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Plan guncelle",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          },
+          "404": {
+            "description": "Plan bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musterileri listele",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Client"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri olustur",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "planId": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Olusturuldu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Client"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri detayi (+anahtarlar, bugunku kullanim)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "client, keys, usedToday"
+          },
+          "404": {
+            "description": "Bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri guncelle (plan, aktiflik, ad)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "planId": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          },
+          "404": {
+            "description": "Bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteriyi ve anahtarlarini sil",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Silindi"
+          },
+          "404": {
+            "description": "Bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/keys": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musterinin anahtarlari",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKey"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Yeni API anahtari (duz metin SADECE bu yanitta)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "expiresInDays": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "key (duz metin), apiKey, warning"
+          }
+        }
+      }
+    },
+    "/api/admin/keys/{id}": {
+      "delete": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Anahtari iptal et",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Iptal edildi"
+          },
+          "404": {
+            "description": "Bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/usage": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Kullanim raporu (gun / musteri / provider)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-10-01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "totals + rows"
+          }
+        }
+      }
+    },
+    "/api/admin/logs": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Son istek loglari",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste"
+          }
+        }
+      }
+    },
+    "/api/admin/providers/health": {
+      "get": {
+        "tags": [
+          "Admin - Operasyon"
+        ],
+        "summary": "Provider sagligi: eszamanlilik, basari/hata, devre kesici, kanarya, cache",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "providers[], capabilities, canary, cache"
+          }
+        }
+      }
+    },
+    "/api/admin/providers/{name}/reset-circuit": {
+      "post": {
+        "tags": [
+          "Admin - Operasyon"
+        ],
+        "summary": "Devre kesiciyi sifirla",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sifirlandi"
+          }
+        }
+      }
+    },
+    "/api/admin/canary/run": {
+      "post": {
+        "tags": [
+          "Admin - Operasyon"
+        ],
+        "summary": "Kanarya testini simdi calistir (CANARY_HOTEL_ID)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rapor"
+          },
+          "400": {
+            "description": "CANARY_HOTEL_ID yok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/jobs/stats": {
+      "get": {
+        "tags": [
+          "Admin - Operasyon"
+        ],
+        "summary": "Kuyruk durumu",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "queued, running, maxQueued"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "System"
+    },
+    {
+      "name": "Asenkron Is (v1)",
+      "description": "Onerilen musteri akisi"
+    },
+    {
+      "name": "Fiyat Sorgulama",
+      "description": "Senkron (geriye uyumlu)"
+    },
+    {
+      "name": "Paket (Otel + Ucak + Transfer)"
+    },
+    {
+      "name": "Admin - Oturum"
+    },
+    {
+      "name": "Admin - Musteri & Plan"
+    },
+    {
+      "name": "Admin - Operasyon"
+    },
+    {
+      "name": "Admin - Otel (URL bazli)"
+    },
+    {
+      "name": "Admin - Otel Eslestirme"
+    }
+  ]
+}

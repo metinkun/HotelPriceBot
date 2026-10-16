@@ -1,0 +1,5 @@
+.env
+/bin/
+/out/
+# Kok .gitignore "dist/" der; gomulu panel dizini (go:embed) depoda kalmali
+!internal/api/adminui/dist/

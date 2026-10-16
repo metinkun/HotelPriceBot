@@ -1,0 +1,5 @@
+.env
+.git
+*.md
+ui/node_modules
+ui/dist

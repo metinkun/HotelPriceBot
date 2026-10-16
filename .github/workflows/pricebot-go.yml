@@ -1,0 +1,45 @@
+name: pricebot-go
+
+on:
+  push:
+    paths: ["pricebot-go/**", ".github/workflows/pricebot-go.yml"]
+  pull_request:
+    paths: ["pricebot-go/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pricebot-go
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: pricebot-go/go.mod
+          cache-dependency-path: pricebot-go/go.sum
+      - run: go vet ./...
+      - run: go test ./... -count=1
+      - run: go build ./...
+
+  image:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: pricebot-go
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/pricebot-go:latest
+            ghcr.io/${{ github.repository_owner }}/pricebot-go:${{ github.sha }}

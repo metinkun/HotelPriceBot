@@ -1,0 +1,63 @@
+# Production overlay: Caddy ile otomatik TLS, dis dunyaya sadece 80/443 acik, gunluk DB yedegi.
+# Kullanim: DOMAIN=hotel.alpkun.com docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+services:
+  postgres:
+    ports: !reset []
+    restart: always
+
+  redis:
+    restart: always
+
+  app:
+    ports: !reset []
+    restart: always
+    environment:
+      APP_ENV: production
+      LOG_FORMAT: json
+      SWAGGER_ENABLED: "true"
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: pricebot_go_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-hotel.alpkun.com}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  backup:
+    image: postgres:16-alpine
+    container_name: pricebot_go_backup
+    restart: always
+    environment:
+      PGPASSWORD: botpass123
+      KEEP_DAYS: "14"
+    volumes:
+      - backups:/backups
+      - ./deploy/backup.sh:/backup.sh:ro
+    entrypoint: ["sh", "/backup.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+volumes:
+  caddy_data:
+  caddy_config:
+  backups:

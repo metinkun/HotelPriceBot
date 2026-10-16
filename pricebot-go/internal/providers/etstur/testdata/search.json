@@ -1,0 +1,336 @@
+{
+ "success": true,
+ "errorCode": null,
+ "errorMessage": null,
+ "result": {
+  "totalCount": 2,
+  "offset": 0,
+  "limit": 100,
+  "hotels": [
+   {
+    "hotelId": "61b893df0b29",
+    "type": "KBRS",
+    "vndCode": "ACAPUL",
+    "marketingVndType": "KBRS",
+    "marketingVndId": "ACAPUL",
+    "name": "Acapulco Resort Convention Spa",
+    "url": "Acapulco-Resort-Convention-Spa",
+    "liked": false,
+    "starRating": null,
+    "images": [
+     "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173234_0.png",
+     "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173007_7.jpg",
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50111/m/Acapulco-Resort-Convention-Spa-Genel-122241.jpg",
+     "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173003_0.jpg",
+     "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173006_6.jpg"
+    ],
+    "location": {
+     "label": "Girne, Kıbrıs",
+     "lat": 35.3246072,
+     "lon": 33.3999291,
+     "type": "KIBRIS",
+     "country": "Kıbrıs",
+     "countryCode": "KKTC",
+     "city": "Girne",
+     "state": null,
+     "region": null,
+     "streetAddress": "Catalkoy, Kyrenia Turkish Republich of Northern Cyprus"
+    },
+    "topBadges": [
+     {
+      "type": "FLIGHT_PACKAGE",
+      "icon": "package_flight",
+      "label": null,
+      "info": null
+     }
+    ],
+    "tags": [
+     "Denize Sıfır",
+     "Balayı"
+    ],
+    "room": {
+     "roomNames": [
+      "Acapulco Villa (Bungalow) - Yarım Pansiyon"
+     ],
+     "roomCodes": [
+      "6530"
+     ],
+     "boardType": [
+      "HB"
+     ],
+     "boardTypeLabel": [
+      "Yarım Pansiyon"
+     ],
+     "availability": {
+      "type": "AVAILABLE",
+      "nightCount": null,
+      "availableDate": null
+     },
+     "priceInfoBadges": [],
+     "price": {
+      "currency": "TL",
+      "amount": 51000.0,
+      "discountedPrice": 33150.0,
+      "discountRate": 35
+     },
+     "nightCount": 3,
+     "promotion": {
+      "type": "EARLY_BOOKING",
+      "label": "",
+      "rate": 35.0,
+      "endDate": null
+     },
+     "campaignHighlightedPrice": null,
+     "roomBadges": [
+      {
+       "type": "INSURANCE",
+       "icon": "fa-regular fa-shield-check",
+       "label": "İptal Güvencesi",
+       "info": "Bu paket satın alındığında otele girişten 72 saat öncesine kadar rezervasyon bedelini geri alabilme imkanı sunuluyor"
+      }
+     ],
+     "paymentBadges": [],
+     "extraInfo": {
+      "hasMemberPrice": false,
+      "hasPayAtHotelPrice": false,
+      "appliedMemberPrice": false,
+      "hasPayNow": true,
+      "hasWithoutCreditCardPayment": false,
+      "cancellation": "FREE_CANCELLATION",
+      "hasRepeatGuest": false,
+      "repeatGuestText": null,
+      "hasHoneymoonDiscount": false,
+      "honeymoonDiscountText": null,
+      "roomCount": 12,
+      "awardWinning": true
+     },
+     "prices": null
+    },
+    "campaigns": [],
+    "events": [
+     {
+      "id": 0,
+      "startDate": "2026-11-14T12:00:00",
+      "endDate": "2026-11-21T12:00:00",
+      "artistName": "Çocuk Festivali",
+      "image": "https://images.etstur.com/definitions/etstur/supplement/61b893df0b29/4f1d9c5286c65a696fcc8e12322f2632_20260904154412.jpg"
+     },
+     {
+      "id": 0,
+      "startDate": "2026-10-31T12:00:00",
+      "endDate": "2026-10-31T12:00:00",
+      "artistName": "Alya",
+      "image": "https://images.etstur.com/definitions/etstur/supplement/61b893df0b29/1569c9e57a593123bd753944e1c9b270_20261006161901.jpg"
+     },
+     {
+      "id": 0,
+      "startDate": "2026-11-14T12:00:00",
+      "endDate": "2026-11-14T12:00:00",
+      "artistName": "Mert Demir",
+      "image": "https://images.etstur.com/definitions/etstur/supplement/61b893df0b29/dd907d04055c6ce1e13b52e9b0f79b21_20251112144854.jpg"
+     }
+    ],
+    "reviews": {
+     "average": {
+      "score": 7.6,
+      "name": "İyi",
+      "reviewCount": 3849
+     },
+     "scoreTypes": [
+      {
+       "name": "Oda",
+       "score": 69.0
+      },
+      {
+       "name": "Yemek",
+       "score": 73.0
+      },
+      {
+       "name": "Hizmet",
+       "score": 76.0
+      },
+      {
+       "name": "Yüzme",
+       "score": 87.0
+      }
+     ],
+     "scoreAverages": [
+      {
+       "name": "Fiyat Performans",
+       "score": 64.0
+      },
+      {
+       "name": "Tavsiye Etme",
+       "score": 68.0
+      }
+     ]
+    },
+    "chainName": null,
+    "externalInformation": null,
+    "priceInfoBadges": null,
+    "hotelExtraInfo": null,
+    "distanceToCenter": 0.0
+   },
+   {
+    "hotelId": "57c4cca4fe45",
+    "type": "KBRS",
+    "vndCode": "NUHUN",
+    "marketingVndType": "KBRS",
+    "marketingVndId": "NUHUN",
+    "name": "Nuhun Gemisi Deluxe Hotel Spa",
+    "url": "Nuhun-Gemisi-Deluxe-Hotel-Spa",
+    "liked": false,
+    "starRating": null,
+    "images": [
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50109/m/Nuhun-Gemisi-Deluxe-Hotel---Spa-Genel-262939.jpg",
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50109/m/Nuhun-Gemisi-Deluxe-Hotel---Spa-Genel-262930.jpg",
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50109/m/Nuhun-Gemisi-Deluxe-Hotel---Spa-Genel-262936.jpg",
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50109/m/Nuhun-Gemisi-Deluxe-Hotel---Spa-Genel-262947.jpg",
+     "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50109/m/Nuhun-Gemisi-Deluxe-Hotel---Spa-Genel-262940.jpg"
+    ],
+    "location": {
+     "label": "Kıbrıs Bafra, Kıbrıs",
+     "lat": 35.3795625,
+     "lon": 34.0890625,
+     "type": "KIBRIS",
+     "country": "Kıbrıs",
+     "countryCode": "KKTC",
+     "city": "Kıbrıs Bafra",
+     "state": null,
+     "region": null,
+     "streetAddress": "93HQ+RJ Bafra"
+    },
+    "topBadges": [
+     {
+      "type": "FLIGHT_PACKAGE",
+      "icon": "package_flight",
+      "label": null,
+      "info": null
+     }
+    ],
+    "tags": [
+     "Denize Sıfır",
+     "Balayı"
+    ],
+    "room": {
+     "roomNames": [
+      "Ana Bina Deluxe Oda 1"
+     ],
+     "roomCodes": [
+      "3065"
+     ],
+     "boardType": [
+      "UAI"
+     ],
+     "boardTypeLabel": [
+      "Ultra Her Şey Dahil"
+     ],
+     "availability": {
+      "type": "AVAILABLE",
+      "nightCount": null,
+      "availableDate": null
+     },
+     "priceInfoBadges": [],
+     "price": {
+      "currency": "TL",
+      "amount": 55200.0,
+      "discountedPrice": 44160.0,
+      "discountRate": 20
+     },
+     "nightCount": 3,
+     "promotion": {
+      "type": "EARLY_BOOKING",
+      "label": "",
+      "rate": 20.0,
+      "endDate": null
+     },
+     "campaignHighlightedPrice": null,
+     "roomBadges": [
+      {
+       "type": "INSURANCE",
+       "icon": "fa-regular fa-shield-check",
+       "label": "İptal Güvencesi",
+       "info": "Bu paket satın alındığında otele girişten 72 saat öncesine kadar rezervasyon bedelini geri alabilme imkanı sunuluyor"
+      }
+     ],
+     "paymentBadges": [],
+     "extraInfo": {
+      "hasMemberPrice": false,
+      "hasPayAtHotelPrice": false,
+      "appliedMemberPrice": false,
+      "hasPayNow": true,
+      "hasWithoutCreditCardPayment": false,
+      "cancellation": "FREE_CANCELLATION",
+      "hasRepeatGuest": false,
+      "repeatGuestText": null,
+      "hasHoneymoonDiscount": false,
+      "honeymoonDiscountText": null,
+      "roomCount": 3,
+      "awardWinning": true
+     },
+     "prices": null
+    },
+    "campaigns": [],
+    "events": [
+     {
+      "id": 0,
+      "startDate": "2026-10-31T12:00:00",
+      "endDate": "2026-10-31T12:00:00",
+      "artistName": "Derya Bedavacı",
+      "image": "https://images.etstur.com/definitions/etstur/supplement/57c4cca4fe45/4f0420c2c78faed048d139d7e2bb2296_20260904155516.jpg"
+     },
+     {
+      "id": 0,
+      "startDate": "2026-11-14T12:00:00",
+      "endDate": "2026-11-14T12:00:00",
+      "artistName": "İrem Derici",
+      "image": "https://images.etstur.com/definitions/etstur/supplement/57c4cca4fe45/3893dd4264106f85f3093fd8047420b2_20261008110705.jpg"
+     }
+    ],
+    "reviews": {
+     "average": {
+      "score": 7.7,
+      "name": "İyi",
+      "reviewCount": 3823
+     },
+     "scoreTypes": [
+      {
+       "name": "Oda",
+       "score": 76.0
+      },
+      {
+       "name": "Yemek",
+       "score": 70.0
+      },
+      {
+       "name": "Hizmet",
+       "score": 74.0
+      },
+      {
+       "name": "Yüzme",
+       "score": 89.0
+      }
+     ],
+     "scoreAverages": [
+      {
+       "name": "Fiyat Performans",
+       "score": 71.0
+      },
+      {
+       "name": "Tavsiye Etme",
+       "score": 68.0
+      }
+     ]
+    },
+    "chainName": null,
+    "externalInformation": null,
+    "priceInfoBadges": null,
+    "hotelExtraInfo": null,
+    "distanceToCenter": 0.0
+   }
+  ],
+  "suggestionName": "Kıbrıs",
+  "breadCrumbs": null,
+  "loadMore": true
+ }
+}
