@@ -19,7 +19,7 @@ import (
 )
 
 type Registry struct {
-	order []string
+	order  []string
 	byName map[string]provider.Provider
 }
 

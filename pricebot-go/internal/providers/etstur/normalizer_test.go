@@ -98,3 +98,28 @@ func indexOf(s, sub string) int {
 	}
 	return -1
 }
+
+func TestPackageMultiFormat(t *testing.T) {
+	b, err := os.ReadFile("testdata/package_multi.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var pr packageResponse
+	if err := json.Unmarshal(b, &pr); err != nil {
+		t.Fatal(err)
+	}
+	rooms := pr.allRooms()
+	if len(rooms) != 3 {
+		t.Fatalf("roomGroups altindan 3 oda bekleniyordu, %d", len(rooms))
+	}
+	n := normalizePackageRoom(rooms[0])
+	if n.RoomID != "6530" || n.RoomName == "" || n.RoomSize == nil || *n.RoomSize != 30 || n.NightCount == nil || *n.NightCount != 3 {
+		t.Fatalf("oda alanlari hatali: %+v", n)
+	}
+	if len(n.Boards) != 1 || n.Boards[0].Price == nil || *n.Boards[0].Price != 44376.2 || *n.Boards[0].ListPrice != 51000 || n.Boards[0].DiscountRate != 40 {
+		t.Fatalf("board fiyati hatali: %+v", n.Boards)
+	}
+	if n.Boards[0].BoardType == nil || *n.Boards[0].BoardType != "Yarım Pansiyon" || n.Boards[0].Cancellation == nil || *n.Boards[0].Cancellation != "FREE_CANCELLATION" {
+		t.Fatalf("pansiyon/iptal hatali: %+v", n.Boards[0])
+	}
+}

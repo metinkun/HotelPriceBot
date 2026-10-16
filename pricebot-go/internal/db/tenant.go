@@ -90,9 +90,9 @@ type KeyIdentity struct {
 }
 
 var (
-	ErrKeyInvalid  = errors.New("gecersiz veya iptal edilmis API anahtari")
-	ErrKeyExpired  = errors.New("API anahtarinin suresi dolmus")
-	ErrClientOff   = errors.New("musteri hesabi pasif")
+	ErrKeyInvalid = errors.New("gecersiz veya iptal edilmis API anahtari")
+	ErrKeyExpired = errors.New("API anahtarinin suresi dolmus")
+	ErrClientOff  = errors.New("musteri hesabi pasif")
 )
 
 // ---- Planlar ----

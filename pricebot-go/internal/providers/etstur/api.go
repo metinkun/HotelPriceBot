@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	searchURL  = "https://www.etstur.com/services/api/search/v2/hotels"
+	searchURL = "https://www.etstur.com/services/api/search/v2/hotels"
 	// Ekim 2026: Etstur oda/paket akisini "multi" uclarina tasidi (eski /room ve /room/package hata donuyor).
 	roomURL    = "https://www.etstur.com/services/api/room/multi"
 	packageURL = "https://www.etstur.com/services/api/room/multi/package"
@@ -151,8 +151,27 @@ type packageResponse struct {
 	ErrorMessage *string `json:"errorMessage"`
 	Result       *struct {
 		RoomSearchID string        `json:"roomSearchId"`
-		Rooms        []PackageRoom `json:"rooms"`
+		Rooms        []PackageRoom `json:"rooms"` // eski format
+		// Yeni "multi" format (Ekim 2026): odalar oda gruplari altinda
+		RoomGroups []struct {
+			Rooms []PackageRoom `json:"rooms"`
+		} `json:"roomGroups"`
 	} `json:"result"`
+}
+
+// allRooms eski (rooms) ve yeni (roomGroups[].rooms) formatlardaki odalari tek listede doner.
+func (r *packageResponse) allRooms() []PackageRoom {
+	if r == nil || r.Result == nil {
+		return nil
+	}
+	if len(r.Result.Rooms) > 0 {
+		return r.Result.Rooms
+	}
+	var out []PackageRoom
+	for _, g := range r.Result.RoomGroups {
+		out = append(out, g.Rooms...)
+	}
+	return out
 }
 
 // Occupancy tarih + kisi bilgisi.

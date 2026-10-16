@@ -58,9 +58,9 @@ var Client = &http.Client{Transport: transport}
 
 // Response ham yanit.
 type Response struct {
-	Status  int
-	Header  http.Header
-	Body    []byte
+	Status   int
+	Header   http.Header
+	Body     []byte
 	FinalURL string
 }
 

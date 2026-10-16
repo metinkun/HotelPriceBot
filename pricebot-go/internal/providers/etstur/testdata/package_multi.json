@@ -1,0 +1,338 @@
+{
+ "success": true,
+ "errorCode": null,
+ "errorMessage": null,
+ "result": {
+  "roomSearchId": "00000000-0000-0000-0000-000000000000",
+  "earlyBookingInsuranceAvailable": true,
+  "minPrice": {
+   "currency": "TL",
+   "amount": 51000,
+   "discountedPrice": 44376.2,
+   "discountRate": 0
+  },
+  "includeTaxes": true,
+  "flightPackage": true,
+  "flightPoints": [
+   {
+    "code": "SAW",
+    "name": "İstanbul Sabiha Gökçen Havalimanı"
+   },
+   {
+    "code": "IST",
+    "name": "İstanbul Havalimanı"
+   },
+   {
+    "code": "ESB",
+    "name": "Ankara Esenboğa Havalimanı"
+   },
+   {
+    "code": "ADB",
+    "name": "İzmir Adnan Menderes Havalimanı"
+   },
+   {
+    "code": "AYT",
+    "name": "Antalya Havalimanı"
+   },
+   {
+    "code": "COV",
+    "name": "Çukurova Havalimanı"
+   },
+   {
+    "code": "ASR",
+    "name": "Kayseri Havalimanı"
+   },
+   {
+    "code": "GZT",
+    "name": "Gaziantep Havalimanı"
+   },
+   {
+    "code": "DIY",
+    "name": "Diyarbakır Havalimanı"
+   }
+  ],
+  "noDates": false,
+  "promotions": [],
+  "checkIn": "2026-11-20",
+  "checkOut": "2026-11-23",
+  "eventInfo": null,
+  "packageType": "CYPRUS",
+  "vndType": "KBRS",
+  "roomGroups": [
+   {
+    "rooms": [
+     {
+      "roomId": "6530",
+      "roomName": "Acapulco Villa (Bungalow) - Yarım Pansiyon",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "badges": [],
+      "nightCount": 3,
+      "nightlyMinPrice": {
+       "currency": "TL",
+       "amount": 14792.07,
+       "discountedPrice": null,
+       "discountRate": null
+      },
+      "subBoards": [
+       {
+        "id": "6530-1762",
+        "priceCode": "137|61b893df0b29|19|2026-11-20|2026-11-23|2|Sales|430gh73m7j1x23jnxs520ntaovr73dnf6|3malsbxewn55qqypy82m79jopulf8876",
+        "boardType": {
+         "code": "HB",
+         "label": "Yarım Pansiyon",
+         "icon": "fa-regular fa-croissant"
+        },
+        "cancellationDetails": [
+         {
+          "from": "2026-10-16T22:15:07.787843944",
+          "to": "2026-11-20T15:00:00",
+          "amount": 0,
+          "currency": "TRY"
+         }
+        ],
+        "cancellation": "FREE_CANCELLATION",
+        "price": {
+         "currency": "TL",
+         "amount": 51000,
+         "discountedPrice": 44376.2,
+         "discountRate": 40
+        },
+        "availability": {
+         "type": "AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 97,
+        "memberDealPrice": null,
+        "cyprusSaveAmount": null,
+        "dailyPrices": [
+         {
+          "date": "20/11/2026",
+          "currency": "TRY",
+          "amount": 10200
+         },
+         {
+          "date": "21/11/2026",
+          "currency": "TRY",
+          "amount": 10200
+         },
+         {
+          "date": "22/11/2026",
+          "currency": "TRY",
+          "amount": 10200
+         }
+        ],
+        "packageSaleGain": 0,
+        "payAtHotelOnly": false,
+        "badges": [],
+        "maximumInstallmentText": null,
+        "campaignHighlightedPrice": null
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false,
+      "eventSales": null,
+      "upsellOpportunity": false
+     },
+     {
+      "roomId": "6531",
+      "roomName": "Otel Odası Kara Manzaralı - Yarım Pansiyon",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "badges": [],
+      "nightCount": 3,
+      "nightlyMinPrice": {
+       "currency": "TL",
+       "amount": 15092.07,
+       "discountedPrice": null,
+       "discountRate": null
+      },
+      "subBoards": [
+       {
+        "id": "6531-1762",
+        "priceCode": "137|61b893df0b29|19|2026-11-20|2026-11-23|2|Sales|430gh736htzht6xq4nv2q8lgctr9sm8e6|3malsbxewn55qqypy82m79jopulf8876",
+        "boardType": {
+         "code": "HB",
+         "label": "Yarım Pansiyon",
+         "icon": "fa-regular fa-croissant"
+        },
+        "cancellationDetails": [
+         {
+          "from": "2026-10-16T22:15:07.793281341",
+          "to": "2026-11-20T15:00:00",
+          "amount": 0,
+          "currency": "TRY"
+         }
+        ],
+        "cancellation": "FREE_CANCELLATION",
+        "price": {
+         "currency": "TL",
+         "amount": 52500,
+         "discountedPrice": 45276.2,
+         "discountRate": 40
+        },
+        "availability": {
+         "type": "AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 95,
+        "memberDealPrice": null,
+        "cyprusSaveAmount": null,
+        "dailyPrices": [
+         {
+          "date": "20/11/2026",
+          "currency": "TRY",
+          "amount": 10500
+         },
+         {
+          "date": "21/11/2026",
+          "currency": "TRY",
+          "amount": 10500
+         },
+         {
+          "date": "22/11/2026",
+          "currency": "TRY",
+          "amount": 10500
+         }
+        ],
+        "packageSaleGain": 0,
+        "payAtHotelOnly": false,
+        "badges": [],
+        "maximumInstallmentText": null,
+        "campaignHighlightedPrice": null
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false,
+      "eventSales": null,
+      "upsellOpportunity": false
+     },
+     {
+      "roomId": "3566",
+      "roomName": "Acapulco Villa (Bungalow)",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "badges": [],
+      "nightCount": 3,
+      "nightlyMinPrice": {
+       "currency": "TL",
+       "amount": 16892.07,
+       "discountedPrice": null,
+       "discountRate": null
+      },
+      "subBoards": [
+       {
+        "id": "3566-1762",
+        "priceCode": "137|61b893df0b29|19|2026-11-20|2026-11-23|2|Sales|430gh71kfh2okfe4vb24hyaw4mw09cl6|3malsbxewn55qqypy82m79jopulf8876",
+        "boardType": {
+         "code": "FBP",
+         "label": "Tam Pansiyon Plus",
+         "icon": "fa-regular fa-croissant"
+        },
+        "cancellationDetails": [
+         {
+          "from": "2026-10-16T22:15:07.797639716",
+          "to": "2026-11-20T15:00:00",
+          "amount": 0,
+          "currency": "TRY"
+         }
+        ],
+        "cancellation": "FREE_CANCELLATION",
+        "price": {
+         "currency": "TL",
+         "amount": 61500,
+         "discountedPrice": 50676.2,
+         "discountRate": 40
+        },
+        "availability": {
+         "type": "AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 99,
+        "memberDealPrice": null,
+        "cyprusSaveAmount": null,
+        "dailyPrices": [
+         {
+          "date": "20/11/2026",
+          "currency": "TRY",
+          "amount": 12300
+         },
+         {
+          "date": "21/11/2026",
+          "currency": "TRY",
+          "amount": 12300
+         },
+         {
+          "date": "22/11/2026",
+          "currency": "TRY",
+          "amount": 12300
+         }
+        ],
+        "packageSaleGain": 0,
+        "payAtHotelOnly": false,
+        "badges": [],
+        "maximumInstallmentText": null,
+        "campaignHighlightedPrice": null
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false,
+      "eventSales": null,
+      "upsellOpportunity": false
+     }
+    ],
+    "guests": {
+     "adultCount": 2,
+     "childCount": 0,
+     "childAges": null,
+     "infantCount": 0
+    },
+    "coupon": {
+     "size": null,
+     "coupons": null
+    }
+   }
+  ],
+  "selectedRooms": {
+   "rooms": [
+    {
+     "roomName": "Acapulco Villa (Bungalow) - Yarım Pansiyon",
+     "boardType": "Yarım Pansiyon",
+     "priceCode": "137|61b893df0b29|19|2026-11-20|2026-11-23|2|Sales|430gh73m7j1x23jnxs520ntaovr73dnf6|3malsbxewn55qqypy82m79jopulf8876",
+     "guests": {
+      "adultCount": 2,
+      "childCount": 0,
+      "childAges": null,
+      "infantCount": 0
+     },
+     "price": {
+      "currency": "TL",
+      "amount": 51000,
+      "discountedPrice": 44376.2,
+      "discountRate": 40
+     }
+    }
+   ],
+   "priceSummary": {
+    "price": {
+     "currency": "TL",
+     "amount": 51000,
+     "discountedPrice": 44376.2,
+     "discountRate": 0
+    },
+    "gainPrice": null,
+    "campaignHighlightedPrice": null
+   },
+   "badges": []
+  }
+ }
+}

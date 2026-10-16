@@ -86,6 +86,7 @@ Bkz. [.env.example](.env.example). Onemliler: `DATABASE_URL`, `REDIS_URL`, `ADMI
 
 ## Bilinen durumlar
 
-- Etstur paket API'si (Ekim 2026) istek formatini degistirdi; `room/package` bos donuyor. Yeni format arastiriliyor (`cmd/capture net`).
+- Etstur paket API'si (Ekim 2026) `room/multi` + `room/multi/package` uclarina tasindi; odalar `result.roomGroups[].rooms`
+  altinda. Kod guncellendi ve canli dogrulandi (bkz. `docs/phase3-research.md`).
 - Gezinomi fiyat API'si sunucudan "Oda bulunamadi" donuyor (oturum/IP bagli); resolve calisiyor.
 - Touristica Cloudflare arkasinda; headless Chromium ile calisir (`BROWSER_MAX_TABS` ile sinirli). Tarayicisiz hibrit calisma arastirma asamasinda.

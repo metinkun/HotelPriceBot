@@ -16,14 +16,14 @@ func TestValidatePriceQuery(t *testing.T) {
 		t.Fatalf("gecerli sorgu reddedildi: %v", err)
 	}
 	cases := map[string]types.PriceQuery{
-		"gecmis":        {HotelID: "h", CheckIn: "2020-01-01", CheckOut: future(1), Adults: 2},
-		"ters tarih":    {HotelID: "h", CheckIn: future(5), CheckOut: future(3), Adults: 2},
-		"format":        {HotelID: "h", CheckIn: "05.11.2026", CheckOut: future(3), Adults: 2},
-		"adults 0":      {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 0},
-		"yas sayisi":    {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 2, Children: 2, ChildAges: []int{5}},
-		"yas araligi":   {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 2, Children: 1, ChildAges: []int{25}},
-		"hotelId bos":   {CheckIn: future(1), CheckOut: future(3), Adults: 2},
-		"cok uzun":      {HotelID: "h", CheckIn: future(1), CheckOut: future(40), Adults: 2},
+		"gecmis":      {HotelID: "h", CheckIn: "2020-01-01", CheckOut: future(1), Adults: 2},
+		"ters tarih":  {HotelID: "h", CheckIn: future(5), CheckOut: future(3), Adults: 2},
+		"format":      {HotelID: "h", CheckIn: "05.11.2026", CheckOut: future(3), Adults: 2},
+		"adults 0":    {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 0},
+		"yas sayisi":  {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 2, Children: 2, ChildAges: []int{5}},
+		"yas araligi": {HotelID: "h", CheckIn: future(1), CheckOut: future(3), Adults: 2, Children: 1, ChildAges: []int{25}},
+		"hotelId bos": {CheckIn: future(1), CheckOut: future(3), Adults: 2},
+		"cok uzun":    {HotelID: "h", CheckIn: future(1), CheckOut: future(40), Adults: 2},
 	}
 	for name, q := range cases {
 		err := validatePriceQuery(&q)

@@ -45,13 +45,13 @@ type Config struct {
 	CanaryHotelID  string
 	CanaryInterval time.Duration
 
-	JobResultTTL   time.Duration
-	JobMaxQueued   int
+	JobResultTTL time.Duration
+	JobMaxQueued int
 
-	RequireAPIKey bool   // musteri uclari API anahtari ister (prod'da true)
-	JWTSecret     string // admin oturumu imzasi
-	AdminEmail    string // ilk admin (bootstrap)
-	AdminPassword string
+	RequireAPIKey    bool   // musteri uclari API anahtari ister (prod'da true)
+	JWTSecret        string // admin oturumu imzasi
+	AdminEmail       string // ilk admin (bootstrap)
+	AdminPassword    string
 	LogRetentionDays int
 }
 

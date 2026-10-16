@@ -10,10 +10,10 @@ import (
 )
 
 var (
-	reRoomTitle = regexp.MustCompile(`room-title"[^>]*>\s*([^<]{2,60})<`)
+	reRoomTitle    = regexp.MustCompile(`room-title"[^>]*>\s*([^<]{2,60})<`)
 	reRoomTitleAll = regexp.MustCompile(`room-title"[^>]*>\s*([^<]{2,60})`)
-	reConcept   = regexp.MustCompile(`room-concept[^>]*data-concept="([^"]*)"`)
-	reOldPrice  = regexp.MustCompile(`old-price"[^>]*>\s*([0-9.,]+)\s*TL`)
+	reConcept      = regexp.MustCompile(`room-concept[^>]*data-concept="([^"]*)"`)
+	reOldPrice     = regexp.MustCompile(`old-price"[^>]*>\s*([0-9.,]+)\s*TL`)
 	// current-price ikiye bolunmus olabilir: <b>63.656<small>,04 TL</small></b>
 	reCurPrice = regexp.MustCompile(`current-price"[^>]*>\s*<b>\s*([0-9.]+)\s*<small>\s*([,0-9]*)`)
 	reBoard    = regexp.MustCompile(`(Ultra Her Şey Dahil|Her Şey Dahil|Yarım Pansiyon|Tam Pansiyon Plus|Tam Pansiyon|Oda Kahvaltı|Sadece Oda)`)

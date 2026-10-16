@@ -110,10 +110,8 @@ func (p *Provider) GetPackagePrices(ctx context.Context, m *provider.Mapping, q 
 		return nil, err
 	}
 	rooms := []types.NormalizedPackageRoom{}
-	if pkg.Result != nil {
-		for _, r := range pkg.Result.Rooms {
-			rooms = append(rooms, normalizePackageRoom(r))
-		}
+	for _, r := range pkg.allRooms() {
+		rooms = append(rooms, normalizePackageRoom(r))
 	}
 	return &provider.PackageResult{
 		InternalHotelID: m.InternalHotelID, ProviderHotelID: m.ProviderHotelID, HotelName: m.HotelName,

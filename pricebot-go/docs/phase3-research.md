@@ -30,13 +30,33 @@ Tarayicisiz (hibrit) plan — uygulanabilir, iki on kosul var:
   paketinden cikarilmali (buyuk olasilikla AES-CBC, `{"iv":...,"value":...}` benzeri yapi). Alternatif: sifrelemeyi
   tarayicida bir kez yaptirip (page.evaluate ile `xc` uretmek) sonraki istekleri tls-client ile atmak.
 
-Onerilen uygulama sirasi:
-1. Tarayici yalnizca oturum acmak icin: sayfayi ac, challenge gecsin, cerezleri ve bir `xc` ornegi al (20–30 dk'da bir yenile).
-2. tls-client (Chrome profili, ayni UA) + cerezlerle `HotelSearchNow` -> `odalar` -> mevcut `normalizer` (blok metinleri
-   HTML'den `innerText` yerine goquery ile cikarilir).
-3. 403 veya challenge HTML gelirse tarayici ile oturumu yenile (otomatik geri dusme).
+Ikinci sondaj (`cmd/capture js` + `touristica_fns.js`) ile `xc`'nin nasil uretildigi goruldu:
 
-Beklenen kazanim: tarayici kullanimi istek basina ~15 sn ve ~200 MB'tan, 30 dk'da bir ~5 sn'ye duser; eszamanlilik siniri kalkar.
+- Global `sendSearchRequest(i, r, u)` fonksiyonu (obfuscate edilmis `bundle.min.js`, ~900 KB) `r` arama parametrelerinden
+  (`CheckInDateString`, `CheckOutDateString`, `AdultCount`, `ChildCount`, `FirstChildAge`, `SecondChildAge`, otel/URL alanlari)
+  bir dizi olusturur; sayfadaki gizli `hdnEncArray` input'larindaki indeks listelerine gore alanlari birlestirir ve
+  **CryptoJS AES-CBC (PKCS7)** ile sifreler. Anahtar ve IV, kodda gomulu kisa sabit parcalarin (`"aQ","!p","-d","8f","nS","*1","Jl",".w"`)
+  farkli siralarda birlestirilmesiyle uretilir; ikinci bir AES turu daha var (ic ice sifreleme).
+- `xcPre` sayfa basina sabit bir GUID (`1901d69b-...`), `window.HotelSearchParameters` varsayilan parametre nesnesi,
+  `HOTELONLINERESERVATIONROOT = https://book.touristica.com.tr/Hotel`.
+- Sonuc: `xc` tamamen istemci tarafinda ve deterministik uretiliyor; Go'da yeniden yazilabilir ama anahtar parcalari ve
+  `hdnEncArray` siralamasi her bundle surumunde degisebilir (kirilgan). Daha dayanikli yol: sifrelemeyi sayfanin kendi
+  fonksiyonuna yaptirmak.
+
+Onerilen uygulama sirasi:
+1. **Kalici sekme + sayfa ici fetch (en az riskli, ilk adim):** Touristica icin tek bir sekme acik tutulur (oturum ve
+   `cf_clearance` tarayicida kalir). Her sorguda sayfaya gidilmez; `page.evaluate` ile `window.HotelSearchParameters`
+   doldurulup `sendSearchRequest` cagrilir (veya mevcut UI tiklama akisi), ardindan `fetch("/<slug>/odalar?rpd=True...")`
+   HTML'i okunur ve goquery ile parse edilir. Kazanim: navigasyon + render + 15 sn bekleme yerine ~3–5 sn; sekme bellegi
+   bir kez odenir. Hotel degisimi: `HotelSearchParameters.Url`/`HotelId` alanlari sorguya gore set edilir (dogrulanmali).
+2. **Tam tarayicisiz (ikinci adim):** `xc` uretimini Go'ya tasimak (AES-CBC, anahtar parcalari + `hdnEncArray`) ve
+   istekleri tls-client (Chrome JA3 profili) + tarayicidan alinan `cf_clearance`/`ASP.NET_SessionId` cerezleriyle atmak.
+   Cerez ve anahtar parcalari 20–30 dk'da bir / bundle surumu degisince tarayiciyla yenilenir. 403 veya challenge HTML
+   gelirse otomatik olarak 1. adima geri dusulur.
+3. Her iki adimda da kanarya testi Touristica'yi gunluk izler; bundle surumu (`bundle.min.js?v=`) degisince uyari uretilir.
+
+Beklenen kazanim: 1. adimla istek suresi ~15 sn -> ~4 sn ve es zamanli sorgu siniri 1 -> 3–4; 2. adimla tarayici yuku
+neredeyse sifirlanir. Tahmini efor: 1. adim 1–2 gun, 2. adim 3–5 gun (kirilganlik riski yuksek).
 
 ## Etstur paket: yeni uclar
 
