@@ -86,6 +86,13 @@ func (m *Manager) browser() (context.Context, error) {
 		chromedp.Flag("disable-blink-features", "AutomationControlled"),
 		chromedp.Flag("disable-dev-shm-usage", true),
 		chromedp.Flag("lang", "tr-TR"),
+		// Bellek: eklenti/arka plan servisleri kapali, renderer sayisi sinirli, gorsel yok
+		chromedp.Flag("disable-extensions", true),
+		chromedp.Flag("disable-background-networking", true),
+		chromedp.Flag("disable-background-timer-throttling", true),
+		chromedp.Flag("renderer-process-limit", "3"),
+		chromedp.Flag("blink-settings", "imagesEnabled=false"),
+		chromedp.Flag("js-flags", "--max-old-space-size=256"),
 		chromedp.WindowSize(1440, 1000),
 	)
 	if m.cfg.BrowserHeadless {
@@ -154,6 +161,22 @@ func (m *Manager) NewPage(parent context.Context, timeout time.Duration) (contex
 		return nil, nil, err
 	}
 	return ctx, func() { cancel(); release() }, nil
+}
+
+// NewPersistentPage sekme sinirina (tabs) dahil olmayan, uzun omurlu bir sekme acar.
+// Kalici sekme havuzlari (orn. Touristica) icin: oturum/cerezler sekmede kalir, her sorguda
+// yeniden navigasyon ve Cloudflare challenge gerekmez. Cagiran, cancel ile sekmeyi kapatmalidir.
+// Tarayici yeniden baslatilirsa donen context iptal olur; cagiran ctx.Err() ile bunu anlar.
+func (m *Manager) NewPersistentPage(maxAge time.Duration) (context.Context, context.CancelFunc, error) {
+	if maxAge <= 0 {
+		maxAge = 12 * time.Hour
+	}
+	ctx, cancel, err := m.newPage(context.Background(), maxAge)
+	if err != nil {
+		m.Close()
+		ctx, cancel, err = m.newPage(context.Background(), maxAge)
+	}
+	return ctx, cancel, err
 }
 
 func (m *Manager) newPage(parent context.Context, timeout time.Duration) (context.Context, context.CancelFunc, error) {

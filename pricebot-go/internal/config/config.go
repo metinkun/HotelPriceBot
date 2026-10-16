@@ -36,6 +36,8 @@ type Config struct {
 	BrowserExecutablePath string
 	BrowserMaxTabs        int
 	BrowserRestartAfter   int
+	TouristicaTabs        int           // kalici sekme sayisi (= eszamanli Touristica sorgusu)
+	TouristicaSessionAge  time.Duration // sekmedeki sayfanin yenilenme suresi
 
 	CacheTTL            time.Duration
 	ProviderConcurrency string // "touristica=1,setur=3,default=5"
@@ -136,6 +138,8 @@ func Load() *Config {
 		BrowserExecutablePath: exe,
 		BrowserMaxTabs:        envInt("BROWSER_MAX_TABS", 2),
 		BrowserRestartAfter:   envInt("BROWSER_RESTART_AFTER", 25),
+		TouristicaTabs:        envInt("TOURISTICA_TABS", 1),
+		TouristicaSessionAge:  time.Duration(envInt("TOURISTICA_SESSION_MINUTES", 20)) * time.Minute,
 
 		CacheTTL:            time.Duration(envInt("CACHE_TTL_SECONDS", 300)) * time.Second,
 		ProviderConcurrency: env("PROVIDER_CONCURRENCY", "touristica=1,setur=3,default=5"),

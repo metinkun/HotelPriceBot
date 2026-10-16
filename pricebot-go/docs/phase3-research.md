@@ -43,6 +43,26 @@ Ikinci sondaj (`cmd/capture js` + `touristica_fns.js`) ile `xc`'nin nasil uretil
   `hdnEncArray` siralamasi her bundle surumunde degisebilir (kirilgan). Daha dayanikli yol: sifrelemeyi sayfanin kendi
   fonksiyonuna yaptirmak.
 
+### Adim 1 UYGULANDI (2026-10-17): kalici sekme havuzu
+
+`internal/providers/touristica/pool.go` + `api.go`:
+
+- `TOURISTICA_TABS` kadar sekme surekli acik (varsayilan 1); `TOURISTICA_SESSION_MINUTES` (20) sonra veya 10 sorguda bir
+  sekme yenilenir. Oturum/cerez (cf_clearance) sekmede kalir; ayni otel acik ise navigasyon yok.
+- Arama: tarih/kisi doldur + "Oda Ara"; sayfaya kurulan jQuery `ajaxSuccess` kancasiyla `/odalar` yanitinin gelmesi beklenir
+  (metin tabanli bekleme sadece jQuery yoksa). Onceki aramanin bloklari `data-pb-stale` ile isaretlenir ve okunmaz
+  (bayat fiyat okunmasini onler); uygulanan tarih sayfadan dogrulanir.
+- Paket: ARAMA ile birlikte otomatik gelir (`/ucak-ve-odalar?ojr=true`). Sekmeye tiklamak gereksizdir ve zararlidir:
+  menudeki "ÖZEL DÖNEM(OTEL+UÇAK)" linkiyle karisip `/kibris-turlari`'na gidiyordu; dogru sekme
+  `a.nav-hotel-detail-room-and-flight-tab` olsa bile tiklamak paneli gizliyor ve sonraki aramada otomatik yuklemeyi bozuyor.
+  Bu yuzden paket sorgusu sayfayi yeniden yukler (oturum sayesinde ~3 sn), aramadan sonra `pkg` sayacini bekler, tiklamaz.
+- Olcum (Acapulco, lokal Docker): fiyat 2.3–6 sn (eski ~15 sn), paket 4.8–5.6 sn (eski ~26 sn), 6/6 basarili.
+  Bellek: 6 sorgu sonrasi konteyner ~1 GB -> sekme 10 sorguda bir yenilenir, Chromium bellek bayraklari eklendi
+  (`renderer-process-limit`, `imagesEnabled=false`, `max-old-space-size=256`).
+- Gelistirme araci: `capture touristica-debug <url> <in> <out> [in2 out2]` gercek havuz akisini adim adim izler.
+
+Siradaki (adim 2, opsiyonel): tam tarayicisiz calisma icin asagidaki plan gecerli.
+
 Onerilen uygulama sirasi:
 1. **Kalici sekme + sayfa ici fetch (en az riskli, ilk adim):** Touristica icin tek bir sekme acik tutulur (oturum ve
    `cf_clearance` tarayicida kalir). Her sorguda sayfaya gidilmez; `page.evaluate` ile `window.HotelSearchParameters`

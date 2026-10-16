@@ -55,6 +55,10 @@ func main() {
 		runJS()
 		return
 	}
+	if len(os.Args) >= 2 && os.Args[1] == "touristica-debug" {
+		touristicaDebug()
+		return
+	}
 	if len(os.Args) < 7 || os.Args[1] != "tatilbudur" {
 		fmt.Println("kullanim: capture tatilbudur <detayURL> <hotelId> <checkIn yyyy-MM-dd> <checkOut> <outDir>")
 		fmt.Println("         capture jolly <detayURL> <jollyId> <hotelType> <checkIn yyyy.MM.dd> <checkOut> <outDir>")

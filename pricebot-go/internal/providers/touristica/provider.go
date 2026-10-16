@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"time"
 
 	"pricebot/internal/browser"
 	"pricebot/internal/provider"
@@ -13,11 +14,18 @@ import (
 
 type Provider struct {
 	browser *browser.Manager
+	pool    *pool
 }
 
-func New(b *browser.Manager) *Provider { return &Provider{browser: b} }
+// New tabs: kalici sekme sayisi (eszamanli Touristica sorgusu), maxAge: sayfa/oturum yenileme suresi.
+func New(b *browser.Manager, tabs int, maxAge time.Duration) *Provider {
+	return &Provider{browser: b, pool: newPool(b, tabs, maxAge)}
+}
 
 func (p *Provider) Name() string { return "touristica" }
+
+// Stats kalici sekme havuzu sayaclari (provider health).
+func (p *Provider) Stats() map[string]int64 { return p.pool.Stats() }
 
 func (p *Provider) Capabilities() provider.Capabilities {
 	return provider.Capabilities{SupportsPackages: true, RequiresBrowser: true}

@@ -227,8 +227,12 @@ func (s *Server) ready(w http.ResponseWriter, r *http.Request) {
 func (s *Server) providersHealth(w http.ResponseWriter, _ *http.Request) {
 	stats := s.deps.Limiter.Snapshot(s.reg.Names())
 	caps := map[string]any{}
+	extra := map[string]any{}
 	for _, p := range s.reg.All() {
 		caps[p.Name()] = p.Capabilities()
+		if st, ok := p.(interface{ Stats() map[string]int64 }); ok {
+			extra[p.Name()] = st.Stats()
+		}
 	}
 	var last any
 	if s.deps.Canary != nil {
@@ -237,7 +241,7 @@ func (s *Server) providersHealth(w http.ResponseWriter, _ *http.Request) {
 		}
 	}
 	writeJSON(w, 200, map[string]any{
-		"providers": stats, "capabilities": caps, "canary": last,
+		"providers": stats, "capabilities": caps, "canary": last, "extra": extra,
 		"cache": map[string]any{"enabled": s.deps.Cache.Enabled(), "ttlSeconds": int(s.deps.Cache.TTL().Seconds())},
 	})
 }

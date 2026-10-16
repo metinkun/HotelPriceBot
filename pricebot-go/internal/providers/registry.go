@@ -30,7 +30,7 @@ func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r.register(tatilsepeti.New(cfg.TatilSepetiCookie, cfg.TatilSepetiVerificationToken))
 	r.register(jolly.New())
 	r.register(tatilbudur.New())
-	r.register(touristica.New(b))
+	r.register(touristica.New(b, cfg.TouristicaTabs, cfg.TouristicaSessionAge))
 	r.register(setur.New())
 	r.register(gezinomi.New())
 	return r
