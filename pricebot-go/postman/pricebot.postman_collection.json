@@ -5,7 +5,7 @@
    "description": "",
    "item": [
     {
-     "id": "7498b46e-3057-45c5-8265-5da032951446",
+     "id": "1a1e9ec5-2a93-46f7-83f9-f80f45d0df84",
      "name": "Saglik kontrolu + provider listesi",
      "request": {
       "name": "Saglik kontrolu + provider listesi",
@@ -32,7 +32,7 @@
      },
      "response": [
       {
-       "id": "5ca2a96c-f874-4dcd-be01-22be6c58f7aa",
+       "id": "a133b0f2-ab58-402c-b937-28965a181f06",
        "name": "Servis calisiyor",
        "originalRequest": {
         "url": {
@@ -73,7 +73,7 @@
      }
     },
     {
-     "id": "6bb2c342-94b1-495b-9159-2038cdf1ab0e",
+     "id": "2c37acad-d9f0-4829-9655-f0e14d0a3265",
      "name": "Hazirlik kontrolu (Postgres zorunlu, Redis opsiyonel)",
      "request": {
       "name": "Hazirlik kontrolu (Postgres zorunlu, Redis opsiyonel)",
@@ -94,7 +94,7 @@
      },
      "response": [
       {
-       "id": "79d7cbc0-9e14-495f-a978-4f009c722705",
+       "id": "9d7d7cd3-ebc0-4ce1-8585-f04e20320ee9",
        "name": "ok | degraded",
        "originalRequest": {
         "url": {
@@ -117,7 +117,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "f9560b90-a84b-4583-9fc4-7f21900118f2",
+       "id": "8a6e5d84-71b7-4420-a0b6-19781770d6b8",
        "name": "Postgres erisilemiyor",
        "originalRequest": {
         "url": {
@@ -152,7 +152,7 @@
    "description": "Onerilen musteri akisi",
    "item": [
     {
-     "id": "a2f32efd-9cfd-49ff-832c-12040808af9d",
+     "id": "78fea2a4-2639-45e1-9a59-15b8d7fb4294",
      "name": "Is olustur (onerilen akis)",
      "request": {
       "name": "Is olustur (onerilen akis)",
@@ -213,7 +213,7 @@
      },
      "response": [
       {
-       "id": "080f5ea3-c22a-42d3-98a3-c6b92db9062d",
+       "id": "ae07a1b8-f66a-45af-a05d-4295b79815cf",
        "name": "Ayni istek zaten kuyrukta (deduplicated)",
        "originalRequest": {
         "url": {
@@ -271,7 +271,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "daa848ab-2c56-44b0-8bf8-10904d3ea9d0",
+       "id": "cbd0aea1-c641-4dda-aed5-55e5b4a19d81",
        "name": "Kuyruga alindi",
        "originalRequest": {
         "url": {
@@ -338,7 +338,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "2468d129-d28a-4df0-a75c-f7c570f843de",
+       "id": "ae88af45-9a2d-4db0-b678-6bd7ce504329",
        "name": "Gecersiz parametre",
        "originalRequest": {
         "url": {
@@ -396,7 +396,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "cbc6d6df-360f-4ece-8f3e-4e0479666677",
+       "id": "1c9e7bb3-18f9-4266-8ced-a78700208fab",
        "name": "API anahtari gecersiz/eksik",
        "originalRequest": {
         "url": {
@@ -454,7 +454,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "642d033a-e4b6-45bd-ac7e-3b0fe2393de6",
+       "id": "245fa212-7af5-45ba-8732-b89414b1747a",
        "name": "Plan kisiti",
        "originalRequest": {
         "url": {
@@ -512,7 +512,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "d3978416-db1d-49f2-a6d0-c0ad06df3092",
+       "id": "2a52bfcf-35bf-4127-a637-290792631171",
        "name": "Kota/kuyruk dolu",
        "originalRequest": {
         "url": {
@@ -570,7 +570,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "7e2a1590-9b8e-42d8-af60-b19e881eb535",
+       "id": "0467f64b-60c7-446b-b0a3-08d20decde5c",
        "name": "Kuyruk etkin degil (Redis yok)",
        "originalRequest": {
         "url": {
@@ -634,7 +634,7 @@
      }
     },
     {
-     "id": "2d69ab3d-e1eb-473e-adb4-e0cbac45d65b",
+     "id": "a1abfb7c-7775-474a-9316-8723443b43ff",
      "name": "Is durumu / sonucu",
      "request": {
       "name": "Is durumu / sonucu",
@@ -704,7 +704,7 @@
      },
      "response": [
       {
-       "id": "4a195b9d-f03b-49de-a6ac-6028ed7339fa",
+       "id": "c5fa8621-2256-4b5c-8ca3-8e3b0bef843b",
        "name": "Is",
        "originalRequest": {
         "url": {
@@ -755,12 +755,12 @@
          "value": "application/json"
         }
        ],
-       "body": "{\n  \"requestId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"queued\",\n  \"createdAt\": \"<dateTime>\",\n  \"startedAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\",\n  \"request\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"adults\": \"<integer>\",\n    \"type\": \"prices\",\n    \"children\": 0,\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"airportCode\": \"<string>\",\n    \"fresh\": \"<boolean>\"\n  },\n  \"progress\": {\n    \"est_de\": \"pending\",\n    \"in9\": \"error\",\n    \"nulla_d\": \"pending\"\n  },\n  \"result\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"results\": [\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      }\n    ],\n    \"errors\": [\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": \"<string>\"\n}",
+       "body": "{\n  \"requestId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"done\",\n  \"createdAt\": \"<dateTime>\",\n  \"startedAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\",\n  \"request\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"adults\": \"<integer>\",\n    \"type\": \"prices\",\n    \"children\": 0,\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"airportCode\": \"<string>\",\n    \"fresh\": \"<boolean>\"\n  },\n  \"progress\": {\n    \"proidentca\": \"error\"\n  },\n  \"result\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"results\": [\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      }\n    ],\n    \"errors\": [\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": \"<string>\"\n}",
        "cookie": [],
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "c5465b47-c510-49c4-a105-2024c2ec9fbe",
+       "id": "250b0739-45a0-4a73-a33a-33f800d9f182",
        "name": "Is bulunamadi / suresi dolmus",
        "originalRequest": {
         "url": {
@@ -822,7 +822,7 @@
      }
     },
     {
-     "id": "4d3a2ac9-2564-49db-acf4-306e87ba3677",
+     "id": "613cfe02-994b-4109-919c-973b38096498",
      "name": "Anahtar sahibi: plan, izinli provider'lar, bugunku kullanim",
      "request": {
       "name": "Anahtar sahibi: plan, izinli provider'lar, bugunku kullanim",
@@ -867,7 +867,7 @@
      },
      "response": [
       {
-       "id": "57869ea2-3a4d-4115-a816-e1d6b0375bb8",
+       "id": "56f3946a-1e86-4aa1-ab32-29cd545e7be8",
        "name": "Kimlik ve plan",
        "originalRequest": {
         "url": {
@@ -902,7 +902,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "77a0a30a-1b70-4103-9bdf-9b1419c0c1ed",
+       "id": "e5942f89-6e9b-47fa-b203-fb2668f19295",
        "name": "Gecersiz anahtar",
        "originalRequest": {
         "url": {
@@ -955,11 +955,1673 @@
    ]
   },
   {
+   "name": "Portal (musteri tipi 2)",
+   "description": "Web portal musterisi (JWT): oteller, anlik aramalar, planli aramalar",
+   "item": [
+    {
+     "id": "500f7b89-34d2-4d21-ac30-b0710dc5029d",
+     "name": "Portal girisi (JWT)",
+     "request": {
+      "name": "Portal girisi (JWT)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "auth",
+        "login"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       },
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "POST",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": null
+     },
+     "response": [
+      {
+       "id": "eba1e0bc-7954-40b1-b6e3-8d4dbf76bb59",
+       "name": "token, user, client",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "auth",
+          "login"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      },
+      {
+       "id": "e246bcb6-84d0-49cf-80e6-ad80b84fc972",
+       "name": "Hatali giris",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "auth",
+          "login"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Unauthorized",
+       "code": 401,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      },
+      {
+       "id": "e19bff2f-cca8-495f-975c-ecb09ef31289",
+       "name": "Hesap pasif",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "auth",
+          "login"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Forbidden",
+       "code": 403,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "d7180d06-76a4-4683-9cdc-cc7b098ad670",
+     "name": "Kullanici, musteri, plan, etkin siteler, bugunku kullanim",
+     "request": {
+      "name": "Kullanici, musteri, plan, etkin siteler, bugunku kullanim",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "me"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "93a40a14-a6db-4105-b9ac-dabc41e97b6a",
+       "name": "ok",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "me"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "6b416e82-138c-419f-997a-3d5c796f4920",
+     "name": "Otellerim",
+     "request": {
+      "name": "Otellerim",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "hotels"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "569f1913-7703-4842-b7ae-ded672783209",
+       "name": "Liste",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "hotels"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "b197672e-8481-4a7c-bf67-ad84c6c9eb0e",
+     "name": "URL'lerden otel ekle (yalnizca etkin siteler)",
+     "request": {
+      "name": "URL'lerden otel ekle (yalnizca etkin siteler)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "hotels"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       },
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "POST",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"hotelName\": \"<string>\",\n  \"urls\": {\n    \"consecteture5\": \"<string>\",\n    \"deserunt3b\": \"<string>\"\n  }\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "3378e1e1-492e-48e9-97a0-51085390c55a",
+       "name": "Eklendi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "hotels"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelName\": \"<string>\",\n  \"urls\": {\n    \"consecteture5\": \"<string>\",\n    \"deserunt3b\": \"<string>\"\n  }\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Created",
+       "code": 201,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      },
+      {
+       "id": "713d558e-7514-464b-9120-a934484f5cd6",
+       "name": "Site etkin degil",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "hotels"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelName\": \"<string>\",\n  \"urls\": {\n    \"consecteture5\": \"<string>\",\n    \"deserunt3b\": \"<string>\"\n  }\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Forbidden",
+       "code": 403,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "e325e3aa-f33c-4f6d-bec5-bd5ee55459c9",
+     "name": "Otel guncelle (ek site URL'i / ad)",
+     "request": {
+      "name": "Otel guncelle (ek site URL'i / ad)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "hotels",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<string>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "method": "PUT",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"hotelName\": \"<string>\",\n  \"urls\": {}\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "2d586c31-9cb2-4728-a4b8-ed7a71a4602c",
+       "name": "Guncellendi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "hotels",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "PUT",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelName\": \"<string>\",\n  \"urls\": {}\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "bce5fb2b-8e13-48a3-9284-c36e48e85b34",
+     "name": "Oteli listeden kaldir",
+     "request": {
+      "name": "Oteli listeden kaldir",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "hotels",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<string>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "DELETE",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "dd8cd73c-ada1-4daa-990f-0e0dad5f116c",
+       "name": "Kaldirildi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "hotels",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "DELETE",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "d743e94e-f2f0-480c-a945-25fffd582705",
+     "name": "Anlik fiyat/paket aramasi baslat (otel basina job)",
+     "request": {
+      "name": "Anlik fiyat/paket aramasi baslat (otel basina job)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "searches"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       },
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "POST",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"kind\": \"prices\",\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"daysAhead\": \"<integer>\",\n  \"nights\": \"<integer>\",\n  \"adults\": \"<integer>\",\n  \"children\": \"<integer>\",\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"airportCode\": \"<string>\"\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "10498634-dde8-4255-9c31-36d028eb7ca7",
+       "name": "Arama kaydi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"kind\": \"prices\",\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"daysAhead\": \"<integer>\",\n  \"nights\": \"<integer>\",\n  \"adults\": \"<integer>\",\n  \"children\": \"<integer>\",\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"airportCode\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Accepted",
+       "code": 202,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"id\": \"<integer>\",\n  \"kind\": \"<string>\",\n  \"status\": \"done\",\n  \"scheduleId\": \"<integer>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"result\": {\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"done\": \"<integer>\",\n    \"total\": \"<integer>\",\n    \"hotels\": [\n      {\n        \"hotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"jobId\": \"<string>\",\n        \"status\": \"<string>\",\n        \"error\": \"<string>\",\n        \"result\": {\n          \"hotelId\": \"<string>\",\n          \"checkIn\": \"<string>\",\n          \"checkOut\": \"<string>\",\n          \"results\": [\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            }\n          ],\n          \"errors\": [\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            }\n          ]\n        }\n      },\n      {\n        \"hotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"jobId\": \"<string>\",\n        \"status\": \"<string>\",\n        \"error\": \"<string>\",\n        \"result\": {\n          \"hotelId\": \"<string>\",\n          \"checkIn\": \"<string>\",\n          \"checkOut\": \"<string>\",\n          \"results\": [\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            }\n          ],\n          \"errors\": [\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            }\n          ]\n        }\n      }\n    ]\n  },\n  \"error\": \"<string>\",\n  \"createdAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\"\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      },
+      {
+       "id": "ac0a2a81-3014-48b5-99f6-41f491e475ad",
+       "name": "Site/otel yetkisi yok",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"kind\": \"prices\",\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"daysAhead\": \"<integer>\",\n  \"nights\": \"<integer>\",\n  \"adults\": \"<integer>\",\n  \"children\": \"<integer>\",\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"airportCode\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Forbidden",
+       "code": 403,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      },
+      {
+       "id": "0c44f920-3c89-4b6d-bd28-a21f51b92e65",
+       "name": "Kota doldu",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"kind\": \"prices\",\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"daysAhead\": \"<integer>\",\n  \"nights\": \"<integer>\",\n  \"adults\": \"<integer>\",\n  \"children\": \"<integer>\",\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"airportCode\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Too Many Requests",
+       "code": 429,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "e569740e-7cfc-4a1e-9966-4a1d33dcf218",
+     "name": "Arama gecmisi",
+     "request": {
+      "name": "Arama gecmisi",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "searches"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [
+        {
+         "disabled": false,
+         "description": {
+          "content": "",
+          "type": "text/plain"
+         },
+         "key": "limit",
+         "value": "50"
+        },
+        {
+         "disabled": false,
+         "description": {
+          "content": "",
+          "type": "text/plain"
+         },
+         "key": "scheduleId",
+         "value": "<integer>"
+        }
+       ],
+       "variable": []
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "9a097bcb-3177-4563-9916-cd1a66b1cf94",
+       "name": "Liste (sonuc govdesi haric)",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [
+          {
+           "disabled": false,
+           "description": {
+            "content": "",
+            "type": "text/plain"
+           },
+           "key": "limit",
+           "value": "50"
+          },
+          {
+           "disabled": false,
+           "description": {
+            "content": "",
+            "type": "text/plain"
+           },
+           "key": "scheduleId",
+           "value": "<integer>"
+          }
+         ],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "a5414e61-5096-4f0d-9810-b479fe1631ec",
+     "name": "Arama detayi (kismi/tam sonuc)",
+     "request": {
+      "name": "Arama detayi (kismi/tam sonuc)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "searches",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "a8f7a1b5-cf8f-48eb-a51d-1e13cdd25049",
+       "name": "Arama",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"id\": \"<integer>\",\n  \"kind\": \"<string>\",\n  \"status\": \"done\",\n  \"scheduleId\": \"<integer>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"result\": {\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"done\": \"<integer>\",\n    \"total\": \"<integer>\",\n    \"hotels\": [\n      {\n        \"hotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"jobId\": \"<string>\",\n        \"status\": \"<string>\",\n        \"error\": \"<string>\",\n        \"result\": {\n          \"hotelId\": \"<string>\",\n          \"checkIn\": \"<string>\",\n          \"checkOut\": \"<string>\",\n          \"results\": [\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            }\n          ],\n          \"errors\": [\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            }\n          ]\n        }\n      },\n      {\n        \"hotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"jobId\": \"<string>\",\n        \"status\": \"<string>\",\n        \"error\": \"<string>\",\n        \"result\": {\n          \"hotelId\": \"<string>\",\n          \"checkIn\": \"<string>\",\n          \"checkOut\": \"<string>\",\n          \"results\": [\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"internalHotelId\": \"<string>\",\n              \"providerHotelId\": \"<string>\",\n              \"hotelName\": \"<string>\",\n              \"found\": \"<boolean>\",\n              \"price\": {\n                \"available\": \"<boolean>\",\n                \"hotelName\": \"<string>\",\n                \"city\": \"<string>\",\n                \"roomName\": \"<string>\",\n                \"boardType\": \"<string>\",\n                \"currency\": \"<string>\",\n                \"listPrice\": \"<number>\",\n                \"price\": \"<number>\",\n                \"discountRate\": \"<number>\",\n                \"minStayNights\": \"<integer>\"\n              },\n              \"durationMs\": \"<integer>\",\n              \"cached\": \"<boolean>\",\n              \"fetchedAt\": \"<dateTime>\"\n            }\n          ],\n          \"errors\": [\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            },\n            {\n              \"provider\": \"<string>\",\n              \"error\": \"<string>\"\n            }\n          ]\n        }\n      }\n    ]\n  },\n  \"error\": \"<string>\",\n  \"createdAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\"\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      },
+      {
+       "id": "9fe92d65-ccc1-4635-8fbf-963075e7de09",
+       "name": "Bulunamadi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "searches",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "Not Found",
+       "code": 404,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "62e837e7-e8db-426b-9caf-2de0b547eb76",
+     "name": "Planli aramalar",
+     "request": {
+      "name": "Planli aramalar",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "schedules"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "header": [
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "3d6ef000-5da2-49d2-a3b1-230fd4cafd62",
+       "name": "Liste",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "schedules"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "[\n  {\n    \"name\": \"<string>\",\n    \"request\": {\n      \"hotelIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"kind\": \"prices\",\n      \"providers\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"checkIn\": \"<string>\",\n      \"checkOut\": \"<string>\",\n      \"daysAhead\": \"<integer>\",\n      \"nights\": \"<integer>\",\n      \"adults\": \"<integer>\",\n      \"children\": \"<integer>\",\n      \"childAges\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"airportCode\": \"<string>\"\n    },\n    \"id\": \"<integer>\",\n    \"kind\": \"packages\",\n    \"weekdays\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"runTime\": \"<string>\",\n    \"timezone\": \"Europe/Istanbul\",\n    \"isActive\": true,\n    \"lastRunAt\": \"<dateTime>\",\n    \"nextRunAt\": \"<dateTime>\"\n  },\n  {\n    \"name\": \"<string>\",\n    \"request\": {\n      \"hotelIds\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"kind\": \"prices\",\n      \"providers\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"checkIn\": \"<string>\",\n      \"checkOut\": \"<string>\",\n      \"daysAhead\": \"<integer>\",\n      \"nights\": \"<integer>\",\n      \"adults\": \"<integer>\",\n      \"children\": \"<integer>\",\n      \"childAges\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"airportCode\": \"<string>\"\n    },\n    \"id\": \"<integer>\",\n    \"kind\": \"packages\",\n    \"weekdays\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"runTime\": \"<string>\",\n    \"timezone\": \"Europe/Istanbul\",\n    \"isActive\": true,\n    \"lastRunAt\": \"<dateTime>\",\n    \"nextRunAt\": \"<dateTime>\"\n  }\n]",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "25dba614-a640-4575-881f-37def3caafb5",
+     "name": "Planli arama olustur (orn. her Pazartesi 14:00)",
+     "request": {
+      "name": "Planli arama olustur (orn. her Pazartesi 14:00)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "schedules"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "method": "POST",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"<string>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"kind\": \"prices\",\n  \"weekdays\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"runTime\": \"<string>\",\n  \"timezone\": \"Europe/Istanbul\",\n  \"isActive\": true\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "9a8addd3-82bf-4627-aaef-7420808971fd",
+       "name": "Olusturuldu (nextRunAt hesaplanir)",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "schedules"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"name\": \"<string>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"kind\": \"prices\",\n  \"weekdays\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"runTime\": \"<string>\",\n  \"timezone\": \"Europe/Istanbul\",\n  \"isActive\": true\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Created",
+       "code": 201,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "0f8ea522-d65a-4675-a312-470232f488cd",
+     "name": "Plan guncelle",
+     "request": {
+      "name": "Plan guncelle",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "schedules",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "method": "PUT",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"name\": \"<string>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"kind\": \"prices\",\n  \"weekdays\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"runTime\": \"<string>\",\n  \"timezone\": \"Europe/Istanbul\",\n  \"isActive\": true\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "8ef82b65-1d24-451b-bea3-6c0d8526486c",
+       "name": "Guncellendi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "schedules",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "PUT",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"name\": \"<string>\",\n  \"request\": {\n    \"hotelIds\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"kind\": \"prices\",\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"daysAhead\": \"<integer>\",\n    \"nights\": \"<integer>\",\n    \"adults\": \"<integer>\",\n    \"children\": \"<integer>\",\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"airportCode\": \"<string>\"\n  },\n  \"kind\": \"prices\",\n  \"weekdays\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"runTime\": \"<string>\",\n  \"timezone\": \"Europe/Istanbul\",\n  \"isActive\": true\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "83db24ec-9bb1-4436-b0b9-a7de24431767",
+     "name": "Plan sil",
+     "request": {
+      "name": "Plan sil",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "schedules",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "DELETE",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "3596bbe0-8076-449b-ba6e-6e92f1e49e1a",
+       "name": "Silindi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "schedules",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "DELETE",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "6ec44a93-ac36-4ca2-b5b9-3a7eec98d07d",
+     "name": "Plani simdi calistir",
+     "request": {
+      "name": "Plani simdi calistir",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "portal",
+        "schedules",
+        ":id",
+        "run"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "POST",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "be2288e3-6466-46c1-8a48-a405e5f0cb55",
+       "name": "Arama kaydi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "portal",
+          "schedules",
+          ":id",
+          "run"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {}
+       },
+       "status": "Accepted",
+       "code": 202,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    }
+   ]
+  },
+  {
    "name": "Fiyat Sorgulama",
    "description": "Senkron (geriye uyumlu)",
    "item": [
     {
-     "id": "d07e5e17-830c-4e85-b01b-42e23df6a678",
+     "id": "9a47b1cb-92bc-4816-9163-225c6556ea32",
      "name": "Tek otel fiyat sorgula",
      "request": {
       "name": "Tek otel fiyat sorgula",
@@ -980,7 +2642,7 @@
           "type": "text/plain"
          },
          "key": "provider",
-         "value": "setur"
+         "value": "tatilsepeti"
         },
         {
          "disabled": false,
@@ -1076,7 +2738,7 @@
      },
      "response": [
       {
-       "id": "f6f36395-4265-4174-b3b2-8d2c5f44b556",
+       "id": "e6802b1c-2d53-4b62-bcf7-8d12a7b19446",
        "name": "Fiyat bilgisi",
        "originalRequest": {
         "url": {
@@ -1095,7 +2757,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1183,7 +2845,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "f6e5818f-6629-4429-bedf-57f5da0d5bac",
+       "id": "bfcceead-cd8f-4a77-b89d-64132a942a39",
        "name": "Eksik parametre veya gecersiz provider",
        "originalRequest": {
         "url": {
@@ -1202,7 +2864,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1290,7 +2952,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "84a8ef15-a428-48c1-9560-4511df49b857",
+       "id": "d8104319-b138-45f8-8569-913d1c17771d",
        "name": "API anahtari gecersiz/eksik",
        "originalRequest": {
         "url": {
@@ -1309,7 +2971,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1407,7 +3069,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "4f423453-5c76-42e7-9b70-3306a60b0130",
+       "id": "cf35eed6-5303-41ca-b48a-d6613ea9e5cb",
        "name": "Plan bu provider/paket sorgusunu kapsamiyor",
        "originalRequest": {
         "url": {
@@ -1426,7 +3088,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1524,7 +3186,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "07859e83-1b2f-4229-b4cb-73c981b273c6",
+       "id": "b9344e59-9c9d-4a70-a966-df05b92e1813",
        "name": "Otel eslestirmesi bulunamadi",
        "originalRequest": {
         "url": {
@@ -1543,7 +3205,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1631,7 +3293,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "6f21f53c-86d8-4252-b3a0-c4d9b7270494",
+       "id": "30891aaa-ff4e-4c43-9155-b40fd91ebe5d",
        "name": "Gunluk kota veya dakikalik sinir asildi",
        "originalRequest": {
         "url": {
@@ -1650,7 +3312,7 @@
             "type": "text/plain"
            },
            "key": "provider",
-           "value": "setur"
+           "value": "tatilsepeti"
           },
           {
            "disabled": false,
@@ -1754,7 +3416,7 @@
      }
     },
     {
-     "id": "c53ed98a-2c37-487c-bc38-74340eb5723d",
+     "id": "96ae5387-5129-45bd-8997-19bb206d4461",
      "name": "Toplu otel fiyat sorgula",
      "request": {
       "name": "Toplu otel fiyat sorgula",
@@ -1812,7 +3474,7 @@
      },
      "response": [
       {
-       "id": "c15c159c-f0da-4838-8d3e-bac3507ff23b",
+       "id": "c354b727-78a9-44b2-a042-750c5c729e8d",
        "name": "Toplu fiyat bilgisi",
        "originalRequest": {
         "url": {
@@ -1860,7 +3522,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "219fc8e0-1679-454b-87f6-12d6a6d59c89",
+       "id": "d7ec52d5-f19a-4f35-b0f8-581015d2ae2b",
        "name": "Eksik parametre",
        "originalRequest": {
         "url": {
@@ -1908,7 +3570,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "4c41c5d6-603b-4fc3-bc62-a22593e6138d",
+       "id": "3f6c8347-5926-428b-9404-b89fc1add707",
        "name": "API anahtari gecersiz/eksik",
        "originalRequest": {
         "url": {
@@ -1966,7 +3628,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "bba8cb7e-b165-4175-adca-2eeeed63ba7f",
+       "id": "0a3d598d-6e56-4257-b066-83cf894fdc2f",
        "name": "Kota asildi",
        "originalRequest": {
         "url": {
@@ -2030,7 +3692,7 @@
      }
     },
     {
-     "id": "dc186d45-f87a-4758-b5c0-4cf9831cab57",
+     "id": "dcc1f701-4ea4-4156-b9e8-58c8edd4839e",
      "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
      "request": {
       "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
@@ -2151,7 +3813,7 @@
      },
      "response": [
       {
-       "id": "a82c3471-3a67-49bd-976c-110b8a67137c",
+       "id": "1eb20eaa-f17c-4f9d-a491-51fe39e2aa4c",
        "name": "Tum provider fiyatlari",
        "originalRequest": {
         "url": {
@@ -2269,7 +3931,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "d53be777-e04e-49b1-899b-c43ace911b25",
+       "id": "a6febb44-664d-4aa6-b2b8-f48b06ead3a0",
        "name": "Eksik parametre",
        "originalRequest": {
         "url": {
@@ -2377,7 +4039,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "846e8d62-92ad-4712-a159-6b68e6b8389c",
+       "id": "94774ac9-a849-49a6-b557-312627fd58a7",
        "name": "API anahtari gecersiz/eksik",
        "originalRequest": {
         "url": {
@@ -2495,7 +4157,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "b8f5e162-24fe-4e23-b223-b0badc95c649",
+       "id": "73465433-69b7-4602-a432-2f35dddd2590",
        "name": "Plan bu provider/paket sorgusunu kapsamiyor",
        "originalRequest": {
         "url": {
@@ -2613,7 +4275,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "a81a0cdc-6f20-4f7a-8422-445c3ffad1e2",
+       "id": "5ccad3ef-ff02-4fde-a90a-d0258c5df33a",
        "name": "Otel eslestirmesi bulunamadi",
        "originalRequest": {
         "url": {
@@ -2721,7 +4383,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "7571c913-f9da-4c42-9316-7916a68058a4",
+       "id": "cb714bfc-2936-4d1e-8139-47268806a49b",
        "name": "Gunluk kota veya dakikalik sinir asildi",
        "originalRequest": {
         "url": {
@@ -2851,7 +4513,7 @@
    "description": "",
    "item": [
     {
-     "id": "f9b26181-f05b-4747-8082-df594697b703",
+     "id": "24a85b58-3581-462a-b218-0e1496c31883",
      "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
      "request": {
       "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
@@ -2980,7 +4642,7 @@
      },
      "response": [
       {
-       "id": "edbd4e39-7431-4885-8fb9-9c72ab1cbfe3",
+       "id": "12e34fce-a242-4789-943a-1a52d6710023",
        "name": "Paket fiyat listesi",
        "originalRequest": {
         "url": {
@@ -3106,7 +4768,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "58b24805-e4ba-4c0c-9a70-971ec95b8f32",
+       "id": "da3df4a1-e30b-4667-8989-461a08c99c63",
        "name": "Eksik parametre veya provider desteklemiyor",
        "originalRequest": {
         "url": {
@@ -3222,7 +4884,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "2213cb08-ef96-4e10-8307-7b2b21a69d43",
+       "id": "ef60346c-8f10-444e-bb89-5331878295fd",
        "name": "API anahtari gecersiz/eksik",
        "originalRequest": {
         "url": {
@@ -3348,7 +5010,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "4ccd7b16-666f-4af9-98d1-47efe803ccb2",
+       "id": "31af0abe-9f90-4681-b9b8-1d1ce7527518",
        "name": "Plan bu provider/paket sorgusunu kapsamiyor",
        "originalRequest": {
         "url": {
@@ -3474,7 +5136,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "cc32d565-43c1-44dd-89ed-89db9d080181",
+       "id": "47185db7-f9a6-48b3-aed1-828f05159863",
        "name": "Otel eslestirmesi bulunamadi",
        "originalRequest": {
         "url": {
@@ -3590,7 +5252,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "cf9f60fd-68eb-4a6b-9479-aa7807d6edc0",
+       "id": "0a29c07a-95f1-401d-87a0-ccd197de0e7c",
        "name": "Gunluk kota veya dakikalik sinir asildi",
        "originalRequest": {
         "url": {
@@ -3728,7 +5390,7 @@
    "description": "",
    "item": [
     {
-     "id": "92d27454-eea8-4a0b-b8cf-d7c33a530eff",
+     "id": "c0f3c7ca-4196-4509-ac0d-a39da4563221",
      "name": "Admin girisi (JWT)",
      "request": {
       "name": "Admin girisi (JWT)",
@@ -3771,7 +5433,7 @@
      },
      "response": [
       {
-       "id": "0d14b5a2-e5f9-4a4e-b358-10890498ed6b",
+       "id": "b3df29c0-c88c-4636-944a-aedde6aea219",
        "name": "token, expiresAt, admin",
        "originalRequest": {
         "url": {
@@ -3812,7 +5474,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "598137f9-cace-4df4-b4b8-65eeb8dea36b",
+       "id": "43755847-660f-43ee-802d-7b2b080fdb9b",
        "name": "E-posta veya sifre hatali",
        "originalRequest": {
         "url": {
@@ -3863,7 +5525,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "7933c722-099c-460c-b55b-0788fe6ec258",
+       "id": "e22309f6-0678-4369-996c-2a9e6d30c0ad",
        "name": "Cok fazla deneme",
        "originalRequest": {
         "url": {
@@ -3920,7 +5582,7 @@
      }
     },
     {
-     "id": "cb4a436c-341e-4acb-bf69-6814e8331974",
+     "id": "97e741d1-a9d1-448c-890c-2747485abed6",
      "name": "Oturum bilgisi",
      "request": {
       "name": "Oturum bilgisi",
@@ -3952,7 +5614,7 @@
      },
      "response": [
       {
-       "id": "9adced30-92d9-4fcd-9ea7-7657bbeb2e1d",
+       "id": "14a45597-4950-47b1-a0b1-85bd5aee01aa",
        "name": "ok",
        "originalRequest": {
         "url": {
@@ -3994,7 +5656,7 @@
      }
     },
     {
-     "id": "cea896d1-4f91-4ff5-a1b3-df473a655a11",
+     "id": "bf859411-dceb-49f2-b4a2-3abd4fec9f18",
      "name": "Adminleri listele",
      "request": {
       "name": "Adminleri listele",
@@ -4025,7 +5687,7 @@
      },
      "response": [
       {
-       "id": "2301f34b-80b3-46f0-b44e-3a15da9ba8da",
+       "id": "71fe5781-aa75-45ac-b549-fc3dc1bbe4a7",
        "name": "Liste",
        "originalRequest": {
         "url": {
@@ -4066,7 +5728,7 @@
      }
     },
     {
-     "id": "2538d609-01d0-4532-b264-213e27c3f6c5",
+     "id": "f5571288-eace-4352-a45e-228281d7042e",
      "name": "Admin ekle",
      "request": {
       "name": "Admin ekle",
@@ -4116,7 +5778,7 @@
      },
      "response": [
       {
-       "id": "c0c2264f-4ffb-4e02-a204-9224e336a4c0",
+       "id": "9659bb6c-5608-491f-b3a0-4ae3480ee044",
        "name": "Olusturuldu",
        "originalRequest": {
         "url": {
@@ -4164,7 +5826,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "0aa478bf-eabe-4be7-93f0-89fc81228696",
+       "id": "22d11b74-c580-4b95-b116-2213cdfc24d6",
        "name": "E-posta kayitli",
        "originalRequest": {
         "url": {
@@ -4234,7 +5896,7 @@
    "description": "",
    "item": [
     {
-     "id": "7abfa72c-0383-4b79-9720-85bd47e9603e",
+     "id": "dd61667a-aa16-445d-aa9e-0b1c3fe568b4",
      "name": "Planlari listele",
      "request": {
       "name": "Planlari listele",
@@ -4271,7 +5933,7 @@
      },
      "response": [
       {
-       "id": "18a88815-ed68-44f5-ab29-3e7aa5a39b8e",
+       "id": "e5e66bcc-72b4-4657-8a9f-b60d29572f89",
        "name": "Liste",
        "originalRequest": {
         "url": {
@@ -4322,7 +5984,7 @@
      }
     },
     {
-     "id": "713858ea-dcb7-4dbe-9e48-4e8209386f90",
+     "id": "3fbc4ffb-7369-4480-b024-b63f21633c46",
      "name": "Plan olustur",
      "request": {
       "name": "Plan olustur",
@@ -4372,7 +6034,7 @@
      },
      "response": [
       {
-       "id": "90d39559-4c7c-4346-9ce4-2182f7ca5ee1",
+       "id": "fb89e552-390c-47b9-bb3f-6261d04954ac",
        "name": "Olusturuldu",
        "originalRequest": {
         "url": {
@@ -4420,7 +6082,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "e62eef5e-6e4e-460e-ad5e-c5d443505dcd",
+       "id": "b9a55f27-e2f2-44b3-a998-08472b3f8ffb",
        "name": "Plan kodu mevcut",
        "originalRequest": {
         "url": {
@@ -4484,7 +6146,7 @@
      }
     },
     {
-     "id": "779236e6-bdc8-4cd7-9516-033f44c2ea19",
+     "id": "d65de25a-ebaa-44fd-ab7e-a4566f0caa5b",
      "name": "Plan guncelle",
      "request": {
       "name": "Plan guncelle",
@@ -4546,7 +6208,7 @@
      },
      "response": [
       {
-       "id": "0150c227-6e27-4343-862d-89648db78c7a",
+       "id": "47d81617-0984-4bc8-aa43-5e3f36f4a1b9",
        "name": "Guncellendi",
        "originalRequest": {
         "url": {
@@ -4595,7 +6257,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "f051a2fb-5f0f-4e2c-9af8-e4d5f1d0c683",
+       "id": "3468ea92-0ae5-4e2a-82ea-ae674f6467b7",
        "name": "Plan bulunamadi",
        "originalRequest": {
         "url": {
@@ -4660,7 +6322,7 @@
      }
     },
     {
-     "id": "bebfe30c-a91d-4992-ab4e-1711374f15ea",
+     "id": "3ce62eba-4772-40c7-a59e-e9f827e75c64",
      "name": "Musterileri listele",
      "request": {
       "name": "Musterileri listele",
@@ -4707,7 +6369,7 @@
      },
      "response": [
       {
-       "id": "aaa1a436-d485-4073-bb58-7be10f256390",
+       "id": "8e1112f1-0393-4592-89fb-466c7cafce63",
        "name": "Liste",
        "originalRequest": {
         "url": {
@@ -4768,7 +6430,7 @@
      }
     },
     {
-     "id": "3d535a80-f595-4721-a0df-6da32342640a",
+     "id": "bf10e4e9-7322-4429-8401-afa9dc05b33a",
      "name": "Musteri olustur",
      "request": {
       "name": "Musteri olustur",
@@ -4818,7 +6480,7 @@
      },
      "response": [
       {
-       "id": "3741d2de-352e-48ef-b1dd-be5828605e71",
+       "id": "f362e1a9-06f0-4975-9b9c-0dbbf70d1762",
        "name": "Olusturuldu",
        "originalRequest": {
         "url": {
@@ -4882,7 +6544,7 @@
      }
     },
     {
-     "id": "6ce1d3b0-2bd7-49a4-9260-a8a6608b5520",
+     "id": "e370e6d0-5833-4ed1-b9b8-02f9ff39ab02",
      "name": "Musteri detayi (+anahtarlar, bugunku kullanim)",
      "request": {
       "name": "Musteri detayi (+anahtarlar, bugunku kullanim)",
@@ -4931,7 +6593,7 @@
      },
      "response": [
       {
-       "id": "cb38a5ab-1a33-409e-9dd8-b9ca9c51fe6c",
+       "id": "b5160882-e92a-4cfd-97a8-87e2085e64dc",
        "name": "client, keys, usedToday",
        "originalRequest": {
         "url": {
@@ -4967,7 +6629,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "9b01538b-0b76-4b44-94b0-243c432554bf",
+       "id": "ecb5f23f-12d8-4a87-a15c-460480406d3d",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -5019,7 +6681,7 @@
      }
     },
     {
-     "id": "c344d09f-1032-48f3-ab6b-bf9f935233a0",
+     "id": "ad841db6-930b-4f65-bf7f-380ea825da2f",
      "name": "Musteri guncelle (plan, aktiflik, ad)",
      "request": {
       "name": "Musteri guncelle (plan, aktiflik, ad)",
@@ -5081,7 +6743,7 @@
      },
      "response": [
       {
-       "id": "766cec76-8d8f-443e-a51d-697e21a7d119",
+       "id": "14ac1f2a-ed99-45c8-a292-71cccf308a51",
        "name": "Guncellendi",
        "originalRequest": {
         "url": {
@@ -5130,7 +6792,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "72fd97c2-5a8b-42e4-afb6-9b1cb1b2f25e",
+       "id": "4fc13b1e-d450-48a4-b10e-c714f1d9bafe",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -5195,7 +6857,7 @@
      }
     },
     {
-     "id": "503b75ba-ca45-43c9-b380-9146dc175487",
+     "id": "25f49c63-4e73-4f95-a026-b8e41e8ee8fa",
      "name": "Musteriyi ve anahtarlarini sil",
      "request": {
       "name": "Musteriyi ve anahtarlarini sil",
@@ -5244,7 +6906,7 @@
      },
      "response": [
       {
-       "id": "9ffdf491-a2aa-495f-af17-e824b7c2fab0",
+       "id": "14c96e90-7ef0-455b-8752-c860abc83195",
        "name": "Silindi",
        "originalRequest": {
         "url": {
@@ -5280,7 +6942,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "979f8514-373a-42b4-955e-9047c90ad45f",
+       "id": "58459e9e-de25-46e4-93a3-dbc18bcbb203",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -5332,7 +6994,7 @@
      }
     },
     {
-     "id": "59769ee7-7c82-4dec-8554-29b3432fcf6c",
+     "id": "542e5e49-73c4-44d9-af80-82e9c34d4b7b",
      "name": "Musterinin anahtarlari",
      "request": {
       "name": "Musterinin anahtarlari",
@@ -5382,7 +7044,7 @@
      },
      "response": [
       {
-       "id": "eeaf31dd-a80f-4366-8e91-3a865ddcf42e",
+       "id": "48637ad0-77ec-4156-b602-130de658f35c",
        "name": "Liste",
        "originalRequest": {
         "url": {
@@ -5435,7 +7097,7 @@
      }
     },
     {
-     "id": "98fcb9c3-1c9f-4e58-8d0a-d071c08537bc",
+     "id": "a93609a0-3dee-405a-ac35-e5169b2521d6",
      "name": "Yeni API anahtari (duz metin SADECE bu yanitta)",
      "request": {
       "name": "Yeni API anahtari (duz metin SADECE bu yanitta)",
@@ -5494,7 +7156,7 @@
      },
      "response": [
       {
-       "id": "1f742437-ca27-4e5d-8509-96f51be4f63d",
+       "id": "0499b3ab-92a9-4aff-b14d-896d2ef4b000",
        "name": "key (duz metin), apiKey, warning",
        "originalRequest": {
         "url": {
@@ -5550,7 +7212,7 @@
      }
     },
     {
-     "id": "e52d6cf6-e300-4ea9-b44b-166ab33b3811",
+     "id": "8a6916a4-7c7d-4042-b4da-6605d86c4e97",
      "name": "Anahtari iptal et",
      "request": {
       "name": "Anahtari iptal et",
@@ -5599,7 +7261,7 @@
      },
      "response": [
       {
-       "id": "a35e4813-b5a4-402e-85d0-0d3b53671e0b",
+       "id": "ed9e8468-5618-42cd-80d0-9831b0cbf3db",
        "name": "Iptal edildi",
        "originalRequest": {
         "url": {
@@ -5635,7 +7297,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "89582f23-450f-4086-9d64-5267dec42e95",
+       "id": "3125b9ff-543c-49da-8843-a58158752d98",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -5687,7 +7349,7 @@
      }
     },
     {
-     "id": "b73ccb3e-aa14-4662-a99e-ba5ebaafefb6",
+     "id": "fdca5d2b-f6fa-4023-8ad6-f78e6561c7c1",
      "name": "Kullanim raporu (gun / musteri / provider)",
      "request": {
       "name": "Kullanim raporu (gun / musteri / provider)",
@@ -5746,7 +7408,7 @@
      },
      "response": [
       {
-       "id": "49b11167-c948-4d18-a9f6-2797eacb93f7",
+       "id": "5e6d6fa7-89fc-44e8-ba53-1804849531c7",
        "name": "totals + rows",
        "originalRequest": {
         "url": {
@@ -5815,7 +7477,7 @@
      }
     },
     {
-     "id": "e31a4c3e-3837-466f-a94a-c8d3665dcc78",
+     "id": "b19bf260-03b1-4474-a9df-47f11e67cd78",
      "name": "Son istek loglari",
      "request": {
       "name": "Son istek loglari",
@@ -5865,7 +7527,7 @@
      },
      "response": [
       {
-       "id": "d4f1097b-e7d1-4a12-b463-05bf7607d185",
+       "id": "ef66ee01-b3c8-4145-b078-539ff1bccb90",
        "name": "Liste",
        "originalRequest": {
         "url": {
@@ -5923,6 +7585,764 @@
      "protocolProfileBehavior": {
       "disableBodyPruning": true
      }
+    },
+    {
+     "id": "70ef6f70-22f2-48cd-9f43-3facfcf3a7ee",
+     "name": "Musteri tipi, etkin siteler, portal kullanicilari, oteller, planlar",
+     "request": {
+      "name": "Musteri tipi, etkin siteler, portal kullanicilari, oteller, planlar",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "clients",
+        ":id",
+        "settings"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "7b0d761b-abfd-4131-ac84-96faf81f8e43",
+       "name": "settings, providers, portalUsers, hotels, schedules",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "clients",
+          ":id",
+          "settings"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "92f6dca5-cb9e-4a9a-9504-cb3479278a50",
+     "name": "Musteri tipi ve site ac/kapa",
+     "request": {
+      "name": "Musteri tipi ve site ac/kapa",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "clients",
+        ":id",
+        "settings"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "method": "PUT",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"clientType\": \"both\",\n  \"enabledProviders\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "7fce0bf6-0d4a-4ace-8906-6d7b1980c0b8",
+       "name": "Guncellendi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "clients",
+          ":id",
+          "settings"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "PUT",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"clientType\": \"both\",\n  \"enabledProviders\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "19ce0dfa-9f77-4879-8515-9b21c5f61eca",
+     "name": "Portal kullanicisi olustur",
+     "request": {
+      "name": "Portal kullanicisi olustur",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "clients",
+        ":id",
+        "portal-users"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       },
+       {
+        "key": "Accept",
+        "value": "application/json"
+       }
+      ],
+      "method": "POST",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "dde41367-e300-4a2d-923f-76a3e82042c6",
+       "name": "Olusturuldu",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "clients",
+          ":id",
+          "portal-users"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Created",
+       "code": 201,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      },
+      {
+       "id": "01cdc9fd-911b-40e2-a5ed-1c34c415ccfd",
+       "name": "E-posta kayitli",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "clients",
+          ":id",
+          "portal-users"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "key": "Accept",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "POST",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "Conflict",
+       "code": 409,
+       "header": [
+        {
+         "key": "Content-Type",
+         "value": "application/json"
+        }
+       ],
+       "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+       "cookie": [],
+       "_postman_previewlanguage": "json"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "248a158f-7d33-4b9d-a74f-58913b8db44d",
+     "name": "Portal kullanicisi guncelle (sifre, aktiflik, ad)",
+     "request": {
+      "name": "Portal kullanicisi guncelle (sifre, aktiflik, ad)",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "portal-users",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "header": [
+       {
+        "key": "Content-Type",
+        "value": "application/json"
+       }
+      ],
+      "method": "PUT",
+      "body": {
+       "mode": "raw",
+       "raw": "{\n  \"password\": \"<string>\",\n  \"isActive\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+       "options": {
+        "raw": {
+         "headerFamily": "json",
+         "language": "json"
+        }
+       }
+      },
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "51fab5f4-04b6-4b39-ac9c-ba19a7bb38b3",
+       "name": "Guncellendi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "portal-users",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "key": "Content-Type",
+          "value": "application/json"
+         },
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "PUT",
+        "body": {
+         "mode": "raw",
+         "raw": "{\n  \"password\": \"<string>\",\n  \"isActive\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+         "options": {
+          "raw": {
+           "headerFamily": "json",
+           "language": "json"
+          }
+         }
+        }
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "0602c3a4-504d-4809-8561-3caa358b6bd6",
+     "name": "Portal kullanicisi sil",
+     "request": {
+      "name": "Portal kullanicisi sil",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "portal-users",
+        ":id"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "DELETE",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "097c7d44-b4e5-440a-a4fb-aeff62ba93f9",
+       "name": "Silindi",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "portal-users",
+          ":id"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "DELETE",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "aece72e9-5737-4ffc-8dc2-0171c74bd6cd",
+     "name": "Tum musterilerin planli aramalari",
+     "request": {
+      "name": "Tum musterilerin planli aramalari",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "schedules"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [],
+       "variable": []
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "4eeb6c0f-2948-4341-901f-a8558febd988",
+       "name": "Liste",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "schedules"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
+    },
+    {
+     "id": "a0833957-86ed-4735-a582-c87a1cadec54",
+     "name": "Musterinin arama gecmisi",
+     "request": {
+      "name": "Musterinin arama gecmisi",
+      "description": {},
+      "url": {
+       "path": [
+        "api",
+        "admin",
+        "clients",
+        ":id",
+        "searches"
+       ],
+       "host": [
+        "{{baseUrl}}"
+       ],
+       "query": [
+        {
+         "disabled": false,
+         "description": {
+          "content": "",
+          "type": "text/plain"
+         },
+         "key": "limit",
+         "value": "<integer>"
+        }
+       ],
+       "variable": [
+        {
+         "type": "any",
+         "value": "<integer>",
+         "key": "id",
+         "disabled": false,
+         "description": {
+          "content": "(Required) ",
+          "type": "text/plain"
+         }
+        }
+       ]
+      },
+      "method": "GET",
+      "body": {},
+      "auth": {
+       "type": "bearer",
+       "bearer": [
+        {
+         "key": "token",
+         "value": "{{bearerToken}}"
+        }
+       ]
+      }
+     },
+     "response": [
+      {
+       "id": "22471513-5b4f-41e5-85a2-2239677ca7a2",
+       "name": "Liste",
+       "originalRequest": {
+        "url": {
+         "path": [
+          "api",
+          "admin",
+          "clients",
+          ":id",
+          "searches"
+         ],
+         "host": [
+          "{{baseUrl}}"
+         ],
+         "query": [
+          {
+           "disabled": false,
+           "description": {
+            "content": "",
+            "type": "text/plain"
+           },
+           "key": "limit",
+           "value": "<integer>"
+          }
+         ],
+         "variable": []
+        },
+        "header": [
+         {
+          "description": {
+           "content": "Added as a part of security scheme: bearer",
+           "type": "text/plain"
+          },
+          "key": "Authorization",
+          "value": "Bearer <token>"
+         }
+        ],
+        "method": "GET",
+        "body": {}
+       },
+       "status": "OK",
+       "code": 200,
+       "header": [],
+       "cookie": [],
+       "_postman_previewlanguage": "text"
+      }
+     ],
+     "event": [],
+     "protocolProfileBehavior": {
+      "disableBodyPruning": true
+     }
     }
    ]
   },
@@ -5931,7 +8351,7 @@
    "description": "",
    "item": [
     {
-     "id": "52cbff32-a0eb-4122-ad30-88ca55bac72c",
+     "id": "b5650989-2dea-43f9-9028-765b5724af43",
      "name": "Provider sagligi: eszamanlilik, basari/hata, devre kesici, kanarya, cache",
      "request": {
       "name": "Provider sagligi: eszamanlilik, basari/hata, devre kesici, kanarya, cache",
@@ -5963,7 +8383,7 @@
      },
      "response": [
       {
-       "id": "b605534e-62fa-422c-9f17-fb839e405230",
+       "id": "846d0005-fe48-4373-b10c-df1bdf62c43a",
        "name": "providers[], capabilities, canary, cache",
        "originalRequest": {
         "url": {
@@ -6005,7 +8425,7 @@
      }
     },
     {
-     "id": "406bf079-cdcb-49e9-a932-5a133a85d860",
+     "id": "34aea22a-93e3-4932-a0d3-4a55add51ef2",
      "name": "Devre kesiciyi sifirla",
      "request": {
       "name": "Devre kesiciyi sifirla",
@@ -6049,7 +8469,7 @@
      },
      "response": [
       {
-       "id": "1686a88e-18dd-47f5-85c7-9a8290cb79b6",
+       "id": "dafdab57-38cc-4367-8f88-1df98290c173",
        "name": "Sifirlandi",
        "originalRequest": {
         "url": {
@@ -6092,7 +8512,7 @@
      }
     },
     {
-     "id": "4c67dc7b-f7d3-4b2a-b62d-934aa5cabdd7",
+     "id": "4557561f-5b26-49f5-8cec-c31dea535465",
      "name": "Kanarya testini simdi calistir (CANARY_HOTEL_ID)",
      "request": {
       "name": "Kanarya testini simdi calistir (CANARY_HOTEL_ID)",
@@ -6130,7 +8550,7 @@
      },
      "response": [
       {
-       "id": "93394969-dbbd-4657-888d-ce3529d1154c",
+       "id": "07136670-d62a-4399-897f-601b74d00e55",
        "name": "Rapor",
        "originalRequest": {
         "url": {
@@ -6166,7 +8586,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "beb9fce7-aeac-4bf4-b0c1-4f15f66e1fc5",
+       "id": "4c311d10-551e-43ab-8707-381128c6f782",
        "name": "CANARY_HOTEL_ID yok",
        "originalRequest": {
         "url": {
@@ -6218,7 +8638,7 @@
      }
     },
     {
-     "id": "87a5aa64-e1d5-49e6-81a5-1ea80aa54f37",
+     "id": "649a92cc-f788-407a-b597-ae07b4ee5c62",
      "name": "Kuyruk durumu",
      "request": {
       "name": "Kuyruk durumu",
@@ -6250,7 +8670,7 @@
      },
      "response": [
       {
-       "id": "92fee425-f3e1-4b36-a539-ce3cc7111dd7",
+       "id": "bc193351-9c9d-41bc-90ba-b7ea6c6a5586",
        "name": "queued, running, maxQueued",
        "originalRequest": {
         "url": {
@@ -6298,7 +8718,7 @@
    "description": "",
    "item": [
     {
-     "id": "3ff6e841-dbab-42c9-b6f3-77dfdd78d3c6",
+     "id": "6d4ff93e-f5dd-4952-aa26-9c552d1d3b86",
      "name": "URL'lerden otel ekle",
      "request": {
       "name": "URL'lerden otel ekle",
@@ -6347,7 +8767,7 @@
      },
      "response": [
       {
-       "id": "825c9c7c-b6ef-4609-ac6f-bf478cfb68d6",
+       "id": "7f896f61-ece4-4216-a815-cae8737aa1f9",
        "name": "Otel eklendi (cozulen provider'lar + varsa hatalar)",
        "originalRequest": {
         "url": {
@@ -6395,7 +8815,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "98b0c8e3-7e6a-40ca-b8b5-5690c3ab9135",
+       "id": "ed17b77d-dc9e-48d3-bc9d-9c9e69ab341c",
        "name": "Eksik/gecersiz URL",
        "originalRequest": {
         "url": {
@@ -6443,7 +8863,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "cf0ae123-7870-45db-87a4-44e9b0e9f1cf",
+       "id": "52f5d97c-7beb-4796-9589-05c1c49090ac",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -6497,7 +8917,7 @@
      }
     },
     {
-     "id": "6f5fcb08-92b7-4706-ad07-a74f97067099",
+     "id": "9ae4c98e-5995-4e80-86eb-d272cc826315",
      "name": "Sistemdeki otelleri listele",
      "request": {
       "name": "Sistemdeki otelleri listele",
@@ -6528,7 +8948,7 @@
           "type": "text/plain"
          },
          "key": "active",
-         "value": "false"
+         "value": "true"
         }
        ],
        "variable": []
@@ -6547,7 +8967,7 @@
      },
      "response": [
       {
-       "id": "7ef46523-895f-463a-a956-31dbc9160592",
+       "id": "53305ed9-2e1e-49b4-8db2-1dce0116de94",
        "name": "Otel listesi (provider'lara gore gruplu)",
        "originalRequest": {
         "url": {
@@ -6576,7 +8996,7 @@
             "type": "text/plain"
            },
            "key": "active",
-           "value": "false"
+           "value": "true"
           }
          ],
          "variable": []
@@ -6601,7 +9021,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "854aaaaf-5fe8-4e7b-8283-8a5e9238f6b5",
+       "id": "e6f130d5-eefc-41ed-ba1f-c5281c34d718",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -6630,7 +9050,7 @@
             "type": "text/plain"
            },
            "key": "active",
-           "value": "false"
+           "value": "true"
           }
          ],
          "variable": []
@@ -6661,7 +9081,7 @@
      }
     },
     {
-     "id": "9f224bf1-f2f4-417e-a5d4-8888b6f9864b",
+     "id": "1cb5488b-6008-49d6-a4f5-55fe8d7928ba",
      "name": "Tek otel detayi",
      "request": {
       "name": "Tek otel detayi",
@@ -6704,7 +9124,7 @@
      },
      "response": [
       {
-       "id": "863ddbac-e86e-47b4-b405-657a0f4ae475",
+       "id": "afc3b29a-7212-427e-bd12-fca125dbdfe3",
        "name": "Otel detayi",
        "originalRequest": {
         "url": {
@@ -6740,7 +9160,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "72b26092-d681-4028-8119-2d11f0d53f0c",
+       "id": "1106d44a-d5d7-4d35-848c-6191f970569b",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -6782,7 +9202,7 @@
      }
     },
     {
-     "id": "d40cc58c-bc08-4e05-ba9e-c9194d975db0",
+     "id": "7e7143c7-adcf-4ec0-b09f-13c168d00196",
      "name": "Otel URL(ler)ini guncelle",
      "request": {
       "name": "Otel URL(ler)ini guncelle",
@@ -6840,7 +9260,7 @@
      },
      "response": [
       {
-       "id": "b03c64ce-a1d8-47a7-a74f-5071a00856cf",
+       "id": "2afcff71-9b8d-4e1f-ae24-515954ad8df9",
        "name": "Guncellendi",
        "originalRequest": {
         "url": {
@@ -6889,7 +9309,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "da889a7a-00b4-4bac-b8ea-f3b518dfda7d",
+       "id": "3c0aae75-3984-4d36-9bf0-e9653e6ae312",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -6944,7 +9364,7 @@
      }
     },
     {
-     "id": "707d406e-1e8d-414f-b3fc-16ce3f4a50bc",
+     "id": "757a2574-6cd7-4328-b4d1-925666191bba",
      "name": "Oteli sil (tum provider eslestirmeleri)",
      "request": {
       "name": "Oteli sil (tum provider eslestirmeleri)",
@@ -6987,7 +9407,7 @@
      },
      "response": [
       {
-       "id": "eb9147b5-8e1d-4a2a-80c7-04c275d85c10",
+       "id": "06ec2348-1976-4a92-b2f1-c6d8eb9acc9b",
        "name": "Silindi",
        "originalRequest": {
         "url": {
@@ -7023,7 +9443,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "28707fae-34e8-4b75-a02e-284500f2f0cc",
+       "id": "c458731c-e7d3-4027-aaee-057fd46d613b",
        "name": "Bulunamadi",
        "originalRequest": {
         "url": {
@@ -7071,7 +9491,7 @@
    "description": "",
    "item": [
     {
-     "id": "ee242157-0f22-4dfc-a240-80a159c426f0",
+     "id": "7f1330f7-817d-4d72-87ca-702b3aa5d4e7",
      "name": "Eslestirmeleri listele / ara",
      "request": {
       "name": "Eslestirmeleri listele / ara",
@@ -7111,7 +9531,7 @@
           "type": "text/plain"
          },
          "key": "active",
-         "value": "false"
+         "value": "true"
         }
        ],
        "variable": []
@@ -7136,7 +9556,7 @@
      },
      "response": [
       {
-       "id": "ab9d0975-591f-4fb2-8154-115489ee1d64",
+       "id": "404cc563-d0b1-4515-87bd-fc5a500f748d",
        "name": "Eslestirme listesi",
        "originalRequest": {
         "url": {
@@ -7174,7 +9594,7 @@
             "type": "text/plain"
            },
            "key": "active",
-           "value": "false"
+           "value": "true"
           }
          ],
          "variable": []
@@ -7209,7 +9629,7 @@
        "_postman_previewlanguage": "json"
       },
       {
-       "id": "978edc91-8ca3-4c3b-92fb-cfe901eabe17",
+       "id": "783b4e1e-6e0b-4613-825a-d6f8161121dc",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -7247,7 +9667,7 @@
             "type": "text/plain"
            },
            "key": "active",
-           "value": "false"
+           "value": "true"
           }
          ],
          "variable": []
@@ -7278,7 +9698,7 @@
      }
     },
     {
-     "id": "bdef5028-2a54-4495-b6f0-825c8cb08085",
+     "id": "85f1cdda-fa73-4e30-933c-14cd90c0d359",
      "name": "Tek eslestirme ekle",
      "request": {
       "name": "Tek eslestirme ekle",
@@ -7324,7 +9744,7 @@
      },
      "response": [
       {
-       "id": "5f317fc3-ca73-4ce8-90cc-68885aa0ba73",
+       "id": "115d3387-2a02-42a3-97e8-1ea519e78ec5",
        "name": "Eslestirme olusturuldu",
        "originalRequest": {
         "url": {
@@ -7372,7 +9792,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "42efd8b5-36a3-442e-91c3-9764582c1b4c",
+       "id": "535d4246-fefc-42b8-980a-0c8b8c8e55c6",
        "name": "Eksik parametre veya validasyon hatasi",
        "originalRequest": {
         "url": {
@@ -7420,7 +9840,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "4020a212-996d-44c2-b84d-18bd6674c30e",
+       "id": "5e47d761-df7c-4a48-b4e1-b23fd62dac78",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -7468,7 +9888,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "cbba6bf3-4e4a-4b2a-9e47-9ac9d8408e41",
+       "id": "137e95f6-a499-45d8-b5c5-ff2abbb14663",
        "name": "Bu provider + internalHotelId zaten mevcut",
        "originalRequest": {
         "url": {
@@ -7522,7 +9942,7 @@
      }
     },
     {
-     "id": "65beb2b9-2399-413c-84ae-f2fe17cd011e",
+     "id": "8bbc8c36-4808-4a27-883f-13bd5320622b",
      "name": "Toplu eslestirme ekle/guncelle (upsert)",
      "request": {
       "name": "Toplu eslestirme ekle/guncelle (upsert)",
@@ -7569,7 +9989,7 @@
      },
      "response": [
       {
-       "id": "236d67cc-c6b4-428b-aa50-c7b857971ccd",
+       "id": "1fe1a714-4c53-404f-be78-9ca335b3bd03",
        "name": "Eslestirmeler olusturuldu",
        "originalRequest": {
         "url": {
@@ -7618,7 +10038,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "4b8b7c47-f6ce-4073-8fd7-15487c5dfa0b",
+       "id": "3b103f5e-84d8-4018-bf8c-5fe4c36fbf8b",
        "name": "Eksik parametre veya validasyon hatasi",
        "originalRequest": {
         "url": {
@@ -7667,7 +10087,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "dcd15562-30e2-48fc-90ac-cdaa305eeae9",
+       "id": "8020dfa7-7667-4126-afeb-831efe05273d",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -7722,7 +10142,7 @@
      }
     },
     {
-     "id": "46f2200a-6fd1-47e6-b256-89fe7e7d1edb",
+     "id": "4bf96191-55f0-4f1c-9f91-9d76b20659c5",
      "name": "Eslestirme guncelle",
      "request": {
       "name": "Eslestirme guncelle",
@@ -7780,7 +10200,7 @@
      },
      "response": [
       {
-       "id": "ba4c0985-8165-4115-b37f-064e58821641",
+       "id": "5a951d7d-4a31-4f1a-b0be-17063330a51a",
        "name": "Eslestirme guncellendi",
        "originalRequest": {
         "url": {
@@ -7829,7 +10249,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "e37a831d-d5a6-40f9-a117-9111bf36eddd",
+       "id": "a990506f-fd95-4608-9628-f40438e7e00c",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -7878,7 +10298,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "fe9fc0e9-c138-4d95-90ec-5332d9cab1ff",
+       "id": "e7ea47cf-780f-4b63-8dd5-3edfbc9dca0b",
        "name": "Eslestirme bulunamadi",
        "originalRequest": {
         "url": {
@@ -7933,7 +10353,7 @@
      }
     },
     {
-     "id": "281739f7-45cb-45f6-a4cd-118fd78a7de3",
+     "id": "05ff34cd-63eb-4ba0-8299-6bb4c8a5e879",
      "name": "Eslestirme sil",
      "request": {
       "name": "Eslestirme sil",
@@ -7976,7 +10396,7 @@
      },
      "response": [
       {
-       "id": "aca2497e-b21a-4ab9-bc4c-b79a06f00d5a",
+       "id": "3d009268-061e-477f-b2a0-b5c0c9bd536b",
        "name": "Eslestirme silindi",
        "originalRequest": {
         "url": {
@@ -8012,7 +10432,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "8bfe2167-cfdf-400e-8475-3377139f5451",
+       "id": "e77e0357-629f-49b3-894c-b8bf23fc4531",
        "name": "Gecersiz API anahtari",
        "originalRequest": {
         "url": {
@@ -8048,7 +10468,7 @@
        "_postman_previewlanguage": "text"
       },
       {
-       "id": "51dbacee-07c7-4cb9-ac75-9f4572e1672a",
+       "id": "fe735c07-ce2c-4423-b18a-dd9551129f9e",
        "name": "Eslestirme bulunamadi",
        "originalRequest": {
         "url": {
@@ -8100,10 +10520,13 @@
   }
  ],
  "info": {
-  "_postman_id": "ada6b739-8298-4efa-967a-71cd0742e2c4",
+  "_postman_id": "4e8e8dfc-eb73-4e17-9dcb-11c973abd306",
   "name": "PriceBot API (Go)",
   "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-  "description": "OpenAPI'den uretildi (internal/api/openapi.json). Ortam degiskenleri: baseUrl, apiKey, adminToken, requestId."
+  "description": {
+   "content": "Birlesik cok-saglayicili otel fiyat botu (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir.",
+   "type": "text/plain"
+  }
  },
  "auth": {
   "type": "apikey",
