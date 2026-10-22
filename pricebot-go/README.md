@@ -3,7 +3,24 @@
 Birlesik cok-saglayicili otel fiyat botu. `priceBot/` altindaki TypeScript surumunun Go'ya cevrilmis ve
 production icin sertlestirilmis halidir. API yollari, JSON alan adlari ve veritabani semasi TS ile uyumludur.
 
-Provider'lar: etstur, tatilsepeti, jolly, tatilbudur, touristica (headless Chromium), setur, gezinomi.
+Provider'lar (siteler) ve calisma sekli:
+
+| Site | Fiyat | Paket | Tarayici | Not |
+|---|---|---|---|---|
+| etstur | ✓ | ✓ | yok | `room/multi` uclari |
+| tatilsepeti | ✓ | ✓ | yedek | oturum otomatik (HTTP); engellenirse Chromium'dan cf_clearance |
+| jolly | ✓ | ✓ | yok | |
+| tatilbudur | ✓ | ✓ | yok | Akamai + CSRF token (HTTP) |
+| touristica | ✓ | ✓ | evet | Cloudflare; kalici sekme havuzu (~2-6 sn) |
+| setur | ✓ | ✓ (tek en uygun) | yok | yavas sayfa (20-40 sn) |
+| gezinomi | ✓ | ✓ | hafif | x-client-key WASM worker'da uretilir: tek kalici sekme sadece anahtar icin, istekler HTTP |
+| enuygun | ✓ | — | yok | JSON API; paket yok (dinamik paket) |
+| mngturizm | ✓ | ✓ | yok | Referer sart |
+| tatilsitesi | ✓ | ✓ | yok | Methods.aspx JSON; ucus+transfer toplami hesaplanir |
+| prontotour | ✓ | ✓ | yok | webapi JSON |
+
+Her sitenin ayrintisi: `docs/providers/<site>.md`; yeni site ekleme: `docs/provider-authoring.md`.
+Iki musteri tipi (API / web portal) ve admin paneli: `docs/customers.md`.
 
 ## Hizli baslangic (Docker)
 
