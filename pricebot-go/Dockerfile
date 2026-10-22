@@ -6,14 +6,23 @@ RUN npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
 COPY ui/ .
 RUN npm run build
 
+# ---- Musteri portali (React/Vite) ----
+FROM node:22-alpine AS portal
+WORKDIR /ui
+COPY ui-portal/package.json ui-portal/package-lock.json* ./
+RUN npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
+COPY ui-portal/ .
+RUN npm run build
+
 # ---- Go derleme ----
 FROM golang:1.23-bookworm AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-# Derlenmis panel Go'ya gomulur (internal/api/adminui/dist)
+# Derlenmis panel ve portal Go'ya gomulur
 COPY --from=ui /ui/dist/ ./internal/api/adminui/dist/
+COPY --from=portal /ui/dist/ ./internal/api/portalui/dist/
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/pricebot ./cmd/server
 
 # ---- Runtime (Chromium dahil: Touristica icin headless tarayici gerekir) ----
