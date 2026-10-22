@@ -1,0 +1,86 @@
+{
+ "data": {
+  "roomDetails": [
+   {
+    "hotelId": 932,
+    "roomId": 1485,
+    "roomName": "Acapulco Villa Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1485,
+      "conceptTypeId": 24,
+      "roomOrderId": 1,
+      "hotelRoomName": "Acapulco Villa Odası",
+      "conceptName": "Yarım Pansiyon",
+      "totalPrice": 51000.0,
+      "totalDiscountedPrice": 31620.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 0,
+      "flightPackageTotalDiscountedPrice": 0,
+      "flightPackageDiscountRate": 0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   },
+   {
+    "hotelId": 932,
+    "roomId": 1485,
+    "roomName": "Acapulco Villa Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1485,
+      "conceptTypeId": 22,
+      "roomOrderId": 1,
+      "hotelRoomName": "Acapulco Villa Odası",
+      "conceptName": "Tam Pansiyon Plus",
+      "totalPrice": 61500.0,
+      "totalDiscountedPrice": 38130.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 0,
+      "flightPackageTotalDiscountedPrice": 0,
+      "flightPackageDiscountRate": 0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   },
+   {
+    "hotelId": 932,
+    "roomId": 1483,
+    "roomName": "Kara Manzaralı Otel Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1483,
+      "conceptTypeId": 24,
+      "roomOrderId": 1,
+      "hotelRoomName": "Kara Manzaralı Otel Odası",
+      "conceptName": "Yarım Pansiyon",
+      "totalPrice": 52500.0,
+      "totalDiscountedPrice": 32550.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 0,
+      "flightPackageTotalDiscountedPrice": 0,
+      "flightPackageDiscountRate": 0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   }
+  ],
+  "flights": null,
+  "transferDetailList": null,
+  "searchId": "e15f1012-4087-4f4c-b394-eb895135ac79"
+ },
+ "status": "Success",
+ "message": "İşlem başarıyla tamamlandı"
+}

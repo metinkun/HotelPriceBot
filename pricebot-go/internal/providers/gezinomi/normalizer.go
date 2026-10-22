@@ -19,6 +19,9 @@ func normalizePrice(data *PriceResponse, hotelName *string) *types.NormalizedPri
 	if data != nil && data.Data != nil {
 		for _, room := range data.Data.RoomDetails {
 			for _, rd := range room.ReservationDetails {
+				if rd.Absent {
+					continue
+				}
 				price := rd.TotalDiscountedPrice
 				if price == nil {
 					price = rd.TotalPrice
@@ -53,6 +56,9 @@ func normalizePackages(data *PriceResponse, nightCount *int) []types.NormalizedP
 	if data != nil && data.Data != nil {
 		for _, room := range data.Data.RoomDetails {
 			for _, rd := range room.ReservationDetails {
+				if rd.Absent {
+					continue
+				}
 				price := orZero(rd.FlightPackageTotalDiscountedPrice)
 				if price == 0 {
 					price = orZero(rd.FlightPackageTotalPrice)

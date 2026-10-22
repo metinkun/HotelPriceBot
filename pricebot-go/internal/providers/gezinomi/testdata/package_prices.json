@@ -1,0 +1,119 @@
+{
+ "data": {
+  "roomDetails": [
+   {
+    "hotelId": 932,
+    "roomId": 1485,
+    "roomName": "Acapulco Villa Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1485,
+      "conceptTypeId": 24,
+      "roomOrderId": 1,
+      "hotelRoomName": "Acapulco Villa Odası",
+      "conceptName": "Yarım Pansiyon",
+      "totalPrice": 51000.0,
+      "totalDiscountedPrice": 31620.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 60546.09,
+      "flightPackageTotalDiscountedPrice": 41166.09,
+      "flightPackageDiscountRate": 38.0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   },
+   {
+    "hotelId": 932,
+    "roomId": 1485,
+    "roomName": "Acapulco Villa Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1485,
+      "conceptTypeId": 22,
+      "roomOrderId": 1,
+      "hotelRoomName": "Acapulco Villa Odası",
+      "conceptName": "Tam Pansiyon Plus",
+      "totalPrice": 61500.0,
+      "totalDiscountedPrice": 38130.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 71046.09,
+      "flightPackageTotalDiscountedPrice": 47676.09,
+      "flightPackageDiscountRate": 38.0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   },
+   {
+    "hotelId": 932,
+    "roomId": 1483,
+    "roomName": "Kara Manzaralı Otel Odası",
+    "apiProvider": null,
+    "apiId": 932,
+    "capacity": 4,
+    "reservationDetails": [
+     {
+      "absent": false,
+      "hotelRoomId": 1483,
+      "conceptTypeId": 24,
+      "roomOrderId": 1,
+      "hotelRoomName": "Kara Manzaralı Otel Odası",
+      "conceptName": "Yarım Pansiyon",
+      "totalPrice": 52500.0,
+      "totalDiscountedPrice": 32550.0,
+      "discountRate": 38.0,
+      "flightPackageTotalPrice": 62046.09,
+      "flightPackageTotalDiscountedPrice": 42096.09,
+      "flightPackageDiscountRate": 38.0,
+      "roomCapacity": "En Fazla 3 Yetişkin veya 3 yetişkin + 1 çocuk"
+     }
+    ]
+   }
+  ],
+  "flights": [
+   {
+    "flight": {
+     "provider": "CYPRUSXP",
+     "segments": [
+      {
+       "departure": {
+        "code": "SAW"
+       },
+       "arrival": {
+        "code": "ECN"
+       },
+       "departureDate": "5.12.2026 05:45:00"
+      }
+     ]
+    }
+   },
+   {
+    "flight": {
+     "provider": "CYPRUSXP",
+     "segments": [
+      {
+       "departure": {
+        "code": "SAW"
+       },
+       "arrival": {
+        "code": "ECN"
+       },
+       "departureDate": "5.12.2026 08:25:00"
+      }
+     ]
+    }
+   }
+  ],
+  "transferDetailList": null,
+  "searchId": "38c495ad-64a7-46ea-9274-f9f75b6ad623"
+ },
+ "status": "Success",
+ "message": "İşlem başarıyla tamamlandı"
+}
