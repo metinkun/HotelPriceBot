@@ -7,11 +7,13 @@ import Usage from "./pages/Usage.jsx";
 import Logs from "./pages/Logs.jsx";
 import Hotels from "./pages/Hotels.jsx";
 import Admins from "./pages/Admins.jsx";
+import Schedules from "./pages/Schedules.jsx";
 
 const PAGES = [
   ["dashboard", "Özet", Dashboard],
   ["clients", "Müşteriler", Clients],
   ["plans", "Planlar", Plans],
+  ["schedules", "Planlı Aramalar", Schedules],
   ["usage", "Kullanım", Usage],
   ["logs", "İstek Logları", Logs],
   ["hotels", "Oteller", Hotels],

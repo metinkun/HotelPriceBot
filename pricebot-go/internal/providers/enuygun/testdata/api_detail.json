@@ -1,0 +1,41 @@
+{
+ "data": {
+  "slug": "club-simena",
+  "isSaleable": true,
+  "hotel": {
+   "id": null,
+   "details": {
+    "id": 580531,
+    "name": "Club Simena",
+    "slug": "club-simena",
+    "domestic": false,
+    "isCyprus": true
+   }
+  },
+  "region": {
+   "id": 2000001,
+   "slug": "girne",
+   "name": "Girne"
+  },
+  "defaultParameters": {
+   "countryRegion": {
+    "id": 2000000
+   },
+   "region": {
+    "id": 2000001,
+    "slug": "girne",
+    "name": "Girne",
+    "nameLong": "Girne, Kıbrıs",
+    "countryCode": "TR",
+    "type": 3,
+    "isDomestic": false
+   },
+   "hotel": {
+    "id": 580531,
+    "slug": "club-simena",
+    "name": "Club Simena"
+   }
+  }
+ },
+ "meta": null
+}

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api.js";
+import ClientDetail from "./ClientDetail.jsx";
 
 export default function Clients() {
+  const [detailId, setDetailId] = useState(null);
   const [list, setList] = useState([]);
   const [plans, setPlans] = useState([]);
   const [search, setSearch] = useState("");
@@ -36,6 +38,7 @@ export default function Clients() {
     <div>
       <h2>Müşteriler</h2>
       {err && <div className="err">{err}</div>}
+      {detailId && <ClientDetail clientId={detailId} onClose={() => setDetailId(null)} />}
       <div className="card">
         <h3>Yeni müşteri</h3>
         <form className="row" onSubmit={create}>
@@ -60,7 +63,7 @@ export default function Clients() {
         {sel && (
           <div className="card" style={{ flex: 1, minWidth: 420 }}>
             <div className="row" style={{ justifyContent: "space-between" }}><h3>{sel.client.name} <span className="muted">#{sel.client.id}</span></h3>
-              <div className="row"><button className="btn secondary" onClick={() => update({ isActive: !sel.client.isActive })}>{sel.client.isActive ? "Pasife al" : "Aktifleştir"}</button><button className="btn danger" onClick={remove}>Sil</button></div></div>
+              <div className="row"><button className="btn" onClick={() => setDetailId(sel.client.id)}>Siteler & portal</button><button className="btn secondary" onClick={() => update({ isActive: !sel.client.isActive })}>{sel.client.isActive ? "Pasife al" : "Aktifleştir"}</button><button className="btn danger" onClick={remove}>Sil</button></div></div>
             <div className="row" style={{ marginTop: 8 }}>
               <div><label>Plan</label><select value={sel.client.planId ?? ""} onChange={(e) => update({ planId: e.target.value ? Number(e.target.value) : null })}><option value="">(plansız)</option>{plans.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div>
               <div><label>Bugünkü kredi</label><div style={{ padding: "8px 0" }}><b>{sel.usedToday}</b></div></div>
