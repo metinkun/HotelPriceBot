@@ -1,0 +1,138 @@
+{
+ "data": [
+  {
+   "net_fiyat": 29406.6,
+   "brut_fiyat": 51000.0,
+   "afise_fiyat": 31620.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1485,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 35460.9,
+   "brut_fiyat": 61500.0,
+   "afise_fiyat": 38130.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1485,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 30271.5,
+   "brut_fiyat": 52500.0,
+   "afise_fiyat": 32550.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1483,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 36325.8,
+   "brut_fiyat": 63000.0,
+   "afise_fiyat": 39060.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1483,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 37190.7,
+   "brut_fiyat": 64500.0,
+   "afise_fiyat": 39990.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1484,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 43245.0,
+   "brut_fiyat": 75000.0,
+   "afise_fiyat": 46500.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 1484,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 46272.15,
+   "brut_fiyat": 80250.0,
+   "afise_fiyat": 49755.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 23675,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 56218.5,
+   "brut_fiyat": 97500.0,
+   "afise_fiyat": 60450.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 23675,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 62272.8,
+   "brut_fiyat": 108000.0,
+   "afise_fiyat": 66960.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 23676,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 76111.2,
+   "brut_fiyat": 132000.0,
+   "afise_fiyat": 81840.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 23676,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 91679.4,
+   "brut_fiyat": 159000.0,
+   "afise_fiyat": 98580.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 25475,
+   "hotel_id": 932,
+   "concept_type_id": 24,
+   "reasons": [],
+   "intDiscountPercent": 38
+  },
+  {
+   "net_fiyat": 113301.9,
+   "brut_fiyat": 196500.0,
+   "afise_fiyat": 121830.0,
+   "afise_indirim_oranı": 38,
+   "room_id": 25475,
+   "hotel_id": 932,
+   "concept_type_id": 22,
+   "reasons": [],
+   "intDiscountPercent": 38
+  }
+ ],
+ "success": true,
+ "message": null
+}

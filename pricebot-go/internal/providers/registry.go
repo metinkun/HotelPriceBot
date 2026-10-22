@@ -17,6 +17,7 @@ import (
 	"pricebot/internal/providers/prontotour"
 	"pricebot/internal/providers/setur"
 	"pricebot/internal/providers/tatilbudur"
+	"pricebot/internal/providers/tatilcikus"
 	"pricebot/internal/providers/tatilsepeti"
 	"pricebot/internal/providers/tatilsitesi"
 	"pricebot/internal/providers/touristica"
@@ -41,6 +42,7 @@ func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r.register(mngturizm.New())
 	r.register(tatilsitesi.New())
 	r.register(prontotour.New())
+	r.register(tatilcikus.New())
 	return r
 }
 

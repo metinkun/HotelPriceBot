@@ -1,0 +1,335 @@
+{
+ "data": [
+  {
+   "HotelId": "ACAPULCO",
+   "RoomItems": [
+    {
+     "Rooms": [
+      {
+       "BoardId": "417",
+       "RoomId": "38",
+       "SalePrice": 28050.0,
+       "GrossPrice": 51000.0,
+       "CommissionAmount": 2805.0,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 25245.0,
+       "DailyPrices": [
+        {
+         "SaleAmount": 9350.0,
+         "NetAmount": 8415.0,
+         "GrossAmount": 17000.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 9350.0,
+         "NetAmount": 8415.0,
+         "GrossAmount": 17000.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 9350.0,
+         "NetAmount": 8415.0,
+         "GrossAmount": 17000.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "417",
+       "RoomId": "404",
+       "SalePrice": 28875.0,
+       "GrossPrice": 52500.0,
+       "CommissionAmount": 2887.5,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 25987.5,
+       "DailyPrices": [
+        {
+         "SaleAmount": 9625.0,
+         "NetAmount": 8662.5,
+         "GrossAmount": 17500.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 9625.0,
+         "NetAmount": 8662.5,
+         "GrossAmount": 17500.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 9625.0,
+         "NetAmount": 8662.5,
+         "GrossAmount": 17500.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "427",
+       "RoomId": "38",
+       "SalePrice": 33825.0,
+       "GrossPrice": 61500.0,
+       "CommissionAmount": 3382.5,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 30442.5,
+       "DailyPrices": [
+        {
+         "SaleAmount": 11275.0,
+         "NetAmount": 10147.5,
+         "GrossAmount": 20500.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 11275.0,
+         "NetAmount": 10147.5,
+         "GrossAmount": 20500.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 11275.0,
+         "NetAmount": 10147.5,
+         "GrossAmount": 20500.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "427",
+       "RoomId": "404",
+       "SalePrice": 34650.0,
+       "GrossPrice": 63000.0,
+       "CommissionAmount": 3465.0,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 31185.0,
+       "DailyPrices": [
+        {
+         "SaleAmount": 11550.0,
+         "NetAmount": 10395.0,
+         "GrossAmount": 21000.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 11550.0,
+         "NetAmount": 10395.0,
+         "GrossAmount": 21000.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 11550.0,
+         "NetAmount": 10395.0,
+         "GrossAmount": 21000.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "417",
+       "RoomId": "405",
+       "SalePrice": 35475.0,
+       "GrossPrice": 64500.0,
+       "CommissionAmount": 3547.5,
+       "CommissionPercentEB": 45,
+       "StopSale": true,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 31927.5,
+       "DailyPrices": [
+        {
+         "SaleAmount": 11825.0,
+         "NetAmount": 10642.5,
+         "GrossAmount": 21500.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 11825.0,
+         "NetAmount": 10642.5,
+         "GrossAmount": 21500.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 11825.0,
+         "NetAmount": 10642.5,
+         "GrossAmount": 21500.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "427",
+       "RoomId": "405",
+       "SalePrice": 41250.0,
+       "GrossPrice": 75000.0,
+       "CommissionAmount": 4125.0,
+       "CommissionPercentEB": 45,
+       "StopSale": true,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 37125.0,
+       "DailyPrices": [
+        {
+         "SaleAmount": 13750.0,
+         "NetAmount": 12375.0,
+         "GrossAmount": 25000.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 13750.0,
+         "NetAmount": 12375.0,
+         "GrossAmount": 25000.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 13750.0,
+         "NetAmount": 12375.0,
+         "GrossAmount": 25000.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "417",
+       "RoomId": "1928",
+       "SalePrice": 44137.5,
+       "GrossPrice": 80250.0,
+       "CommissionAmount": 4413.75,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 39723.75,
+       "DailyPrices": [
+        {
+         "SaleAmount": 14712.5,
+         "NetAmount": 13241.25,
+         "GrossAmount": 26750.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 14712.5,
+         "NetAmount": 13241.25,
+         "GrossAmount": 26750.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 14712.5,
+         "NetAmount": 13241.25,
+         "GrossAmount": 26750.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "427",
+       "RoomId": "1928",
+       "SalePrice": 53625.0,
+       "GrossPrice": 97500.0,
+       "CommissionAmount": 5362.5,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 48262.5,
+       "DailyPrices": [
+        {
+         "SaleAmount": 17875.0,
+         "NetAmount": 16087.5,
+         "GrossAmount": 32500.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 17875.0,
+         "NetAmount": 16087.5,
+         "GrossAmount": 32500.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 17875.0,
+         "NetAmount": 16087.5,
+         "GrossAmount": 32500.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "417",
+       "RoomId": "1888",
+       "SalePrice": 59400.0,
+       "GrossPrice": 108000.0,
+       "CommissionAmount": 5940.0,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 53460.0,
+       "DailyPrices": [
+        {
+         "SaleAmount": 19800.0,
+         "NetAmount": 17820.0,
+         "GrossAmount": 36000.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 19800.0,
+         "NetAmount": 17820.0,
+         "GrossAmount": 36000.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 19800.0,
+         "NetAmount": 17820.0,
+         "GrossAmount": 36000.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      },
+      {
+       "BoardId": "427",
+       "RoomId": "1888",
+       "SalePrice": 72600.0,
+       "GrossPrice": 132000.0,
+       "CommissionAmount": 7260.0,
+       "CommissionPercentEB": 45,
+       "StopSale": false,
+       "Release": false,
+       "AskSale": false,
+       "NetPrice": 65340.0,
+       "DailyPrices": [
+        {
+         "SaleAmount": 24200.0,
+         "NetAmount": 21780.0,
+         "GrossAmount": 44000.0,
+         "Date": "2026-12-05T00:00:00"
+        },
+        {
+         "SaleAmount": 24200.0,
+         "NetAmount": 21780.0,
+         "GrossAmount": 44000.0,
+         "Date": "2026-12-06T00:00:00"
+        },
+        {
+         "SaleAmount": 24200.0,
+         "NetAmount": 21780.0,
+         "GrossAmount": 44000.0,
+         "Date": "2026-12-07T00:00:00"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "success": true,
+ "message": null
+}

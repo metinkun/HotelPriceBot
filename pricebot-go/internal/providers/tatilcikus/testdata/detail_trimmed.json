@@ -1,0 +1,258 @@
+{
+ "data": {
+  "hotel": {
+   "id": 5,
+   "name": "Acapulco Resort Hotel & Spa",
+   "url": "acapulco-resort-hotel-spa",
+   "countryId": 53,
+   "cityId": 83,
+   "districtId": 985,
+   "priceOperator": 4,
+   "puzzleId": "HTL_a8028cf4025953",
+   "coralId": "3764",
+   "gezinomiId": "932",
+   "akgunlerId": "ACAPULCO",
+   "commissionRate": 15,
+   "isActiveCustomerNetPriceCommission": false,
+   "customerNetPriceCommission": 0,
+   "hasPackage": true,
+   "packagePrice": 7680.0,
+   "packagePriceMinNight": 2,
+   "isShown": true
+  },
+  "rooms": [
+   {
+    "id": 7,
+    "name": "Villa Oda",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "58122"
+    ],
+    "gezinomiIds": [
+     "1485"
+    ],
+    "akgunlerIds": [
+     "38"
+    ]
+   },
+   {
+    "id": 8,
+    "name": "Standart Oda",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "58120"
+    ],
+    "gezinomiIds": [
+     "1483"
+    ],
+    "akgunlerIds": [
+     "404"
+    ]
+   },
+   {
+    "id": 230,
+    "name": "Deniz Manzaralı Oda",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "58121"
+    ],
+    "gezinomiIds": [
+     "1484"
+    ],
+    "akgunlerIds": [
+     "405"
+    ]
+   },
+   {
+    "id": 3061,
+    "name": "Palm Suite",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2209109"
+    ],
+    "gezinomiIds": [
+     "23675"
+    ],
+    "akgunlerIds": [
+     "1928"
+    ]
+   },
+   {
+    "id": 3364,
+    "name": "Garden Suite Oda",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "882949"
+    ],
+    "gezinomiIds": [
+     "23676"
+    ],
+    "akgunlerIds": [
+     "1888"
+    ]
+   },
+   {
+    "id": 3633,
+    "name": "Lagoon Suite",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "1200918"
+    ],
+    "gezinomiIds": [
+     "25475"
+    ],
+    "akgunlerIds": [
+     "1961"
+    ]
+   },
+   {
+    "id": 4727,
+    "name": "Acapulco Villa Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379586"
+    ],
+    "gezinomiIds": [
+     "36074"
+    ],
+    "akgunlerIds": [
+     "2028"
+    ]
+   },
+   {
+    "id": 4728,
+    "name": "Standart Oda Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379587"
+    ],
+    "gezinomiIds": [
+     "36076"
+    ],
+    "akgunlerIds": [
+     "2029"
+    ]
+   },
+   {
+    "id": 4729,
+    "name": "Deniz Manzaralı Oda Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379588"
+    ],
+    "gezinomiIds": [
+     "36078"
+    ],
+    "akgunlerIds": [
+     "2030"
+    ]
+   },
+   {
+    "id": 4730,
+    "name": "Palm Suite Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379589"
+    ],
+    "gezinomiIds": [
+     "36080"
+    ],
+    "akgunlerIds": [
+     "1856"
+    ]
+   },
+   {
+    "id": 4731,
+    "name": "Garden Suite Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379590"
+    ],
+    "gezinomiIds": [
+     "36082"
+    ],
+    "akgunlerIds": [
+     "2032"
+    ]
+   },
+   {
+    "id": 4732,
+    "name": "Lagoon Suite Derya Uluğ Gala Dahil",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "2379591"
+    ],
+    "gezinomiIds": [
+     "36084"
+    ],
+    "akgunlerIds": [
+     "2033"
+    ]
+   },
+   {
+    "id": 3390,
+    "name": "Acapulco Pine Court 1 Suite",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [],
+    "gezinomiIds": [],
+    "akgunlerIds": []
+   },
+   {
+    "id": 3391,
+    "name": "Acapulco Pine Court 2 Suite",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [],
+    "gezinomiIds": [],
+    "akgunlerIds": []
+   }
+  ],
+  "concepts": [
+   {
+    "id": 3,
+    "name": "Tam Pansiyon Plus",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "20"
+    ],
+    "gezinomiIds": [
+     "22"
+    ],
+    "akgunlerIds": [
+     "427"
+    ]
+   },
+   {
+    "id": 4,
+    "name": "Yarım Pansiyon",
+    "isShown": true,
+    "openForSale": true,
+    "coralIds": [
+     "21"
+    ],
+    "gezinomiIds": [
+     "24"
+    ],
+    "akgunlerIds": [
+     "417"
+    ]
+   }
+  ]
+ },
+ "success": true,
+ "message": null
+}

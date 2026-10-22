@@ -1,0 +1,42 @@
+{
+ "data": [
+  {
+   "price": 23797.5,
+   "originalPrice": 25050.0,
+   "discount": 5.0,
+   "saleStatus": 2,
+   "night": 3,
+   "currency": {
+    "sname": "TL"
+   },
+   "room": {
+    "id": 74389,
+    "name": "Aden Suit"
+   },
+   "meal": {
+    "id": 18,
+    "name": "Oda Kahvaltı"
+   }
+  },
+  {
+   "price": 24652.5,
+   "originalPrice": 25950.0,
+   "discount": 5.0,
+   "saleStatus": 2,
+   "night": 3,
+   "currency": {
+    "sname": "TL"
+   },
+   "room": {
+    "id": 74573,
+    "name": "Dublex Suit"
+   },
+   "meal": {
+    "id": 18,
+    "name": "Oda Kahvaltı"
+   }
+  }
+ ],
+ "success": true,
+ "message": null
+}
