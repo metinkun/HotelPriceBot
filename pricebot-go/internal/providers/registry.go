@@ -30,7 +30,7 @@ type Registry struct {
 func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r := &Registry{byName: map[string]provider.Provider{}}
 	r.register(etstur.New(cfg.EtsturCookie))
-	r.register(tatilsepeti.New(cfg.TatilSepetiCookie, cfg.TatilSepetiVerificationToken))
+	r.register(tatilsepeti.New(cfg.TatilSepetiCookie, cfg.TatilSepetiVerificationToken, tatilsepeti.WithBrowser(b)))
 	r.register(jolly.New())
 	r.register(tatilbudur.New())
 	r.register(touristica.New(b, cfg.TouristicaTabs, cfg.TouristicaSessionAge))
