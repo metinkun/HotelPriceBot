@@ -18,6 +18,7 @@ Provider'lar (siteler) ve calisma sekli:
 | mngturizm | ✓ | ✓ | yok | Referer sart |
 | tatilsitesi | ✓ | ✓ | yok | Methods.aspx JSON; ucus+transfer toplami hesaplanir |
 | prontotour | ✓ | ✓ | yok | webapi JSON |
+| tatilcikus | ✓ | — | yok | api.tatilcikus.com; tedarikci (Akgunler/Coral/Gezinomi) proxy; paket canli satilmiyor |
 
 Her sitenin ayrintisi: `docs/providers/<site>.md`; yeni site ekleme: `docs/provider-authoring.md`.
 Iki musteri tipi (API / web portal) ve admin paneli: `docs/customers.md`.
