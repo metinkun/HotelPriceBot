@@ -1,5 +1,6 @@
 .env
 /bin/
 /out/
-# Kok .gitignore "dist/" der; gomulu panel dizini (go:embed) depoda kalmali
+# Kok .gitignore "dist/" der; gomulu panel/portal dizinleri (go:embed) depoda kalmali
 !internal/api/adminui/dist/
+!internal/api/portalui/dist/

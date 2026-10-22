@@ -1,0 +1,503 @@
+package api
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+
+	"pricebot/internal/apperr"
+	"pricebot/internal/auth"
+	"pricebot/internal/db"
+	"pricebot/internal/portal"
+	"pricebot/internal/services"
+)
+
+// ---- Portal oturumu (musteri tipi 2) ----
+
+const portalUserKey ctxKey = "portalUser"
+
+func portalUserFrom(ctx context.Context) *db.PortalUser {
+	if v, ok := ctx.Value(portalUserKey).(*db.PortalUser); ok {
+		return v
+	}
+	return nil
+}
+
+// POST /api/portal/auth/login {email, password}
+func (s *Server) portalLogin(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	if err := decodeBody(r, &body); err != nil || body.Email == "" || body.Password == "" {
+		badRequest(w, "email ve password zorunlu")
+		return
+	}
+	if !s.usage.RateAllow(r.Context(), -2*int(hash32(clientIP(r))), 10) {
+		writeError(w, r, apperr.New(apperr.TooMany, "Cok fazla giris denemesi; 1 dk bekleyin"))
+		return
+	}
+	u, err := s.db.GetPortalUserByEmail(r.Context(), body.Email)
+	if err != nil || !u.IsActive || bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(body.Password)) != nil {
+		writeJSON(w, 401, map[string]any{"error": "E-posta veya sifre hatali"})
+		return
+	}
+	c, err := s.db.GetClient(r.Context(), u.ClientID)
+	if err != nil || !c.IsActive {
+		writeJSON(w, 403, map[string]any{"error": "Hesap pasif"})
+		return
+	}
+	exp := time.Now().Add(24 * time.Hour)
+	tok, err := auth.SignToken(s.jwtSecret(), auth.Claims{Sub: fmt.Sprint(u.ID), Email: u.Email, Role: "portal", Exp: exp.Unix(), Iat: time.Now().Unix()})
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	go s.db.TouchPortalLogin(context.Background(), u.ID)
+	writeJSON(w, 200, map[string]any{"token": tok, "expiresAt": exp, "user": map[string]any{"id": u.ID, "email": u.Email, "name": u.Name}, "client": map[string]any{"id": c.ID, "name": c.Name}})
+}
+
+// portal: Bearer JWT (role=portal) -> kullanici + musteri + plan + etkin siteler.
+func (s *Server) portal(h http.HandlerFunc) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		a := r.Header.Get("Authorization")
+		if !strings.HasPrefix(a, "Bearer ") {
+			writeJSON(w, 401, map[string]any{"error": "Oturum gerekli"})
+			return
+		}
+		claims, err := auth.ParseToken(s.jwtSecret(), a[7:])
+		if err != nil || claims.Role != "portal" {
+			writeJSON(w, 401, map[string]any{"error": "Gecersiz veya suresi dolmus oturum"})
+			return
+		}
+		uid, _ := strconv.Atoi(claims.Sub)
+		u, err := s.db.GetPortalUser(r.Context(), uid)
+		if err != nil || !u.IsActive {
+			writeJSON(w, 401, map[string]any{"error": "Kullanici bulunamadi veya pasif"})
+			return
+		}
+		c, err := s.db.GetClient(r.Context(), u.ClientID)
+		if err != nil || !c.IsActive {
+			writeJSON(w, 403, map[string]any{"error": "Hesap pasif"})
+			return
+		}
+		id := &auth.Identity{ClientID: c.ID, ClientName: c.Name, PlanCode: "portal"}
+		var plan *db.Plan
+		if c.PlanID != nil {
+			if pl, err := s.db.GetPlan(r.Context(), *c.PlanID); err == nil && pl.IsActive {
+				plan = pl
+				id.PlanCode = pl.Code
+			}
+		}
+		pl := planLimitsOf(plan)
+		eff, err := s.portalSvc.EffectiveProviders(r.Context(), c.ID, pl.AllowedProviders)
+		if err != nil {
+			writeError(w, r, err)
+			return
+		}
+		pl.AllowedProviders = eff // portalda etkin siteler = plan ∩ musteri ayari
+		if pl.DailyQuota > 0 {
+			used := s.usage.UsedToday(r.Context(), c.ID)
+			w.Header().Set("X-Quota-Limit", fmt.Sprint(pl.DailyQuota))
+			w.Header().Set("X-Quota-Used", fmt.Sprint(used))
+		}
+		ctx := auth.WithIdentity(r.Context(), id)
+		ctx = context.WithValue(ctx, planKey, pl)
+		ctx = context.WithValue(ctx, clientIDKey, fmt.Sprint(c.ID))
+		ctx = context.WithValue(ctx, portalUserKey, u)
+		h(w, r.WithContext(ctx))
+	})
+}
+
+// GET /api/portal/me
+func (s *Server) portalMe(w http.ResponseWriter, r *http.Request) {
+	u := portalUserFrom(r.Context())
+	id := auth.From(r.Context())
+	pl := planFrom(r.Context())
+	c, _ := s.db.GetClient(r.Context(), id.ClientID)
+	out := map[string]any{
+		"user":      map[string]any{"id": u.ID, "email": u.Email, "name": u.Name},
+		"client":    c,
+		"providers": s.portalSvc.ProviderList(pl.AllowedProviders),
+		"plan":      map[string]any{"code": id.PlanCode, "dailyQuota": pl.DailyQuota, "allowPackages": pl.AllowPackages, "allowFresh": pl.AllowFresh},
+		"usedToday": s.usage.UsedToday(r.Context(), id.ClientID),
+	}
+	writeJSON(w, 200, out)
+}
+
+// ---- Oteller ----
+
+// GET /api/portal/hotels
+func (s *Server) portalHotels(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	links, err := s.db.ListClientHotels(r.Context(), id.ClientID)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	pl := planFrom(r.Context())
+	eff := map[string]bool{}
+	for _, n := range pl.AllowedProviders {
+		eff[n] = true
+	}
+	out := []map[string]any{}
+	for _, l := range links {
+		item := map[string]any{"internalHotelId": l.InternalHotelID, "label": l.Label, "createdAt": l.CreatedAt, "hotelName": nil, "providers": []any{}}
+		if hv, err := s.hotels.Get(r.Context(), l.InternalHotelID); err == nil {
+			item["hotelName"] = hv.HotelName
+			provs := []map[string]any{}
+			for _, p := range hv.Providers {
+				provs = append(provs, map[string]any{"provider": p.Provider, "sourceUrl": p.SourceURL, "enabled": eff[p.Provider], "isActive": p.IsActive})
+			}
+			item["providers"] = provs
+		}
+		out = append(out, item)
+	}
+	writeJSON(w, 200, out)
+}
+
+// POST /api/portal/hotels {hotelName, urls:{provider:url}}
+func (s *Server) portalAddHotel(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	pl := planFrom(r.Context())
+	var body services.AddHotelInput
+	if err := decodeBody(r, &body); err != nil || len(body.URLs) == 0 || strings.TrimSpace(body.HotelName) == "" {
+		badRequest(w, "hotelName ve en az bir site URL'i zorunlu")
+		return
+	}
+	eff := map[string]bool{}
+	for _, n := range pl.AllowedProviders {
+		eff[n] = true
+	}
+	for k := range body.URLs {
+		if !eff[k] {
+			writeError(w, r, apperr.New(apperr.Forbidden, "'%s' sitesi bu hesap icin etkin degil", k))
+			return
+		}
+	}
+	body.InternalHotelID = "" // her musteri icin yeni otel kaydi
+	res, err := s.hotels.AddFromURLs(r.Context(), body)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	if err := s.db.LinkClientHotel(r.Context(), id.ClientID, res.InternalHotelID, nil); err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 201, res)
+}
+
+// PUT /api/portal/hotels/{id} {urls?, hotelName?}  (ek site URL'i / ad)
+func (s *Server) portalUpdateHotel(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	hid := r.PathValue("id")
+	if ok, _ := s.db.ClientOwnsHotel(r.Context(), id.ClientID, hid); !ok {
+		writeError(w, r, apperr.NotFoundf("Otel bulunamadi: %s", hid))
+		return
+	}
+	var body struct {
+		URLs      map[string]string `json:"urls"`
+		HotelName *string           `json:"hotelName"`
+	}
+	if err := decodeBody(r, &body); err != nil {
+		badRequest(w, "Gecersiz JSON govde")
+		return
+	}
+	pl := planFrom(r.Context())
+	eff := map[string]bool{}
+	for _, n := range pl.AllowedProviders {
+		eff[n] = true
+	}
+	for k := range body.URLs {
+		if !eff[k] {
+			writeError(w, r, apperr.New(apperr.Forbidden, "'%s' sitesi bu hesap icin etkin degil", k))
+			return
+		}
+	}
+	res, err := s.hotels.Update(r.Context(), hid, body.URLs, body.HotelName)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 200, res)
+}
+
+// DELETE /api/portal/hotels/{id}
+func (s *Server) portalRemoveHotel(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	hid := r.PathValue("id")
+	if err := s.db.UnlinkClientHotel(r.Context(), id.ClientID, hid); err != nil {
+		notFoundOr(w, r, err, "Otel bulunamadi")
+		return
+	}
+	// Baska musteri kullanmiyorsa mapping'leri de sil
+	var n int
+	_ = s.db.Pool.QueryRow(r.Context(), `SELECT count(*) FROM client_hotels WHERE internal_hotel_id=$1`, hid).Scan(&n)
+	if n == 0 {
+		_, _ = s.hotels.Delete(r.Context(), hid)
+	}
+	writeJSON(w, 200, map[string]any{"message": "Otel kaldirildi.", "internalHotelId": hid})
+}
+
+// ---- Aramalar ----
+
+func (s *Server) parseSearchRequest(r *http.Request) (portal.SearchRequest, error) {
+	var req portal.SearchRequest
+	if err := decodeBody(r, &req); err != nil {
+		return req, apperr.BadRequestf("Gecersiz JSON govde")
+	}
+	if req.CheckIn != "" || req.CheckOut != "" {
+		ci, co, err := validateStay(req.CheckIn, req.CheckOut, max(req.Adults, 1), req.Children, req.ChildAges)
+		if err != nil {
+			return req, err
+		}
+		req.CheckIn, req.CheckOut = ci, co
+	} else {
+		if req.DaysAhead <= 0 || req.DaysAhead > 400 {
+			return req, apperr.BadRequestf("daysAhead 1-400 arasinda olmali (veya checkIn/checkOut verin)")
+		}
+		if req.Nights <= 0 || req.Nights > 30 {
+			return req, apperr.BadRequestf("nights 1-30 arasinda olmali")
+		}
+	}
+	if req.Kind == "packages" {
+		if !reIATA.MatchString(strings.TrimSpace(req.AirportCode)) {
+			return req, apperr.BadRequestf("Paket aramasi icin airportCode (IATA) gerekli")
+		}
+		if pl := planFrom(r.Context()); pl != nil && !pl.AllowPackages {
+			return req, apperr.New(apperr.Forbidden, "Planiniz paket sorgusunu kapsamiyor")
+		}
+	}
+	if err := s.providerNamesValid(req.Providers); err != nil {
+		return req, err
+	}
+	return req, nil
+}
+
+// POST /api/portal/searches
+func (s *Server) portalRunSearch(w http.ResponseWriter, r *http.Request) {
+	req, err := s.parseSearchRequest(r)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	id := auth.From(r.Context())
+	u := portalUserFrom(r.Context())
+	pl := planFrom(r.Context())
+	if pl.DailyQuota > 0 && s.usage.UsedToday(r.Context(), id.ClientID) >= pl.DailyQuota {
+		writeError(w, r, apperr.New(apperr.TooMany, "Gunluk kredi kotasi doldu (%d)", pl.DailyQuota))
+		return
+	}
+	uid := u.ID
+	res, err := s.portalSvc.RunSearch(r.Context(), id, &uid, nil, req, pl.AllowedProviders)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 202, res)
+}
+
+// GET /api/portal/searches?limit=&scheduleId=
+func (s *Server) portalSearches(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	q := r.URL.Query()
+	list, err := s.db.ListSearches(r.Context(), id.ClientID, optInt(q.Get("scheduleId")), atoiDefault(q.Get("limit"), 50))
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 200, list)
+}
+
+// GET /api/portal/searches/{id}
+func (s *Server) portalSearch(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	sid, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	if err != nil {
+		badRequest(w, "Gecersiz id")
+		return
+	}
+	sr, err := s.db.GetSearch(r.Context(), id.ClientID, sid)
+	if err != nil {
+		notFoundOr(w, r, err, "Arama bulunamadi")
+		return
+	}
+	if sr.Status == "queued" || sr.Status == "running" {
+		w.Header().Set("Retry-After", "2")
+	}
+	writeJSON(w, 200, sr)
+}
+
+// ---- Planli aramalar ----
+
+type scheduleBody struct {
+	Name     string               `json:"name"`
+	Kind     string               `json:"kind"`
+	Request  portal.SearchRequest `json:"request"`
+	Weekdays []int16              `json:"weekdays"`
+	RunTime  string               `json:"runTime"`
+	Timezone string               `json:"timezone"`
+	IsActive *bool                `json:"isActive"`
+}
+
+func (s *Server) scheduleInput(r *http.Request, b scheduleBody) (db.ScheduleInput, error) {
+	if strings.TrimSpace(b.Name) == "" {
+		return db.ScheduleInput{}, apperr.BadRequestf("name zorunlu")
+	}
+	if b.Kind == "" {
+		b.Kind = "prices"
+	}
+	if b.Timezone == "" {
+		b.Timezone = "Europe/Istanbul"
+	}
+	if b.RunTime == "" {
+		b.RunTime = "09:00"
+	}
+	req := b.Request
+	req.Kind = b.Kind
+	if len(req.HotelIDs) == 0 {
+		return db.ScheduleInput{}, apperr.BadRequestf("En az bir otel secilmeli")
+	}
+	if req.DaysAhead <= 0 {
+		req.DaysAhead = 30
+	}
+	if req.Nights <= 0 {
+		req.Nights = 3
+	}
+	if req.Adults <= 0 {
+		req.Adults = 2
+	}
+	if b.Kind == "packages" && !reIATA.MatchString(strings.TrimSpace(req.AirportCode)) {
+		return db.ScheduleInput{}, apperr.BadRequestf("Paket plani icin airportCode (IATA) gerekli")
+	}
+	if err := s.providerNamesValid(req.Providers); err != nil {
+		return db.ScheduleInput{}, err
+	}
+	id := auth.From(r.Context())
+	for _, h := range req.HotelIDs {
+		if ok, _ := s.db.ClientOwnsHotel(r.Context(), id.ClientID, h); !ok {
+			return db.ScheduleInput{}, apperr.New(apperr.Forbidden, "Otel bu hesaba ait degil: %s", h)
+		}
+	}
+	active := b.IsActive == nil || *b.IsActive
+	var next *time.Time
+	if active {
+		n, err := portal.NextRun(b.Weekdays, b.RunTime, b.Timezone, time.Now())
+		if err != nil {
+			return db.ScheduleInput{}, err
+		}
+		next = &n
+	}
+	if b.Weekdays == nil {
+		b.Weekdays = []int16{}
+	}
+	return db.ScheduleInput{Name: b.Name, Kind: b.Kind, Request: req, Weekdays: b.Weekdays, RunTime: b.RunTime, Timezone: b.Timezone, IsActive: active, NextRun: next}, nil
+}
+
+func (s *Server) portalSchedules(w http.ResponseWriter, r *http.Request) {
+	id := auth.From(r.Context())
+	list, err := s.db.ListSchedules(r.Context(), id.ClientID)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 200, list)
+}
+
+func (s *Server) portalCreateSchedule(w http.ResponseWriter, r *http.Request) {
+	var b scheduleBody
+	if err := decodeBody(r, &b); err != nil {
+		badRequest(w, "Gecersiz JSON govde")
+		return
+	}
+	in, err := s.scheduleInput(r, b)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	id := auth.From(r.Context())
+	uid := portalUserFrom(r.Context()).ID
+	sc, err := s.db.CreateSchedule(r.Context(), id.ClientID, &uid, in)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 201, sc)
+}
+
+func (s *Server) portalUpdateSchedule(w http.ResponseWriter, r *http.Request) {
+	sid, ok := pathID(r)
+	if !ok {
+		badRequest(w, "Gecersiz id")
+		return
+	}
+	var b scheduleBody
+	if err := decodeBody(r, &b); err != nil {
+		badRequest(w, "Gecersiz JSON govde")
+		return
+	}
+	in, err := s.scheduleInput(r, b)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	id := auth.From(r.Context())
+	sc, err := s.db.UpdateSchedule(r.Context(), id.ClientID, sid, in)
+	if err != nil {
+		notFoundOr(w, r, err, "Plan bulunamadi")
+		return
+	}
+	writeJSON(w, 200, sc)
+}
+
+func (s *Server) portalDeleteSchedule(w http.ResponseWriter, r *http.Request) {
+	sid, ok := pathID(r)
+	if !ok {
+		badRequest(w, "Gecersiz id")
+		return
+	}
+	id := auth.From(r.Context())
+	if err := s.db.DeleteSchedule(r.Context(), id.ClientID, sid); err != nil {
+		notFoundOr(w, r, err, "Plan bulunamadi")
+		return
+	}
+	writeJSON(w, 200, map[string]any{"message": "Plan silindi.", "id": sid})
+}
+
+// POST /api/portal/schedules/{id}/run — plani simdi calistir
+func (s *Server) portalRunSchedule(w http.ResponseWriter, r *http.Request) {
+	sid, ok := pathID(r)
+	if !ok {
+		badRequest(w, "Gecersiz id")
+		return
+	}
+	id := auth.From(r.Context())
+	sc, err := s.db.GetSchedule(r.Context(), id.ClientID, sid)
+	if err != nil {
+		notFoundOr(w, r, err, "Plan bulunamadi")
+		return
+	}
+	var req portal.SearchRequest
+	if err := jsonUnmarshal(sc.Request, &req); err != nil {
+		writeError(w, r, err)
+		return
+	}
+	req.Kind = sc.Kind
+	pl := planFrom(r.Context())
+	uid := portalUserFrom(r.Context()).ID
+	res, err := s.portalSvc.RunSearch(r.Context(), id, &uid, &sid, req, pl.AllowedProviders)
+	if err != nil {
+		writeError(w, r, err)
+		return
+	}
+	writeJSON(w, 202, res)
+}
+
+func notFoundErr(err error) bool { return errors.Is(err, db.ErrNotFound) }

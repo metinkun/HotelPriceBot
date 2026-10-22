@@ -1,0 +1,481 @@
+{
+ "requestId": "fixture",
+ "status": true,
+ "messages": null,
+ "hotels": [
+  {
+   "data": {
+    "name": "Acapulco Resort Convention & Spa",
+    "slug": "acapulco-resort-convention-spa-580512",
+    "id": 580512,
+    "address": {
+     "city": {
+      "id": 2000001,
+      "name": "Girne",
+      "slug": "girne"
+     },
+     "country": {
+      "id": 2000000,
+      "name": "Kıbrıs",
+      "code": "CY"
+     }
+    },
+    "is_domestic_or_cyprus": true
+   },
+   "id": 580512,
+   "availabilityState": {
+    "Availability": 1
+   },
+   "hasCheapestResult": false,
+   "isDynamicPackageEligible": true,
+   "rooms": [
+    {
+     "roomId": "HRM_c630c48c0f007a",
+     "hiddenState": {
+      "hidden": false,
+      "history": []
+     },
+     "type": {
+      "id": 0,
+      "name": "Acapulco Villa",
+      "typeCode": "",
+      "characteristicCode": "",
+      "code": "HRM_c630c48c0f007a"
+     },
+     "offers": [
+      {
+       "id": "HRP_265c26de2c614744",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 16,
+        "code": "CPT_9c44c421a88f8a",
+        "description": "Yarım Pansiyon",
+        "parentCode": ""
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 17850
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 51000,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "33149.9999999999932133994",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "33150",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "667.97279023417722",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "33150",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      },
+      {
+       "id": "HRP_b08ecf1cada095",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 34,
+        "code": "CPT_c2418944f81d92",
+        "description": "Tam Pansiyon Plus",
+        "parentCode": "FB"
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 21525
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 61500,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "39974.9999999999918161581",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "39975",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "805.49659998827253",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "39975",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      }
+     ]
+    },
+    {
+     "roomId": "HRM_c07a630ffb0691",
+     "hiddenState": {
+      "hidden": false,
+      "history": []
+     },
+     "type": {
+      "id": 0,
+      "name": "Standart Oda",
+      "typeCode": "",
+      "characteristicCode": "",
+      "code": "HRM_c07a630ffb0691"
+     },
+     "offers": [
+      {
+       "id": "HRP_26b5a831844e801d",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 16,
+        "code": "CPT_9c44c421a88f8a",
+        "description": "Yarım Pansiyon",
+        "parentCode": ""
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 18375
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 52500,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "34124.9999999999930137935",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "34125",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "687.61904877047655",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "34125",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      },
+      {
+       "id": "HRP_f30d8039614cff",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 34,
+        "code": "CPT_c2418944f81d92",
+        "description": "Tam Pansiyon Plus",
+        "parentCode": "FB"
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 22050
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 63000,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "40949.9999999999916165522",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "40950",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "825.14285852457186",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "40950",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      }
+     ]
+    },
+    {
+     "roomId": "HRM_1c0f6679f8c30a",
+     "hiddenState": {
+      "hidden": false,
+      "history": []
+     },
+     "type": {
+      "id": 0,
+      "name": "Deniz Manzaralı Standart Oda",
+      "typeCode": "",
+      "characteristicCode": "",
+      "code": "HRM_1c0f6679f8c30a"
+     },
+     "offers": [
+      {
+       "id": "HRP_2650db518878f6ee",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 16,
+        "code": "CPT_9c44c421a88f8a",
+        "description": "Yarım Pansiyon",
+        "parentCode": ""
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 22575
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 64500,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "41924.9999999999914169463",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "41925",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "844.78911706087119",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "41925",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      },
+      {
+       "id": "HRP_26a00e67d301e860",
+       "provider": 10,
+       "offerType": "TOTAL",
+       "paymentType": "AT_WEB",
+       "freeChildAgeRange": "",
+       "concept": {
+        "id": 34,
+        "code": "CPT_c2418944f81d92",
+        "description": "Tam Pansiyon Plus",
+        "parentCode": "FB"
+       },
+       "roomClass": {
+        "code": "NRF",
+        "description": "Non-refundable",
+        "refundable": false,
+        "promotion": false,
+        "package": false,
+        "offer": false
+       },
+       "hiddenState": {
+        "hidden": false,
+        "history": []
+       },
+       "discountTags": [
+        {
+         "tag": "provider",
+         "discountString": "%35",
+         "label": "Discount",
+         "amount": 26250
+        }
+       ],
+       "adultCount": 2,
+       "childrenCount": 0,
+       "displayPrice": 0,
+       "discountFrom": 75000,
+       "saleable": true,
+       "isBestOffer": false,
+       "isRefundable": false,
+       "price": {
+        "total": {
+         "amount": "48749.999999999990019705",
+         "currency": "TRY"
+        }
+       },
+       "tryPrice": {
+        "total": {
+         "amount": "48750",
+         "currency": "TRY"
+        }
+       },
+       "currency_price": {
+        "total": {
+         "amount": "982.3129268149665",
+         "currency": "USD"
+        }
+       },
+       "paidCurrencyPrice": {
+        "currency": "TRY",
+        "amount": "48750",
+        "conversionRate": "1",
+        "viewCurrency": "TRY",
+        "version": "22800ed4bb83a7a05c3704e5013d26189001b115ce7092aa"
+       },
+       "hash": "x"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "paidCurrency": "TRY",
+ "displayCurrency": "TRY"
+}

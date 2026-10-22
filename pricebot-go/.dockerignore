@@ -3,3 +3,7 @@
 *.md
 ui/node_modules
 ui/dist
+ui-portal/node_modules
+ui-portal/dist
+bin/
+out/

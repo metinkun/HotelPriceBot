@@ -9,13 +9,17 @@ import (
 	"pricebot/internal/browser"
 	"pricebot/internal/config"
 	"pricebot/internal/provider"
+	"pricebot/internal/providers/enuygun"
 	"pricebot/internal/providers/etstur"
 	"pricebot/internal/providers/gezinomi"
 	"pricebot/internal/providers/jolly"
+	"pricebot/internal/providers/mngturizm"
+	"pricebot/internal/providers/prontotour"
 	"pricebot/internal/providers/setur"
 	"pricebot/internal/providers/tatilbudur"
 	"pricebot/internal/providers/tatilcikus"
 	"pricebot/internal/providers/tatilsepeti"
+	"pricebot/internal/providers/tatilsitesi"
 	"pricebot/internal/providers/touristica"
 )
 
@@ -28,12 +32,16 @@ type Registry struct {
 func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r := &Registry{byName: map[string]provider.Provider{}}
 	r.register(etstur.New(cfg.EtsturCookie))
-	r.register(tatilsepeti.New(cfg.TatilSepetiCookie, cfg.TatilSepetiVerificationToken))
+	r.register(tatilsepeti.New(cfg.TatilSepetiCookie, cfg.TatilSepetiVerificationToken, tatilsepeti.WithBrowser(b)))
 	r.register(jolly.New())
 	r.register(tatilbudur.New())
 	r.register(touristica.New(b, cfg.TouristicaTabs, cfg.TouristicaSessionAge))
 	r.register(setur.New())
 	r.register(gezinomi.New())
+	r.register(enuygun.New())
+	r.register(mngturizm.New())
+	r.register(tatilsitesi.New())
+	r.register(prontotour.New())
 	r.register(tatilcikus.New())
 	return r
 }

@@ -78,9 +78,13 @@ func main() {
 	jm := jobs.New(rc, priceSvc, pkgSvc, cfg.JobResultTTL, cfg.JobMaxQueued, 16)
 	defer jm.Stop()
 
+	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage})
+	apiSrv.Portal().Start() // yarim aramalari kapat + planli arama zamanlayicisi
+	defer apiSrv.Portal().Stop()
+
 	srv := &http.Server{
 		Addr:              fmt.Sprintf(":%d", cfg.Port),
-		Handler:           api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage}).Handler(),
+		Handler:           apiSrv.Handler(),
 		ReadHeaderTimeout: 15 * time.Second,
 		WriteTimeout:      5 * time.Minute, // Setur/Touristica uzun surebilir
 		IdleTimeout:       120 * time.Second,

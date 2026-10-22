@@ -16,6 +16,7 @@ import (
 	"pricebot/internal/db"
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
+	"pricebot/internal/portal"
 	"pricebot/internal/providers"
 	"pricebot/internal/services"
 )
@@ -31,27 +32,33 @@ type Deps struct {
 }
 
 type Server struct {
-	cfg      *config.Config
-	db       *db.DB
-	reg      *providers.Registry
-	deps     Deps
-	hotels   *services.HotelService
-	prices   *services.PriceService
-	packages *services.PackageService
-	usage    *services.Usage
-	started  time.Time
+	cfg       *config.Config
+	db        *db.DB
+	reg       *providers.Registry
+	deps      Deps
+	hotels    *services.HotelService
+	prices    *services.PriceService
+	packages  *services.PackageService
+	usage     *services.Usage
+	portalSvc *portal.Service
+	started   time.Time
 }
 
 func New(cfg *config.Config, d *db.DB, reg *providers.Registry, deps Deps) *Server {
+	hotels := services.NewHotelService(d, reg)
 	return &Server{
 		cfg: cfg, db: d, reg: reg, deps: deps,
-		hotels:   services.NewHotelService(d, reg),
-		prices:   services.NewPriceService(d, reg, deps.Fetcher),
-		packages: services.NewPackageService(d, reg, deps.Fetcher),
-		usage:    deps.Usage,
-		started:  time.Now(),
+		hotels:    hotels,
+		prices:    services.NewPriceService(d, reg, deps.Fetcher),
+		packages:  services.NewPackageService(d, reg, deps.Fetcher),
+		usage:     deps.Usage,
+		portalSvc: portal.New(d, deps.Jobs, reg, hotels),
+		started:   time.Now(),
 	}
 }
+
+// Portal portal servisi (main lifecycle: Start/Stop).
+func (s *Server) Portal() *portal.Service { return s.portalSvc }
 
 // Handler tum route'lari bagli http.Handler doner.
 func (s *Server) Handler() http.Handler {
@@ -116,8 +123,34 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /api/admin/canary/run", s.admin(s.runCanary))
 	mux.Handle("GET /api/admin/jobs/stats", s.admin(s.jobStats))
 
-	// Admin paneli (SPA)
+	// Admin - portal musterileri (tip, etkin siteler, portal kullanicilari, planlar)
+	mux.Handle("GET /api/admin/clients/{id}/settings", s.admin(s.adminClientSettings))
+	mux.Handle("PUT /api/admin/clients/{id}/settings", s.admin(s.adminUpdateClientSettings))
+	mux.Handle("POST /api/admin/clients/{id}/portal-users", s.admin(s.adminCreatePortalUser))
+	mux.Handle("PUT /api/admin/portal-users/{id}", s.admin(s.adminUpdatePortalUser))
+	mux.Handle("DELETE /api/admin/portal-users/{id}", s.admin(s.adminDeletePortalUser))
+	mux.Handle("GET /api/admin/schedules", s.admin(s.adminSchedules))
+	mux.Handle("GET /api/admin/clients/{id}/searches", s.admin(s.adminClientSearches))
+
+	// Portal (musteri tipi 2): web uygulamasi API'si
+	mux.HandleFunc("POST /api/portal/auth/login", s.portalLogin)
+	mux.Handle("GET /api/portal/me", s.portal(s.portalMe))
+	mux.Handle("GET /api/portal/hotels", s.portal(s.portalHotels))
+	mux.Handle("POST /api/portal/hotels", s.portal(s.portalAddHotel))
+	mux.Handle("PUT /api/portal/hotels/{id}", s.portal(s.portalUpdateHotel))
+	mux.Handle("DELETE /api/portal/hotels/{id}", s.portal(s.portalRemoveHotel))
+	mux.Handle("POST /api/portal/searches", s.portal(s.portalRunSearch))
+	mux.Handle("GET /api/portal/searches", s.portal(s.portalSearches))
+	mux.Handle("GET /api/portal/searches/{id}", s.portal(s.portalSearch))
+	mux.Handle("GET /api/portal/schedules", s.portal(s.portalSchedules))
+	mux.Handle("POST /api/portal/schedules", s.portal(s.portalCreateSchedule))
+	mux.Handle("PUT /api/portal/schedules/{id}", s.portal(s.portalUpdateSchedule))
+	mux.Handle("DELETE /api/portal/schedules/{id}", s.portal(s.portalDeleteSchedule))
+	mux.Handle("POST /api/portal/schedules/{id}/run", s.portal(s.portalRunSchedule))
+
+	// Admin paneli ve portal (SPA)
 	s.mountAdminUI(mux)
+	s.mountPortalUI(mux)
 
 	var h http.Handler = mux
 	h = corsWith(s.cfg.CORSOrigins)(h)
