@@ -12,6 +12,7 @@ import (
 	"pricebot/internal/providers/etstur"
 	"pricebot/internal/providers/gezinomi"
 	"pricebot/internal/providers/jolly"
+	"pricebot/internal/providers/prontotour"
 	"pricebot/internal/providers/setur"
 	"pricebot/internal/providers/tatilbudur"
 	"pricebot/internal/providers/tatilsepeti"
@@ -33,6 +34,7 @@ func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r.register(touristica.New(b, cfg.TouristicaTabs, cfg.TouristicaSessionAge))
 	r.register(setur.New())
 	r.register(gezinomi.New())
+	r.register(prontotour.New())
 	return r
 }
 
