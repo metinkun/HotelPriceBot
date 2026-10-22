@@ -32,7 +32,7 @@ func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r.register(tatilbudur.New())
 	r.register(touristica.New(b, cfg.TouristicaTabs, cfg.TouristicaSessionAge))
 	r.register(setur.New())
-	r.register(gezinomi.New())
+	r.register(gezinomi.New(b))
 	return r
 }
 
