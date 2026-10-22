@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Hotel Price Bot API",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Birlesik cok-saglayicili otel fiyat botu (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
   },
   "servers": [
@@ -28,6 +28,12 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "description": "POST /api/admin/auth/login ile alinan token"
+      },
+      "PortalBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "POST /api/portal/auth/login ile alinan token (rol: portal)"
       }
     },
     "schemas": {
@@ -451,6 +457,239 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          }
+        }
+      },
+      "SearchRequest": {
+        "type": "object",
+        "required": [
+          "hotelIds"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prices",
+              "packages"
+            ],
+            "default": "prices"
+          },
+          "hotelIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "htl_80030d68"
+            ]
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bos = hesabin tum etkin siteleri"
+          },
+          "checkIn": {
+            "type": "string",
+            "example": "2026-12-05"
+          },
+          "checkOut": {
+            "type": "string",
+            "example": "2026-12-08"
+          },
+          "daysAhead": {
+            "type": "integer",
+            "description": "Sabit tarih yerine: calisma gununden kac gun sonra",
+            "example": 30
+          },
+          "nights": {
+            "type": "integer",
+            "example": 3
+          },
+          "adults": {
+            "type": "integer",
+            "example": 2
+          },
+          "children": {
+            "type": "integer"
+          },
+          "childAges": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "airportCode": {
+            "type": "string",
+            "description": "packages icin IATA",
+            "example": "SAW"
+          }
+        }
+      },
+      "Search": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "done",
+              "failed"
+            ]
+          },
+          "scheduleId": {
+            "type": "integer",
+            "nullable": true
+          },
+          "request": {
+            "$ref": "#/components/schemas/SearchRequest"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "checkIn": {
+                "type": "string"
+              },
+              "checkOut": {
+                "type": "string"
+              },
+              "done": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "hotels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "hotelId": {
+                      "type": "string"
+                    },
+                    "hotelName": {
+                      "type": "string"
+                    },
+                    "jobId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "result": {
+                      "$ref": "#/components/schemas/MultiPriceResult"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "Schedule": {
+        "type": "object",
+        "required": [
+          "name",
+          "request"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "example": "Haftalik Acapulco"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "prices",
+              "packages"
+            ]
+          },
+          "request": {
+            "$ref": "#/components/schemas/SearchRequest"
+          },
+          "weekdays": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            },
+            "description": "0=Pazar..6=Cumartesi; bos = her gun",
+            "example": [
+              1
+            ]
+          },
+          "runTime": {
+            "type": "string",
+            "example": "14:00"
+          },
+          "timezone": {
+            "type": "string",
+            "default": "Europe/Istanbul"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          },
+          "lastRunAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "nextRunAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        }
+      },
+      "ClientSettings": {
+        "type": "object",
+        "properties": {
+          "clientType": {
+            "type": "string",
+            "enum": [
+              "api",
+              "portal",
+              "both"
+            ]
+          },
+          "enabledProviders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "bos = hepsi"
           }
         }
       }
@@ -2671,6 +2910,792 @@
           }
         }
       }
+    },
+    "/api/portal/auth/login": {
+      "post": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Portal girisi (JWT)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "token, user, client"
+          },
+          "401": {
+            "description": "Hatali giris",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Hesap pasif",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/me": {
+      "get": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Kullanici, musteri, plan, etkin siteler, bugunku kullanim",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "/api/portal/hotels": {
+      "get": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Otellerim",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "URL'lerden otel ekle (yalnizca etkin siteler)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "hotelName",
+                  "urls"
+                ],
+                "properties": {
+                  "hotelName": {
+                    "type": "string"
+                  },
+                  "urls": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Eklendi"
+          },
+          "403": {
+            "description": "Site etkin degil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/hotels/{id}": {
+      "put": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Otel guncelle (ek site URL'i / ad)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hotelName": {
+                    "type": "string"
+                  },
+                  "urls": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Oteli listeden kaldir",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kaldirildi"
+          }
+        }
+      }
+    },
+    "/api/portal/searches": {
+      "post": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Anlik fiyat/paket aramasi baslat (otel basina job)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Arama kaydi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Search"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Site/otel yetkisi yok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Kota doldu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Arama gecmisi",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "scheduleId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste (sonuc govdesi haric)"
+          }
+        }
+      }
+    },
+    "/api/portal/searches/{id}": {
+      "get": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Arama detayi (kismi/tam sonuc)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arama",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Search"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/schedules": {
+      "get": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Planli aramalar",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Schedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Planli arama olustur (orn. her Pazartesi 14:00)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              },
+              "example": {
+                "name": "Haftalik Acapulco",
+                "kind": "prices",
+                "weekdays": [
+                  1
+                ],
+                "runTime": "14:00",
+                "request": {
+                  "hotelIds": [
+                    "htl_80030d68"
+                  ],
+                  "daysAhead": 30,
+                  "nights": 3,
+                  "adults": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Olusturuldu (nextRunAt hesaplanir)"
+          }
+        }
+      }
+    },
+    "/api/portal/schedules/{id}": {
+      "put": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Plan guncelle",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Schedule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Plan sil",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Silindi"
+          }
+        }
+      }
+    },
+    "/api/portal/schedules/{id}/run": {
+      "post": {
+        "tags": [
+          "Portal (musteri tipi 2)"
+        ],
+        "summary": "Plani simdi calistir",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Arama kaydi"
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/settings": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri tipi, etkin siteler, portal kullanicilari, oteller, planlar",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "settings, providers, portalUsers, hotels, schedules"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri tipi ve site ac/kapa",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/portal-users": {
+      "post": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Portal kullanicisi olustur",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Olusturuldu"
+          },
+          "409": {
+            "description": "E-posta kayitli",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/portal-users/{id}": {
+      "put": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Portal kullanicisi guncelle (sifre, aktiflik, ad)",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Guncellendi"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Portal kullanicisi sil",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Silindi"
+          }
+        }
+      }
+    },
+    "/api/admin/schedules": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Tum musterilerin planli aramalari",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste"
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/searches": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musterinin arama gecmisi",
+        "security": [
+          {
+            "AdminBearer": []
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -2680,6 +3705,10 @@
     {
       "name": "Asenkron Is (v1)",
       "description": "Onerilen musteri akisi"
+    },
+    {
+      "name": "Portal (musteri tipi 2)",
+      "description": "Web portal musterisi (JWT): oteller, anlik aramalar, planli aramalar"
     },
     {
       "name": "Fiyat Sorgulama",
