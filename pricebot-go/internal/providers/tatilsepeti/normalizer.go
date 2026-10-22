@@ -90,16 +90,22 @@ func normalizeResponse(data any, providerHotelID string) *types.NormalizedPrice 
 
 	price, hasPrice := asNumber(priceV)
 	rate, _ := asNumber(rateV)
+	disc, _ := asNumber(discV)
 
+	// GetHotelListPrice: Price = indirimsiz (liste) fiyat, DiscountPrice = DiscountRate uygulanmis
+	// odenecek fiyat (orn. 67200 / %15 / 57120). Normalize: Price = odenecek, ListPrice = liste.
 	var listPrice *float64
 	if l, ok := asNumber(listV); ok && l != 0 {
 		listPrice = types.F64(l)
+	} else if hasPrice && price > 0 && disc > 0 && disc < price {
+		listPrice = types.F64(price)
+		price = disc
 	} else if hasPrice && price != 0 && rate > 0 {
 		listPrice = types.F64(math.Round(price / (1 - rate/100)))
 	}
 
 	out := &types.NormalizedPrice{
-		Available:    priceV != nil,
+		Available:    hasPrice && price > 0,
 		HotelName:    asString(pick(hotel, "HotelName", "hotelName")),
 		City:         asString(pick(hotel, "City", "city", "AreaName")),
 		RoomName:     asString(pick(hotel, "RoomName", "roomName", "RoomType")),
@@ -115,8 +121,8 @@ func normalizeResponse(data any, providerHotelID string) *types.NormalizedPrice 
 	if hasPrice && price != 0 {
 		out.Price = types.F64(price)
 	}
-	if d, ok := asNumber(discV); ok && d != 0 {
-		out.DiscountPrice = types.F64(d)
+	if disc != 0 {
+		out.DiscountPrice = types.F64(disc)
 	}
 	return out
 }
@@ -204,7 +210,11 @@ func parsePackageRoomList(html string, nightCount int) []types.NormalizedPackage
 			if roomTypeID == "" {
 				roomTypeID = cardRoomID
 			}
-			total, _ := strconv.ParseFloat(data["FlightPocketPrice"], 64)
+			// FlightPocketPrice TR formatinda gelir: '65533,58' (virgul ondalik) veya '92558'.
+			total := provider.ParseTRPrice(data["FlightPocketPrice"])
+			if total <= 0 {
+				return
+			}
 
 			var cancel *string
 			if hasCancellation {

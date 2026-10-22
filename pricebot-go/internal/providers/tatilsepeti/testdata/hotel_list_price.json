@@ -1,0 +1,20 @@
+[
+ {
+  "HotelId": 7741,
+  "HotelName": null,
+  "ReviewCount": 82,
+  "CampaignName": "Son Dakika Fırsatı %15 İndirim + 3 Taksit",
+  "Currency": null,
+  "RoomType": null,
+  "Price": 67200,
+  "DiscountRate": 15,
+  "DiscountPrice": 57120,
+  "Accommodation": "Oda Kahvaltı",
+  "HasFlyingPackage": false,
+  "HasPrice": 1,
+  "CheckInDate": "/Date(-62135596800000)/",
+  "CheckOutDate": "/Date(-62135596800000)/",
+  "AreaName": null,
+  "IsUndated": false
+ }
+]
