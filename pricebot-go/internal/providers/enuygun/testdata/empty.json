@@ -1,0 +1,8 @@
+{
+ "requestId": "fixture",
+ "status": true,
+ "messages": null,
+ "hotels": [],
+ "paidCurrency": null,
+ "displayCurrency": null
+}
