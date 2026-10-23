@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, fmtDate } from "../api.js";
+import { api, fmtDate, parseReq } from "../api.js";
 import { Icon } from "../Art.jsx";
 
 export default function Dashboard({ me }) {
@@ -26,7 +26,7 @@ export default function Dashboard({ me }) {
           <h3>Son aramalar</h3>
           {searches.length === 0 && <div className="muted">Henüz arama yok. <a href="#search">İlk aramanızı yapın →</a></div>}
           <table><tbody>{searches.map((s) => <tr key={s.id} onClick={() => { location.hash = "history/" + s.id; }} style={{ cursor: "pointer" }}>
-            <td className="muted">{fmtDate(s.createdAt)}</td><td>{s.kind === "packages" ? "Paket" : "Otel"} · {(JSON.parse(s.request).hotelIds || []).length} otel</td>
+            <td className="muted">{fmtDate(s.createdAt)}</td><td>{s.kind === "packages" ? "Paket" : "Otel"} · {(parseReq(s.request).hotelIds || []).length} otel</td>
             <td><span className={"badge " + (s.status === "done" ? "ok" : s.status === "failed" ? "bad" : "warn")}>{s.status}</span></td><td>{s.scheduleId ? <span className="badge brand">planlı</span> : ""}</td></tr>)}</tbody></table>
         </div>
         <div className="card" style={{ flex: 1, minWidth: 320 }}>

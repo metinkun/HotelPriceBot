@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, fmtDate } from "../api.js";
+import { api, fmtDate, parseReq } from "../api.js";
 import ResultTable from "./ResultTable.jsx";
 
 export default function History({ me }) {
@@ -13,7 +13,7 @@ export default function History({ me }) {
     if (!sel || sel.status === "done" || sel.status === "failed") return;
     const t = setTimeout(() => open(sel.id), 2000); return () => clearTimeout(t);
   }, [sel]);
-  const req = (s) => { try { return JSON.parse(s.request); } catch { return {}; } };
+  const req = (s) => parseReq(s.request);
   return (
     <div>
       {err && <div className="err">{err}</div>}

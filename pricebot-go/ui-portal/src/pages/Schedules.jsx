@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, fmtDate, WEEKDAYS } from "../api.js";
+import { api, fmtDate, WEEKDAYS, parseReq } from "../api.js";
 
 const empty = { name: "", kind: "prices", weekdays: [1], runTime: "14:00", hotelIds: [], providers: [], daysAhead: 30, nights: 3, adults: 2, children: 0, airportCode: "SAW", isActive: true };
 
@@ -23,7 +23,7 @@ export default function Schedules({ me }) {
       setForm(null); await load(); setMsg("Plan kaydedildi.");
     } catch (ex) { setErr(ex.message); }
   };
-  const edit = (s) => { const r = JSON.parse(s.request); setForm({ id: s.id, name: s.name, kind: s.kind, weekdays: s.weekdays, runTime: s.runTime, hotelIds: r.hotelIds || [], providers: r.providers || [], daysAhead: r.daysAhead || 30, nights: r.nights || 3, adults: r.adults || 2, children: r.children || 0, airportCode: r.airportCode || "SAW", isActive: s.isActive }); };
+  const edit = (s) => { const r = parseReq(s.request); setForm({ id: s.id, name: s.name, kind: s.kind, weekdays: s.weekdays, runTime: s.runTime, hotelIds: r.hotelIds || [], providers: r.providers || [], daysAhead: r.daysAhead || 30, nights: r.nights || 3, adults: r.adults || 2, children: r.children || 0, airportCode: r.airportCode || "SAW", isActive: s.isActive }); };
   const remove = async (id) => { if (!confirm("Plan silinsin mi?")) return; try { await api("/api/portal/schedules/" + id, { method: "DELETE" }); await load(); } catch (e) { setErr(e.message); } };
   const runNow = async (id) => { try { const s = await api(`/api/portal/schedules/${id}/run`, { method: "POST" }); setMsg(`Arama başlatıldı (#${s.id}).`); location.hash = "history/" + s.id; } catch (e) { setErr(e.message); } };
 
@@ -35,7 +35,7 @@ export default function Schedules({ me }) {
         <p className="muted">Örnek: her Pazartesi 14:00'te, 30 gün sonrasına 3 gecelik fiyat araması. Sonuçlar "Geçmiş" sayfasında birikir.</p>
         <table>
           <thead><tr><th>Ad</th><th>Zaman</th><th>Arama</th><th>Sonraki</th><th>Son</th><th>Durum</th><th></th></tr></thead>
-          <tbody>{list.map((s) => { const r = JSON.parse(s.request); return (
+          <tbody>{list.map((s) => { const r = parseReq(s.request); return (
             <tr key={s.id}><td><b>{s.name}</b></td>
               <td>{(s.weekdays.length ? s.weekdays.map((d) => WEEKDAYS[d].slice(0, 3)).join(", ") : "Her gün")} {s.runTime}</td>
               <td>{s.kind === "packages" ? "Paket" : "Otel"} · {(r.hotelIds || []).length} otel · +{r.daysAhead} gün, {r.nights} gece, {r.adults} yetişkin</td>
