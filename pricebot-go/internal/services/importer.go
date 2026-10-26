@@ -9,8 +9,6 @@ import (
 	"time"
 	"unicode"
 
-	"golang.org/x/text/runes"
-	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 
 	"pricebot/internal/provider"
@@ -58,15 +56,25 @@ type ImportReport struct {
 	StartedAt time.Time      `json:"startedAt"`
 }
 
-var stripper = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
+// stripDiacritics aksanlari atar (NFD ayristirma + Mn isaretlerini silme). x/text transform.Chain bazi
+// girdilerde "slice bounds out of range" panigi uretiyor; bu yuzden elle yapilir.
+func stripDiacritics(s string) string {
+	d := norm.NFD.String(s)
+	var b strings.Builder
+	b.Grow(len(d))
+	for _, r := range d {
+		if !unicode.Is(unicode.Mn, r) {
+			b.WriteRune(r)
+		}
+	}
+	return norm.NFC.String(b.String())
+}
 
 // normName Turkce karakter/noktalama/kucuk-buyuk farklarini ve gurultu kelimeleri atar.
 func normName(s string) string {
 	s = strings.ToLower(s)
 	s = strings.NewReplacer("ı", "i", "ş", "s", "ğ", "g", "ç", "c", "ö", "o", "ü", "u", "İ", "i", "&", " and ", "`", "'", "’", "'").Replace(s)
-	if t, _, err := transform.String(stripper, s); err == nil {
-		s = t
-	}
+	s = stripDiacritics(s)
 	var b strings.Builder
 	for _, r := range s {
 		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == ' ' {
@@ -219,6 +227,13 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 			wg.Add(1)
 			go func(pn string, hs provider.HotelSearcher) {
 				defer wg.Done()
+				defer func() {
+					if rec := recover(); rec != nil {
+						mu.Lock()
+						res.Errors = append(res.Errors, fmt.Sprintf("%s: panic: %v", pn, rec))
+						mu.Unlock()
+					}
+				}()
 				sctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 				defer cancel()
 				cands, err := hs.SearchHotels(sctx, searchQuery(h.Name))

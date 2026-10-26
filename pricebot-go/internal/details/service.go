@@ -90,7 +90,7 @@ func (s *Service) Refresh(ctx context.Context, m *model.HotelMapping) (*db.Hotel
 	}
 	fctx, cancel := context.WithTimeout(ctx, 3*time.Minute)
 	defer cancel()
-	d, err := dp.GetDetails(fctx, m)
+	d, err := safeGetDetails(fctx, dp, m)
 	release(err, err == nil)
 	if err != nil {
 		s.db.SetDetailError(ctx, m.InternalHotelID, m.Provider, err.Error())
@@ -319,4 +319,14 @@ func (s *Service) GetView(ctx context.Context, viewerKind string, viewerID int, 
 		_ = s.db.MarkSeen(ctx, viewerKind, viewerID, hotelID, providerName, row.Version)
 	}
 	return v, nil
+}
+
+// safeGetDetails provider panigini hataya cevirir (tek bir sitenin hatasi sureci dusurmesin).
+func safeGetDetails(ctx context.Context, dp provider.DetailProvider, m *model.HotelMapping) (d *provider.HotelDetails, err error) {
+	defer func() {
+		if rec := recover(); rec != nil {
+			d, err = nil, fmt.Errorf("provider panic: %v", rec)
+		}
+	}()
+	return dp.GetDetails(ctx, m)
 }

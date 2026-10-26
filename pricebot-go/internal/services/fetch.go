@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"pricebot/internal/cache"
@@ -53,7 +54,7 @@ func (f *Fetcher) Price(ctx context.Context, name string, p provider.Provider, m
 		if err != nil {
 			return nil, err
 		}
-		r, err := p.GetPrice(uctx, m, q)
+		r, err := safePrice(uctx, p, m, q)
 		release(err, err == nil && r != nil && r.Found)
 		if err != nil {
 			return nil, err
@@ -93,7 +94,7 @@ func (f *Fetcher) Package(ctx context.Context, name string, pp provider.PackageP
 		if err != nil {
 			return nil, err
 		}
-		r, err := pp.GetPackagePrices(uctx, m, q)
+		r, err := safePackage(uctx, pp, m, q)
 		release(err, err == nil && r != nil && r.Available)
 		if err != nil {
 			return nil, err
@@ -134,4 +135,23 @@ func (f *Fetcher) Bulk(ctx context.Context, name string, p provider.Provider, ms
 		f.usage(ctx, name, len(ms))
 	}
 	return results, err
+}
+
+// safePrice / safePackage provider paniklerini hataya cevirir.
+func safePrice(ctx context.Context, p provider.Provider, m *provider.Mapping, q types.PriceQuery) (r *provider.PriceResult, err error) {
+	defer func() {
+		if rec := recover(); rec != nil {
+			r, err = nil, fmt.Errorf("provider panic: %v", rec)
+		}
+	}()
+	return p.GetPrice(ctx, m, q)
+}
+
+func safePackage(ctx context.Context, pp provider.PackageProvider, m *provider.Mapping, q types.PackageQuery) (r *provider.PackageResult, err error) {
+	defer func() {
+		if rec := recover(); rec != nil {
+			r, err = nil, fmt.Errorf("provider panic: %v", rec)
+		}
+	}()
+	return pp.GetPackagePrices(ctx, m, q)
 }
