@@ -236,6 +236,15 @@ type HotelPage struct {
 // fetchHotelPage POST /api/seo_page/slug: slug -> otel id, ad, sehir ve avabilityCriteria.
 // checkIn/checkOut bos olabilir (yalnizca cozumleme icin).
 func fetchHotelPage(ctx context.Context, slug, checkIn, checkOut string, adults int, chd string) (*HotelPage, error) {
+	data, err := fetchPageData(ctx, slug, checkIn, checkOut, adults, chd)
+	if err != nil {
+		return nil, err
+	}
+	return parseHotelPage(data)
+}
+
+// fetchPageData seo_page/slug ham `data` nesnesi (statik detay icin tum alanlar gerekir).
+func fetchPageData(ctx context.Context, slug, checkIn, checkOut string, adults int, chd string) (json.RawMessage, error) {
 	adt := ""
 	if checkIn != "" {
 		adt = adtParam(adults)
@@ -244,11 +253,7 @@ func fetchHotelPage(ctx context.Context, slug, checkIn, checkOut string, adults 
 		"slug": slug, "checkIn": checkIn, "checkOut": checkOut, "origin": "",
 		"periods": []string{}, "destination": []int{}, "adt": adt, "chd": chd,
 	}
-	data, err := postJSON(ctx, slugURL, body, 30*time.Second, "seo_page/slug")
-	if err != nil {
-		return nil, err
-	}
-	return parseHotelPage(data)
+	return postJSON(ctx, slugURL, body, 30*time.Second, "seo_page/slug")
 }
 
 func parseHotelPage(data json.RawMessage) (*HotelPage, error) {

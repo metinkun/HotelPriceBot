@@ -142,3 +142,48 @@ probe tatildukkani price https://www.tatildukkani.com/sidemarin-kirman-premium 2
 - `socketToken` her sorguda yeniden aliniyor (ucuz; cache'lenmedi). Misafir `apiToken` 6 saat cache.
 - `available-hotel` olayi tek parcada geldi; `status` bos ve oda yoksa kod ikinci olayi bekler (40 sn).
 - Tedarikci "PUZZLE" (Puzzle Travel); Jolly ile ayni fiyatlar gozlendi (33.150), ayni tedarik zinciri olabilir.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+Kod: `details.go`, `search.go`, `html.go`. Yalnizca misafir token'li JSON istekleri; tarayici/socket gerekmez.
+
+### Kaynak: `POST /api/seo_page/slug` (tarihsiz, ~110 KB) -> `data.result`
+
+| Alan | Kaynak |
+|---|---|
+| name, stars, address | `result.name`, `result.star` ("5"), `result.address` |
+| city / region / country | `hotelDestination.name` (Girne); `destination[]` ilk = ulke (Kıbrıs), son = bolge (sehirle ayniysa bos) |
+| location | `latitude`/`longitude` (string) |
+| rating, ratingCount | `reviews.totalPoint` (5 uzerinden -> x2, 1 ondalik) ve `reviews.totalComment`; yorum metinleri/isimler alinmaz |
+| description | `facality` icindeki "Genel Bilgi" zengin metni (HTML -> metin) |
+| images | `singleImage` (kapak) + `images[]` (hotelType, line, id sirali; `fullPath` tam URL, sorgu parametresi atilir); caption = `imageHotelTypes[hotelType]` (Genel, Plaj ve Havuz, Restaurant ve Bar, Oda, Lobi, Aktivite, Spa, Balayı, Çocuk ve Bebek, Toplantı ve Kongre) |
+| facilities | `facality[]` gruplari (sequence, id sirali; Genel Özellikler, Havuz & Plaj, Temalar, Bebek & Çocuklara Özel, Konum Bilgisi, Balayı Çiftleri İçin, Spa, Aktiviteler). Satir etiketi: `inputNumber`/`inputSelect`/`inputText` -> "Ad: deger" (orn. "Açılış Yılı: 1982", "Plaj: Kum"); `inputPaidFree` -> "(Ücretli)/(Ücretsiz)"; `inputYesNo=true` -> ad; `inputRichtext` satirlari ozellik degil, bolum olur. Bos gruplar (Yeme İçme Konsepti) atlanir |
+| boards | `result.concepts[]` |
+| policies | "Genel Uyarılar" zengin metni: giris/cikis saati regex (15:00 / 11:00), "evcil hayvan" cumlesi; tum satirlar `other`. "Bebek Ve Çocuk Bilgisi" -> childPolicy |
+| sections | Her grup: `list` (ozellik satirlari) + grubun zengin metinleri kendi adiyla (`Genel Bilgi`, `Genel Uyarılar`, `Havuz Plaj Bilgisi`, `Konum Bilgisi (Açıklama)`, `Spa Bilgisi`, `Aktivite Bilgisi`...; `text`/`list`/`html`); "Etkinlikler" (`eventGroups` aktif: "tarih — baslik", sirali); "Misafir Değerlendirmeleri" (pairs: genel puan, yorum sayisi, kategori puanlari) |
+
+- **Odalar yok**: sayfa tarihsiz acildiginda "Odaları görüntülemek için lütfen tarih giriniz!"; oda listesi yalnizca socket
+  fiyat akisinda gelir. `POST /api/hotel/get-room-price {hotelId, checkIn}` oda adlarini + donem bazli cocuk politikasini verir ama
+  `checkIn` zorunlu ve donem bazli (zamanla degisir) oldugu icin deterministik statik veri sayilmadi -> `rooms: []`.
+- FAQ: `data.faqCategories` Acapulco'da bos; sema bilinmediginden bos dizi.
+- Deterministik: siralamalar sequence/line/id/ad ile sabit; `isAvailable`/`lowPrice` gibi dinamik alanlar kullanilmaz. Iki calistirma birebir ayni.
+
+### Arama: `POST /api/autocomplate/hotel`
+
+Sitenin arama kutusu (`fetchHotels` store aksiyonu; yazim hatasi sitede boyle). Govde `{"term":"merit royal","limit":20,"type":"HOTEL"}`
+(`type` zorunlu; yoksa `"Bu alan, eksik"`), misafir token header'lari. Yanit `data.hotel[]` (`id`, `name`, `seoPage.slug`,
+`destination[]`), `data.destination[]`/`category[]` alinmaz. Sunucu Turkce karakter duyarsiz ("merıt" -> Merit ...). Aday:
+`URL = https://www.tatildukkani.com/<slug>`, `City` = son destinasyon (Girne / Gazimağusa), `ProviderHotelID` = id (typeId ile ayni).
+Site 3 karakterden kisa sorgu gondermiyor; sonuc yoksa son kelimeler atilarak tekrar denenir.
+
+### Probe (26.10.2026)
+
+```
+probe tatildukkani details https://www.tatildukkani.com/acapulco-resort-convention-spa
+  0.2 sn -> images=161 facilities=8 rooms=0 faq=0 sections=18; 5 yildiz; rating 8.6 (40 yorum); Girne / Kıbrıs; (35.3299, 33.4210)
+  policies: giris 15:00, cikis 11:00, "Evcil hayvan kabul edilmemektedir."; iki calistirma birebir ayni
+probe tatildukkani search "Merit Royal"    -> 4 (Diamond 1433, Gardens 1379 Gazimağusa, Hotel 1429, Premium 1434)
+probe tatildukkani search "Elexus"         -> Elexus Hotel & Resort & Spa (1440)
+probe tatildukkani search "Cratos Premium" -> Cratos Premium Hotel Port Spa (1420)
+probe tatildukkani search "Salamis Bay Conti" -> Salamis Bay Conti Resort Hotel (1383)
+```

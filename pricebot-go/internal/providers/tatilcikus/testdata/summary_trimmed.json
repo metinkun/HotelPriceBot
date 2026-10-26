@@ -1,0 +1,95 @@
+{
+ "data": [
+  {
+   "id": 6,
+   "countryId": 219,
+   "name": "Karinna Hotel Uludağ",
+   "url": "karinna-hotel-uludag",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 60,
+   "countryId": 53,
+   "name": "Merit Crystal Cove Hotel & Spa",
+   "url": "merit-crystal-cove-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 61,
+   "countryId": 53,
+   "name": "Merit Royal Gardens Hotel",
+   "url": "merit-royal-gardens-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 5,
+   "countryId": 53,
+   "name": "Acapulco Resort Hotel & Spa",
+   "url": "acapulco-resort-hotel-spa",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 63,
+   "countryId": 53,
+   "name": "Merit Park Hotel",
+   "url": "merit-park-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 64,
+   "countryId": 53,
+   "name": "Merit Royal Diamond Hotel & Spa",
+   "url": "merit-royal-diamond-hotel",
+   "useGezinomiPos": true
+  },
+  {
+   "id": 49,
+   "countryId": 53,
+   "name": "Elexus Hotel Resort & Spa",
+   "url": "elexus-hotel-resort-spa",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 75,
+   "countryId": 53,
+   "name": "Salamis Bay Conti Hotel",
+   "url": "salamis-bay-conti-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 65,
+   "countryId": 53,
+   "name": "Merit Royal Premium Hotel & Spa",
+   "url": "merit-royal-premium-hotel",
+   "useGezinomiPos": true
+  },
+  {
+   "id": 62,
+   "countryId": 53,
+   "name": "Merit Lefkoşa Hotel",
+   "url": "merit-lefkosa-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 454,
+   "countryId": 53,
+   "name": "Cratos Premium Hotel",
+   "url": "cratos-premium-hotel",
+   "useGezinomiPos": false
+  },
+  {
+   "id": 653,
+   "countryId": 53,
+   "name": "Merit Royal Hotel & Spa",
+   "url": "merit-royal-hotel",
+   "useGezinomiPos": true
+  },
+  {
+   "id": 682,
+   "countryId": 53,
+   "name": "Crown Salamis Hotel",
+   "url": "crown-salamis-hotel",
+   "useGezinomiPos": false
+  }
+ ]
+}
