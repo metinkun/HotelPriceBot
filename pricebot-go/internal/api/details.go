@@ -239,7 +239,7 @@ func (s *Server) adminImportHotels(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rep := s.importer.Start(body.Hotels, body.Providers, body.MinScore, body.Apply)
-	writeJSON(w, 202, map[string]any{"importId": rep.ID, "status": rep.Status, "total": rep.Total, "providers": rep.Providers, "statusUrl": "/api/admin/hotels/import/" + rep.ID})
+	writeJSON(w, 202, map[string]any{"importId": rep.ID, "status": rep.Status, "total": rep.Total, "providers": rep.Providers, "statusUrl": "/api/admin/imports/" + rep.ID})
 }
 
 // GET /api/admin/hotels/import/{id} — ilerleyen/biten rapor

@@ -18,7 +18,7 @@ export default function Import() {
     try {
       const started = await api("/api/admin/hotels/import", { method: "POST", body: { hotels: parse(), providers: sel, minScore: Number(minScore), apply } });
       const poll = async () => {
-        const r = await api("/api/admin/hotels/import/" + started.importId);
+        const r = await api("/api/admin/imports/" + started.importId);
         setRep(r);
         if (r.status === "running") setTimeout(poll, 3000); else setBusy(false);
       };
