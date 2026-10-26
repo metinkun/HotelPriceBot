@@ -64,10 +64,10 @@ function Login({ onLogin }) {
 export default function App() {
   const [me, setMe] = useState(null);
   const [checked, setChecked] = useState(false);
-  const [page, setPage] = useState(() => (location.hash || "#dashboard").slice(1));
+  const [page, setPage] = useState(() => (location.hash || "#dashboard").slice(1).split("/")[0]);
 
   useEffect(() => {
-    const onHash = () => setPage((location.hash || "#dashboard").slice(1));
+    const onHash = () => setPage((location.hash || "#dashboard").slice(1).split("/")[0]);
     const onLogout = () => setMe(null);
     window.addEventListener("hashchange", onHash);
     window.addEventListener("pricebot:logout", onLogout);
