@@ -84,7 +84,7 @@ type seturDetail struct {
 }
 
 var (
-	reListingData = regexp.MustCompile(`"initialData":\s*\[`)
+	reListingData = regexp.MustCompile(`"initialData":\s*\{\s*"data":\s*\[`)
 	reNullData    = regexp.MustCompile(`"initialData":\s*\{\s*"data":\s*null`)
 )
 
