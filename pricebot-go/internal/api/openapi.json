@@ -3731,10 +3731,6 @@
                       "format": "date-time",
                       "nullable": true
                     },
-                    "details": {
-                      "type": "object",
-                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
-                    },
                     "highlightPaths": {
                       "type": "array",
                       "items": {
@@ -3745,6 +3741,14 @@
                     "lastChange": {
                       "type": "object",
                       "nullable": true
+                    },
+                    "snapshot": {
+                      "type": "object",
+                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
+                    },
+                    "highlight": {
+                      "type": "boolean",
+                      "description": "true: bu kullanici degisiklik sonrasi bu surumu ILK kez goruyor"
                     }
                   }
                 }
@@ -3969,10 +3973,6 @@
                       "format": "date-time",
                       "nullable": true
                     },
-                    "details": {
-                      "type": "object",
-                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
-                    },
                     "highlightPaths": {
                       "type": "array",
                       "items": {
@@ -3983,6 +3983,14 @@
                     "lastChange": {
                       "type": "object",
                       "nullable": true
+                    },
+                    "snapshot": {
+                      "type": "object",
+                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
+                    },
+                    "highlight": {
+                      "type": "boolean",
+                      "description": "true: bu kullanici degisiklik sonrasi bu surumu ILK kez goruyor"
                     }
                   }
                 }

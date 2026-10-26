@@ -83,11 +83,24 @@ type seturDetail struct {
 	DistanceList   []seturDistance `json:"distanceList"`
 }
 
+var (
+	reListingData = regexp.MustCompile(`"initialData":\s*\[`)
+	reNullData    = regexp.MustCompile(`"initialData":\s*\{\s*"data":\s*null`)
+)
+
 // parseDetailPage sayfa HTML'inden initialData.data'yi cozer ve "$<id>" metin referanslarini yerine koyar.
 func parseDetailPage(page string) (*seturDetail, error) {
 	payload := rscPayload(page)
 	if payload == "" {
 		return nil, fmt.Errorf("Setur sayfasinda RSC payload bulunamadi")
+	}
+	// Yayinda olmayan otel: sayfa liste sayfasina (girne-otelleri) yonlenir -> initialData bir dizi olur;
+	// veya data:null,isError:true gelir. Ikisi de "satista degil" demektir, parse hatasi degil.
+	if reListingData.MatchString(payload) {
+		return nil, fmt.Errorf("Setur'da otel yayinda degil (sayfa otel listesine yonlendiriliyor)")
+	}
+	if reNullData.MatchString(payload) {
+		return nil, fmt.Errorf("Setur'da otel yayinda degil (detay verisi yok)")
 	}
 	var wrap struct {
 		Data *seturDetail `json:"data"`
