@@ -75,3 +75,55 @@ Sureler: Akgunler/Coral 1-4 sn, Gezinomi 10-15 sn olabilir (timeout 40 sn).
 - Tarayici dogrulamasi: headless Chromium'da detay sayfasi URL parametreleriyle acildiginda oda listesi render edilmedi (SPA store'u sadece arama bileseninden tetikleniyor);
   gosterilen fiyat alanlari bundle'daki `cartInfo` kodundan birebir cikarildi (SalePrice/price/afise_fiyat) ve `%45` indirim rozeti `CommissionPercentEB` ile tutarli.
 - Cloudflare onunde ama anonim JSON istekleri engellenmiyor; proxy rotasyonu `httpx` uzerinden calisir.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+Kod: `details.go`, `search.go`, `html.go` (HTML -> metin/liste yardimcilari). Tarayici/cerez gerekmez.
+
+### Kaynaklar
+
+- `GET Hotels/GetByUrlWithDetail?url=<slug>` (fiyatta da kullanilan yanit, ~210 KB): `hotel.{name, generalText, childText,
+  marriedText, callCenterText, tagGroupHotelTexts[], score, googleMapsUrl, folderName, cityId/districtId/countryId,
+  tripadvisor*, cancelOption, moneyOption}`, `highlights[]`, `hotelTags[]` (tagGroupId, tagId, isPaid), `roomTags[]`,
+  `hotelImages[]` (groupId, roomId, url, isShown), `hotelVideos[]`, `rooms[]` (name, description HTML), `concepts[]` (name, description HTML).
+- `GET Tags/` (255 tag: id, tagGroupId, name, isShown, status) ve `GET TagGroups/` (9 grup: Genel, Plaj & Havuz, Spa, Aktivite,
+  Balayı, Çocuk, Konum, Kurumsal, Oda) — tag adlari ve grup basliklari; 1 saat bellek cache. `isShown=false`/`status=false` tag'ler atilir.
+- `GET Cities/`, `Districts/`, `Countries/` — sehir/ilce/ulke adi (1 saat cache; alinamazsa bos kalir).
+- Gorsel URL'i (bundle'dan): `https://www.tatilcikus.com/images/hotels/<folderName>/gallery/optimized/<url>.jpg` (`.webp` de var).
+  Galeri grup etiketleri: groupId 1 Genel, 2 Odalar, 3 Yeme İçme, 4 Çocuk, 5 Aktivite. `roomId>0` olanlar ilgili odaya da yazilir.
+
+### Normalizasyon
+
+| Alan | Kaynak |
+|---|---|
+| name, description | `hotel.name`, `generalText` (HTML -> metin) |
+| rating | `hotel.score` (10 uzerinden; Tripadvisor puani ayri bolumde) |
+| city / region / country, location | Cities/Districts/Countries; `googleMapsUrl` icindeki `@lat,lng` |
+| images | `isShown` gorseller, (groupId, id) sirali; caption = grup etiketi veya `description` |
+| facilities | TagGroups sirasiyla; grupta `hotelTags` tag id sirali; ucretli ise "(Ücretli)" eki |
+| rooms | `isShown` odalar (id sirali): aciklama metni, m2 (`\d+ m²` regex, ilk sayi), kapasite ("Maksimum ... konaklayabilmektedir"), `roomTags` ozellikleri, `hotelImages[roomId]` |
+| boards | `concepts[].name` (`isShown`) |
+| policies | childText -> childPolicy; Other: tedarikci cocuk yas siniri (`firstChildAge`), iptal/para iade secenegi |
+| sections | "Öne Çıkanlar" (highlights), "<Otel> Hakkında" (generalText), tag grubu metinleri (grup adiyla, orn. "Plaj & Havuz"), "Çocuk Bilgileri", "Balayı Tesisi", "Çağrı Merkezi Bilgilendirmesi", "Pansiyon: <ad>" (tablo iceren HTML -> `html`, temizlenmis), "Tripadvisor" (pairs), "Video" |
+
+Bolum turu: yalnizca `<li>` -> `list`; `<table>` var -> `html` (script/style/attribute'siz) + `text`; aksi `text`.
+FAQ sitede yok (bos dizi). Yildiz bilgisi API'de yok. Iletisim: sitedeki telefonlar Tatilcikus cagri merkezi oldugu icin alinmaz.
+Deterministik: tum listeler id/grup sirali; `dateOf*` alanlari ve fiyat (`packagePrice`) kullanilmaz.
+
+### Arama
+
+Ayri autocomplete ucu yok; sitenin arama kutusu gibi `GET Hotels/GetSummary` (tum oteller: id, countryId, name, url; ~320 kayit,
+10 dk cache) istemci tarafinda filtrelenir: Turkce karakter/buyuk-kucuk harf duyarsiz, sorgunun tum kelimeleri ad veya slug icinde.
+Sira: tam ad, ad sorguyla basliyor, digerleri; esitlikte ada gore. Sonuc yoksa son kelime atilarak tekrar denenir.
+`City` alaninda **ulke adi** doner (liste sehir vermiyor). URL: `https://www.tatilcikus.com/<url>`.
+
+### Probe (26.10.2026)
+
+```
+probe tatilcikus details https://www.tatilcikus.com/acapulco-resort-hotel-spa
+  0.8-5 sn -> images=397 facilities=8 rooms=14 faq=0 sections=14; rating 8.9; Girne / Çatalköy / Kıbrıs; (35.330273, 33.4209)
+  Villa Oda 30 m2, 14 ozellik, 4 gorsel; boards [Tam Pansiyon Plus, Yarım Pansiyon]; iki calistirma birebir ayni (fetchedAt haric)
+probe tatilcikus search "Merit Royal"       -> 4 (Diamond, Gardens, Hotel & Spa, Premium)
+probe tatilcikus search "Elexus"            -> Elexus Hotel Resort & Spa (49)
+probe tatilcikus search "Salamis Bay Conti" -> Salamis Bay Conti Hotel (75)
+```

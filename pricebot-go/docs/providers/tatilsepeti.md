@@ -100,3 +100,51 @@ Tarayici yolu dogrulamasi (gecici olarak `WithBrowser(b)` + `WithForceBrowser(tr
 
 Tarayici gerekli mi: **normalde hayir**. Yalnizca duz HTTP Cloudflare tarafindan engellenirse, oturum basina (~20 dk'da bir)
 tek sayfa acilisi icin.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+Kod: `details.go` (HTML parse, regex tabanli), `search.go`, `html.go`. Detay sayfasi `pageHeaders` ile GET edilir (engelde
+`browser.Manager` varsa sayfa tarayicida acilip HTML alinir); ayni GET'ten cikan cerez/token oturum olarak saklanir.
+
+### Kaynak: otel detay HTML'i (sunucu tarafli render, ~600 KB)
+
+| Alan | Kaynak |
+|---|---|
+| providerHotelId, name | `#hidHotelId`, `<h1 class="hotel__name">` |
+| country / city / region | `.hotel__region` metni "Kıbrıs - Girne-Çatalköy" |
+| address, checkIn/checkOut, petPolicy, rating, ratingCount | JSON-LD `LodgingBusiness`: `address[0].streetAddress`, `checkinTime` (14:00), `checkoutTime` (11:00), `petsAllowed` (No), `aggregateRating.ratingValue` (8.4 / 10), `reviewCount` (1786) |
+| description | "<Otel> Genel Bilgiler" bolumu (`.ts-card.descriptions`, HTML -> metin) |
+| images | `.photo-gallery` icindeki `img[src|data-src]` (`cdn.tatilsepeti.com/Files/Images/Tesis/<id>/1050X700/...jpg`; sorgu parametresi atilir; caption = `title`) |
+| facilities | "Otel Özellikleri" `<li>` listesi; "Ücretsiz Aktiviteler"; "Ücretli Aktiviteler"; "Çocuklar İçin" (tablo satirlari -> "Çocuk Kulubü (Ücretsiz)", "Bebek Bakımı (Ücretli)") |
+| rooms | `.hotel-detail-cards[data-roomtypeid]` kartlari (sayfa sirasi, roomtypeid benzersiz; "… Gala Dahil" satis varyantlari da kart oldugu icin dahil): `<h3>` ad, kart `data-src` gorseli (TesisOda), kapasite metni ("En fazla 4 yetişkin + 1 çocuk …"), kart ozellikleri + modal `.room-properties` (`Oda metrakaresi: 30 - 32 m2` -> size 30, `<li>` ozellikleri). Oda gorselleri: `GET /hotel/gethotelroomimages/?hotelId=&roomTypeId=&ImageSizeType=3` (parca HTML, XHR basliklariyla JSON string olarak sarili doner; oda basina 1 istek, hata olursa kart gorseli kalir) |
+| boards | `var ttl_pension_type = "tam pansiyon plus"` -> "Tam Pansiyon Plus" (tek deger; oda bazli pansiyonlar fiyat akisinda) |
+| policies.childPolicy / other | "Diğer Notlar: Çocuklara Özel" satirlari; giris saati / iptal / provizyon iceren notlar |
+| sections | "<Otel> Genel Bilgiler" (text), "Konum Bilgileri" (pairs: Hava Alanına Uzaklığı, Kurulu Alan, Plaj…), "Otel Özellikleri" (pairs: yapim yili, kapasite…) + "(Liste)", aktiviteler (list), "Çocuklar İçin" (pairs), "Diğer Notlar: <alt baslik>" (her `<b>` basligi ayri `list`: Plaj Bilgisi, Havuz Bilgisi, Aquapark, Çocuklara Özel, Spa Merkezi, Ücretsiz/Ücretli Hizmetler, Toplantı Salonları, Ek Bilgiler, KKTC Seyahati…), "<Otel> Yorumları" (pairs: Tatilsepeti puani, degerlendirme/yorum sayisi, kategori puanlari) |
+
+- Yildiz ve koordinat sayfada yok (harita iframe'i tiklamayla yuklenir). Iletisim: sayfadaki telefon Tatilsepeti cagri merkezi, alinmaz. FAQ yok.
+- Yorumcu adlari/yorum metinleri alinmaz; `hiddenEnrtyDate`/`ttl_sessionId`/`forgeryToken` gibi istek bazli alanlar kullanilmaz.
+- **Site tarafli degiskenlik**: "Genel Bilgiler" metni sunucu tarafinda cumle varyantlariyla uretiliyor (ayni URL, farkli web
+  sunucusu `WEB8`/`WEB17`: "en son 2010 yılında yenilenmiştir" vs "1982 yılında yapılan … bulunmaktadır"). Parser deterministik;
+  `description` ve bu bolum iki cekim arasinda farkli cikabilir. Diger tum alanlar (141 gorsel, 12 oda, 4 ozellik grubu, 19 bolum) birebir ayni.
+
+### Arama: `GET /common/hotelsearch?value=<sorgu>`
+
+Sitenin arama kutusu (jQuery UI autocomplete, `tsAutocomplete({selector:"#bolge",url:"/common/hotelsearch"})`; parametre `value`).
+Cerez/token gerekmez; XHR basliklari ve varsa mevcut oturum cerezi eklenir (oturum edinmek icin ek istek yapilmaz). Yanit JSON
+dizi: `Title`, `Type`/`TypeId` (1 Yurt İçi Oteller, 2 kampanya/tema, 5 bolge, 6 Yurt Dışı Oteller, 7-8 yer), `Id`, `Link` ("/<slug>"),
+`AreaPlace` ("Çatalköy, Girne, Kıbrıs"). Yalnizca `TypeId=1` alinir (KKTC otelleri yurt ici sayilir; yurt disi otel sayfalari farkli
+sablon). Sunucu bulanik eslestirir (orn. "Merit" icin "Mert Seaside", "Meri Hotel"); sonuc sorgunun tum kelimelerini (Turkce duyarsiz)
+icerenler one alinarak siralanir, kalan sunucu sirasinda. Sonuc yoksa son kelimeler atilarak tekrar denenir.
+
+### Probe (26.10.2026)
+
+```
+probe tatilsepeti details https://www.tatilsepeti.com/acapulco-resort-convention-spa-hotel
+  2.3-3.2 sn -> images=141 facilities=4 rooms=12 faq=0 sections=19; rating 8.4 (1786); Kıbrıs / Girne / Çatalköy
+  Villa Oda 30 m2, 13 ozellik, 5 gorsel; policies: giris 14:00, cikis 11:00, evcil hayvan yok; board Tam Pansiyon Plus
+  iki calistirma: yalnizca "Genel Bilgiler" metni farkli (site varyanti, yukarida), gerisi birebir ayni
+probe tatilsepeti search "Merit Royal Premium" -> 17 (ilk: Merit Royal Premium Hotel Spa 4518, Alsancak, Girne, Kıbrıs)
+probe tatilsepeti search "Acapulco"            -> Acapulco Resort Convention Spa Hotel (229)
+probe tatilsepeti search "Cratos Premium"      -> 22 (ilk: Cratos Premium Hotel 2750)
+probe tatilsepeti search "Salamis Bay Conti"   -> 12 (ilk: Salamis Bay Conti Resort Hotel 212, Magosa)
+```

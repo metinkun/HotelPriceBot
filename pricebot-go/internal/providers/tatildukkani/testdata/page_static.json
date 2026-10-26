@@ -1,0 +1,667 @@
+{
+ "success": true,
+ "data": {
+  "type": "HOTEL",
+  "typeId": 1404,
+  "title": "Acapulco Resort Convention Spa",
+  "slug": "acapulco-resort-convention-spa",
+  "airportCode": "ECN",
+  "result": {
+   "id": 1404,
+   "name": "Acapulco Resort Convention Spa",
+   "star": "5",
+   "latitude": "35.329942751482925",
+   "longitude": "33.42102803095702",
+   "address": "Çatalköy Mevkii-Girne",
+   "hotelDestination": {
+    "id": 9,
+    "name": "Girne",
+    "parent": null,
+    "latitude": "35.33958953",
+    "longitude": "33.32052730"
+   },
+   "imageHotelTypes": {
+    "1": "Genel",
+    "2": "Plaj ve Havuz",
+    "3": "Restaurant ve Bar",
+    "4": "Oda",
+    "5": "Lobi",
+    "6": "Aktivite",
+    "7": "Spa",
+    "8": "Balayı",
+    "9": "Çocuk ve Bebek",
+    "10": "Toplantı ve Kongre"
+   },
+   "reviews": {
+    "review": [
+     {
+      "name": "Personel Yaklaşımı",
+      "point": 4.7
+     },
+     {
+      "name": "Oda Memnuniyeti",
+      "point": 4.4
+     },
+     {
+      "name": "Yiyecek & İçecek Kalitesi",
+      "point": 3.9
+     },
+     {
+      "name": "Temizlik",
+      "point": 4.5
+     },
+     {
+      "name": "Fiyat Politikası",
+      "point": 4.3
+     },
+     {
+      "name": "Havuz & Deniz",
+      "point": 4.3
+     }
+    ],
+    "comment": [],
+    "totalComment": 40,
+    "totalReviews": 6,
+    "totalPoint": 4.3
+   },
+   "images": [
+    {
+     "id": 115460,
+     "title": "Acapulco Hotel",
+     "description": "Acapulco Hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923921196ad5bbb78d6383.19754891.webp",
+     "hotelType": 1,
+     "line": 14,
+     "type": "image"
+    },
+    {
+     "id": 115462,
+     "title": "Acapulco Hotel",
+     "description": "Acapulco Hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923921236ad5bbbb553be8.28379179.webp",
+     "hotelType": 1,
+     "line": 2,
+     "type": "image"
+    },
+    {
+     "id": 115474,
+     "title": "Acapulco Hotel",
+     "description": "Acapulco Hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923924776ad5bd1da6f980.69139496.webp",
+     "hotelType": 2,
+     "line": 15,
+     "type": "image"
+    },
+    {
+     "id": 115475,
+     "title": "Acapulco Hotel",
+     "description": "Acapulco Hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923924816ad5bd2199b037.78846277.webp",
+     "hotelType": 2,
+     "line": 16,
+     "type": "image"
+    },
+    {
+     "id": 115606,
+     "title": "acapulco hotel",
+     "description": "acapulco hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923971026ad5cf2ea68433.28045609.webp",
+     "hotelType": 4,
+     "line": 147,
+     "type": "image"
+    },
+    {
+     "id": 115607,
+     "title": "acapulco hotel",
+     "description": "acapulco hotel",
+     "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923971046ad5cf304c8f40.04584055.webp",
+     "hotelType": 4,
+     "line": 148,
+     "type": "image"
+    }
+   ],
+   "singleImage": {
+    "id": 115461,
+    "title": "Acapulco Hotel",
+    "description": "Acapulco Hotel",
+    "fullPath": "https://storage.googleapis.com/tatildukkani_images/HOTEL/1404/17923921216ad5bbb9c8d5f8.62253711.webp",
+    "hotelType": null,
+    "line": 1,
+    "type": "image"
+   },
+   "facality": [
+    {
+     "id": 10,
+     "name": "Genel Özellikler",
+     "type": "HOTEL",
+     "sequence": 1,
+     "facality": [
+      {
+       "id": 161568,
+       "featureId": 185,
+       "name": "Aquapark",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 60,
+       "featureId": 165,
+       "name": "Araç Kiralama",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 83,
+       "featureId": 194,
+       "name": "Açık Restoran",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 217885,
+       "featureId": 189,
+       "name": "Açılış Yılı",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": 1982,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 52,
+       "featureId": 158,
+       "name": "Doktor",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 161569,
+       "featureId": 191,
+       "name": "Fitness Center",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 68,
+       "featureId": 169,
+       "name": "Fotoğrafçı",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 54,
+       "featureId": 160,
+       "name": "Kuaför",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 59,
+       "featureId": 164,
+       "name": "Kuru Temizleme",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 53,
+       "featureId": 159,
+       "name": "Market",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 71,
+       "featureId": 187,
+       "name": "Motorlu Su Sporları",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 80,
+       "featureId": 192,
+       "name": "Oda Sayısı",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": "826 Room",
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 61,
+       "featureId": 167,
+       "name": "Telefon / Fax Hizmeti",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 55,
+       "featureId": 161,
+       "name": "Çamaşırhane",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 43,
+       "featureId": 157,
+       "name": "Genel Bilgi",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": "<p>Acapulco Resort &amp; Convention &amp; SPA, Kuzey Kıbrıs otelleri içerisinde, tatil keyfini dünya standartlarında ve servis kalitesiyle Kıbrıs'a getiren, Akdeniz kültürü ile, gelen konuklarına gerek iş, gerek tatil amacı ile beş yıldızlı ve dostça bir servis sağlamaktadır. Otel hizmetleri, bir kilometre uzunluğundaki özel sahili, yetişkin ve çocuk havuzu, deniz manzaralı ve klimalı otel odaları, sahil barı, restoranları, spor salonu, tenis, plaj voleybolu, golf, ısıtmalı havuz, sıcak banyo, SPA, toplantı ve konferans odaları, hızlı erişimli internet, hediyelik eşya dükkanlarını içermektedir.</p><p><br>&nbsp;</p><p><strong>ACAPULCO OTEL&nbsp;</strong></p><p>Kıbrıs'ın en köklü otellerinden biri olarak öne çıkan Acapulco otel üstün hizmet anlayışı ve konuklarına sunduğu benzersiz fırsatlarla fark yaratıyor. Tatil cenneti adanın en güzel plajlarından birine sahip olan tesis, çocuklu ailelerden balayı çiftlerine kadar birçok konsepti tek çatı altında birleştiriyor. Benzersiz plajı ile birlikte geniş havuzu ve su kaydıraklarıyla da öne çıkan tesis Kıbrıs otelleri içerisinde en tercih edilen tesislerden bir tanesi. Acapulco otel ayrıcalıklı bir tatil için konuklarını bekliyor.&nbsp;</p><p>Birbirinden konforlu odaları mevcut olup Villa oda 110, PineCourt/1 156, Pine Court/2 248, Ana Bina&nbsp;255 <i>( Toplam 659 Adet Balkonlu Oda), </i>Garden Junior 32, Garden Suite&nbsp;11, Lagoon Suite 14 adet olmak üzere toplam 826 odası bulunmaktadır.</p><p><br>&nbsp;</p><p><strong>ACAPULCO KIBRIS</strong></p><p>Farklı konseptleri bir araya getiren Acapulco Kıbrıs yıl boyunca misafirlerini Türk ve yabancı ünlü sanatçılarla buluşturuyor. Kıbrıs sanatçılı oteller kategorisinde en üst sıralarda kendine yer edinen Acapulco Kıbrıs eğlencenin merkezi konumunda. Muhteşem gala programlarıyla konuklarına müzik ziyafeti yaşatan tesiste Ebru Gündeş, Sibel Can, Ajda Pekkan, Koray Avcı, Serkan Kaya, Fatih Ürek, Yıldız Tilbe, Hadise, Ferhat Göçer, Şevval Sam, Bülent Ersoy, Emel Sayın, Aşkın Nur Yengi, Aleyna Tilki ve Alpay gibi ünlü sanatçılar sahne alıyor. Tatilini aktivite ve eğlence ile renklendirmek isteyenler için en uygun tesislerden biri Acapulco Kıbrıs</p><p><br>&nbsp;</p><p><strong>ACAPULCO HOTEL BALAYI</strong></p><p>Balayı tatili için sunduğu ayrıcalıklarla en iyi balayı otelleri arasında üst sıralarda bulunan Acapulco hotel romantizmin de adresi. Yeni evli çiftlere unutulmaz bir balayı tatili deneyimi fırsatı sunan tesisin balayı konseptinde oda süslemesi, özel buklet malzemesi, meyve sepeti + şarap + özel çikolata ikramı, odaya kahvaltı, balayı hatırası hediyesi, spa merkezinde masajlarda %20 indirim, müsaitlik durumuna göre upgrade, VIP karşılama, geç çıkış için öncelik sağlanması gibi imkanlar yer alıyor. Siz de Acapulco hotel tercihi ile rüyalarınızdaki balayı tatilini gerçeğe dönüştürebilirsiniz.</p><p><br>&nbsp;</p><p><strong>ACAPULCO RESORT FIRSATLARI</strong></p><p>Tatil Dükkanı güvencesiyle Acapulco Resort sizlere büyük fırsatlar sunuyor. Erken rezervasyon fırsatlarını takip ederek Acapulco Resort için en uygun fiyata uçak konaklama transfer dahil paketinizi hızlı ve kolay bir şekilde satın alabilirsiniz. En iyi Kıbrıs otelleri fiyat avantajlarını yakalamak için tatildukkani.com'u takip etmeniz yeterli. Acapulco Resort ayrıcalıklı hizmet anlayışı ve fiyat avantajlarıyla sizleri bekliyor.</p><p><br>&nbsp;</p><p><strong>ACAPULCO YORUM</strong></p><p>Özellikle çocuklu ailelerin yüksek puan verdiği Acapulco yorum kategorisinde de en iyi Kıbrıs otelleri arasında yer alıyor. Tesislerin temizliği ve tecrübeli personelin güler yüzlü olması misafirlerin en çok beğendiği nokta olarak dikkat çekiyor. Benzersiz plajı ile de büyük övgüler alan Acapulco yorum bölümünde öne çıkan bir diğer özellik. Siz de aileniz de ayrıcalıklı bir tesiste benzersiz bir tatil yapmak istiyorsanız Acapulco yorum bölümünü okuyabilir ve bu özel tesiste rezervasyon yapabilirsiniz.&nbsp;</p><p>&nbsp;</p><p>DAHİL HİZMETLER&nbsp;</p><ul><li>Temizlik,&nbsp;</li><li>plaj havlusu,&nbsp;</li><li>fitness,&nbsp;</li><li>hemşire hizmeti,&nbsp;</li><li>kasa,&nbsp;</li><li>Wi-Fi,&nbsp;</li><li>Türk hamamı,&nbsp;</li><li>sauna;&nbsp;</li><li>açık ve kapalı otopark.</li></ul><p>&nbsp;</p><p>ÜCRETLİ HİZMETLER&nbsp;</p><ul><li>SPA bakımları,&nbsp;</li><li>kuaför,&nbsp;</li><li>doktor,&nbsp;</li><li>minibar,&nbsp;</li><li>çamaşırhane,&nbsp;</li><li>araç kiralama,&nbsp;</li><li>geç çıkış,&nbsp;</li><li>özel kabana ve bebek bakıcılığı</li></ul>",
+       "inputSelect": null
+      },
+      {
+       "id": 81,
+       "featureId": 193,
+       "name": "Genel Uyarılar",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": "<p>* Acapulco Resort Convention Spa, yaz sezonunda single, double, triple bay rezervasyonları kabul etmemektedir.</p><p>* Tesis odalarına giriş saati 15:00 ile başlar, odalardan çıkış saati ise en geç 11:00'dir. Evcil hayvan kabul edilmemektedir.</p><p>* Taze sıkılmış meyve suları, Türk kahvesi ve import içecekler ücretlidir.</p><p>* Tesiste hizmet veren açık alanların kullanımı mevsim koşullarına bağlıdır.</p><p>* Aile odaları veya bazı özel odalar haricindeki odalarda yapılacak 2+2 veya 3+1 konaklamalar, odada sıkışıklık yaratabilir ve verilen ilave yataklar sabit yatak konforunda olmayabilir.</p><p>* Infinity havuz 17 yaş ve üzeri olarak hizmet vermektedir. 17 yaş altı çocuklar için aquapark ve yarı olimpik yüzme havuzu kullanılmaktadır.</p><p>* Lagoon Suite odalarda <strong>17 yaş ve üstü misafirlerin</strong> konaklaması kabul edilecektir.</p><p>* Girişte Ödenmesi Gereken Ücret: 5000TL</p><p>&nbsp;</p><p><strong>Önemli Not!</strong></p><p><strong>Lagoon Suit Oda tipinin direkt havuza açılması nedeni ile Acapulco Lagoon Suit Oda'ya 17 Yaş altı misafir konaklaması yapılamamaktadır.</strong></p><p>&nbsp;</p><p><strong>Önemli Not!</strong></p><p><strong>Ödeme ve Provizyon (Bloke) Bilgilendirmesi</strong></p><p>Otelimizde <strong>nakit</strong> ve <strong>kredi kartı</strong> olmak üzere <strong>2 farklı ödeme yöntemi</strong> bulunmaktadır.</p><p><strong>Nakit Ödeme</strong></p><p>Misafirlerimizden girişte nakit ödeme alınır ve işlem kasaya işlenir.<br>Çıkış sırasında ekstra bir harcama bulunmaması durumunda, alınan tutar misafire iade edilir.</p><p><strong>Kredi Kartı ile Ödeme (Provizyon / Bloke)</strong></p><p>Kredi kartı ile yapılan ödemelerde, kart limitiniz üzerinden <strong>ön provizyon (bloke)</strong> işlemi uygulanır.<br>Çıkış günü ekstra bir harcama bulunmaması halinde, provizyon (bloke) kaldırılır.</p><p>Misafirlerimize işlem sonrasında <strong>provizyon slipi</strong> verilir. Talep edilmesi halinde resepsiyon tarafından tekrar paylaşılabilir.</p><p>Blokenin kaldırılmasının ardından, iade süreci bankaya bağlı olarak değişmekte olup <strong>7–14 iş günü içerisinde</strong> banka tarafından kartınıza yansıtılır.</p><p>Provizyon kaldırıldıktan sonra kart limitinizin açılması tamamen bankanızın işlem süreciyle ilgilidir. Dilerseniz elinizde bulunan slip ile bankanızın <strong>çağrı merkezi</strong> üzerinden destek alabilirsiniz.</p><p>&nbsp;</p><p><strong>Önemli Genel Bilgilendirme:</strong></p><p><strong>KKTC ve kimlik ile seyahat edilebilen diğer ülkelere gidecek olan T.C. vatandaşlarının, fotoğraflı yeni çipli kimlik kartlarının olması gerekmektedir. Bu kural; bebek ve çocuk yolcular dahil olmak üzere tüm misafirler için geçerlidir. 18 yaşını doldurmamış; annesinden, babasından veya yasal varislerinden ayrı seyahat edecek olan misafirlerimiz; annesi ile seyahat ediyorsa babasından, babası ile seyahat ediyorsa annesinden veya yasal varislerinden noter onaylı&nbsp;muvafakatname almaları gerekmektedir. Eski tip ve yeni tip resimsiz kimliklerle; bebek dahi olsa ve yasal varisleri yanında olmayan muvafakatnamesiz misafirlerimiz Türkiye’ den çıkış yapamamaktadır.&nbsp;</strong></p>",
+       "inputSelect": null
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Havuz & Plaj",
+     "type": "HOTEL",
+     "sequence": 2,
+     "facality": [
+      {
+       "id": 161564,
+       "featureId": 12,
+       "name": "Açık Havuz",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 161565,
+       "featureId": 13,
+       "name": "Kapalı Havuz",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 161552,
+       "featureId": 1,
+       "name": "Kaydıraklı Havuz",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 22,
+       "featureId": 4,
+       "name": "Plaj",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": "Kum"
+      },
+      {
+       "id": 161570,
+       "featureId": 22,
+       "name": "Sonsuzluk Havuzu",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 217884,
+       "featureId": 14,
+       "name": "Özel Plaj",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 45,
+       "featureId": 10,
+       "name": "Havuz Plaj Bilgisi",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": "<p>Otelde, açık ve kapalı olmak üzere yetişkinlere ve çocuklara farklı boyutlarda hizmet veren havuzlar bulunmaktadır. Açık havuzlara bağlı 5 adet kaydırak hem yetişkinlerin hem de çocukların gönüllerince eğlenebilmesi için farklı boyutlarda hizmet vermektedir.</p><p>*Infinity havuz 17 yaş ve üzeri olarak hizmet vermektedir. 17 yaş altı çocuklar için aquapark ve yarı olimpik yüzme havuzu kullanılmaktadır.</p><p>&nbsp;</p><p>&nbsp;</p><p><strong>Önemli Not!</strong></p><p>19 Kasım 2024 tarihi itibariyle, tesiste büyük kaydırakların yer aldığı aquapark alanı sezon sonu dolayısıyla hizmete kapatılacaktır. Ancak, küçük kaydırakların bulunduğu aquapark alanı misafirlere keyifli anlar yaşatmaya devam edecektir.&nbsp;</p><p>Büyük kaydırakların bulunduğu aquapark alanı, Ramazan Bayramı ile birlikte yeniden hizmete açılacaktır.</p>",
+       "inputSelect": null
+      }
+     ]
+    },
+    {
+     "id": 12,
+     "name": "Yeme İçme Konsepti",
+     "type": "CONCEPT",
+     "sequence": 3,
+     "facality": []
+    },
+    {
+     "id": 15,
+     "name": "Konum Bilgisi",
+     "type": "HOTEL",
+     "sequence": 6,
+     "facality": [
+      {
+       "id": 2,
+       "featureId": 247,
+       "name": "Otogara Mesafe",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": "8 km",
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 78,
+       "featureId": 252,
+       "name": "Sahil Uzunluğu",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": "1000 m",
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 77,
+       "featureId": 251,
+       "name": "Şehir Merkezine Mesafe",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": "8 km",
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 42,
+       "featureId": 249,
+       "name": "Konum Bilgisi",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": "<p>Acapulco Resort Hotel; Ercan havalimanına 28 km.(30 dk), Girne şehir merkezine 8 km. (15 dk.) uzaklıktadır.</p><p>&nbsp;</p>",
+       "inputSelect": null
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "Spa",
+     "type": "HOTEL",
+     "sequence": 10,
+     "facality": [
+      {
+       "id": 33,
+       "featureId": 138,
+       "name": "Buhar Odası",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 38,
+       "featureId": 143,
+       "name": "Fizik Tedavi",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 32,
+       "featureId": 137,
+       "name": "Hamam",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 35,
+       "featureId": 140,
+       "name": "Kese - Köpük",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 34,
+       "featureId": 139,
+       "name": "Masaj",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 31,
+       "featureId": 136,
+       "name": "Sauna",
+       "sequence": 1,
+       "inputYesNo": true,
+       "inputNumber": null,
+       "inputPaidFree": true,
+       "inputText": null,
+       "inputRichtext": null,
+       "inputSelect": null
+      },
+      {
+       "id": 46,
+       "featureId": 144,
+       "name": "Spa Bilgisi",
+       "sequence": 1,
+       "inputYesNo": null,
+       "inputNumber": null,
+       "inputPaidFree": null,
+       "inputText": null,
+       "inputRichtext": "<p>Spa merkezinde Klasik Türk Hamamı keyfinin yanında asırlardır süregelen bir gelenek olan Shiatsu, Ayurveda ve Thai masajlarının keyfini çıkarabilirsiniz. Vücudunuzun layık olduğu tazeliğe kavuşması için hazırlanan hidroterapi küvetinde çamur, bal, çikolata ve yosun bakımları yaptırabilirsiniz. Çok geniş bir yelpazede hizmet veren Spa merkezinde aradığınız her türlü masajı, vücut bakımlarını ve özel kürleri bulabilirsiniz.</p><p>&nbsp;</p><p><strong>OCEAN SPA &amp; WELLNESS&nbsp;</strong></p><p>HER GÜN 08.00 - 20.30</p><ul><li>Türk hamamı ve sauna&nbsp;</li><li>Kapalı ısıtmalı havuzlar&nbsp;</li><li>Tuzlu su havuzu&nbsp;</li><li>Masaj ve cilt / vücut bakımları&nbsp;</li><li>Fitness ve Reformer Pilates&nbsp;</li><li>Kuaför</li></ul>",
+       "inputSelect": null
+      }
+     ]
+    }
+   ],
+   "themes": [
+    {
+     "id": 266,
+     "name": "Aile Oteli",
+     "icon": "i_aile"
+    },
+    {
+     "id": 269,
+     "name": "Aquaparklı Otel",
+     "icon": "i_aquapark"
+    },
+    {
+     "id": 255,
+     "name": "Balayı Oteli",
+     "icon": "i_balayi"
+    },
+    {
+     "id": 257,
+     "name": "Çocuk Dostu",
+     "icon": "i_cocuk"
+    },
+    {
+     "id": 261,
+     "name": "Engel(siz) Otel",
+     "icon": "i_engelsiz"
+    },
+    {
+     "id": 258,
+     "name": "Genç Dostu",
+     "icon": "i_genc"
+    },
+    {
+     "id": 268,
+     "name": "İleri Yaş Dostu",
+     "icon": "i_ileriyas"
+    }
+   ],
+   "concepts": [
+    "Tam Pansiyon Plus"
+   ],
+   "eventGroups": [
+    {
+     "id": 1786,
+     "title": "Alya",
+     "status": true,
+     "date": [
+      {
+       "date": "2026-10-31"
+      },
+      {
+       "date": "2027-07-17"
+      }
+     ]
+    },
+    {
+     "id": 1441,
+     "title": "Mert Demir",
+     "status": true,
+     "date": [
+      {
+       "date": "2026-11-14"
+      }
+     ]
+    }
+   ],
+   "destination": [
+    {
+     "id": 8,
+     "name": "Kıbrıs"
+    },
+    {
+     "id": 9,
+     "name": "Girne"
+    }
+   ],
+   "seoPage": {
+    "slug": "acapulco-resort-convention-spa"
+   },
+   "avabilityCriteria": {
+    "hotelId": 1404
+   },
+   "rooms": [],
+   "isAvailable": true,
+   "isPrice": true
+  }
+ }
+}

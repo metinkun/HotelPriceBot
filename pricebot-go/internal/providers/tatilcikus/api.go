@@ -69,12 +69,35 @@ type Hotel struct {
 	PackagePriceMinNight               int     `json:"packagePriceMinNight"`
 	FirstChildAge                      int     `json:"firstChildAge"` // bu yasin ustu tedarikcide yetiskin sayilir
 	IsShown                            bool    `json:"isShown"`
+
+	// Statik detay alanlari (GetDetails)
+	FolderName             string         `json:"folderName"` // gorsel klasoru: /images/hotels/<folderName>/gallery/optimized/<url>.jpg
+	GoogleMapsURL          string         `json:"googleMapsUrl"`
+	GeneralText            string         `json:"generalText"`    // "<Otel> Hakkında" (HTML)
+	ChildText              string         `json:"childText"`      // cocuk bilgileri (HTML)
+	MarriedText            string         `json:"marriedText"`    // balayi (HTML)
+	CallCenterText         string         `json:"callCenterText"` // "Çağrı Merkezi Bilgilendirmesi" (HTML)
+	Score                  float64        `json:"score"`          // Tatilcikus puani (10 uzerinden)
+	CancelOption           bool           `json:"cancelOption"`
+	MoneyOption            bool           `json:"moneyOption"`
+	TripadvisorRating      float64        `json:"tripadvisorRating"`
+	TripadvisorRatingCount int            `json:"tripadvisorRatingCount"`
+	TripadvisorName        string         `json:"tripadvisorName"`
+	ShowTripadvisor        bool           `json:"showTripadvisor"`
+	TagGroupHotelTexts     []TagGroupText `json:"tagGroupHotelTexts"`
+}
+
+// TagGroupText tag grubu basligi altinda gosterilen serbest metin (HTML).
+type TagGroupText struct {
+	TagGroupID int    `json:"tagGroupId"`
+	Text       string `json:"text"`
 }
 
 // Item otel odasi veya pansiyon (concept); tedarikci id'leri ile eslenir.
 type Item struct {
 	ID          int      `json:"id"`
 	Name        string   `json:"name"`
+	Description string   `json:"description"` // HTML (oda/pansiyon aciklamasi)
 	IsShown     bool     `json:"isShown"`
 	OpenForSale bool     `json:"openForSale"`
 	CoralIDs    []string `json:"coralIds"`
@@ -83,9 +106,54 @@ type Item struct {
 }
 
 type HotelDetail struct {
-	Hotel    Hotel  `json:"hotel"`
-	Rooms    []Item `json:"rooms"`
-	Concepts []Item `json:"concepts"`
+	Hotel       Hotel        `json:"hotel"`
+	Rooms       []Item       `json:"rooms"`
+	Concepts    []Item       `json:"concepts"`
+	Highlights  []Highlight  `json:"highlights"`
+	HotelTags   []HotelTag   `json:"hotelTags"`
+	RoomTags    []RoomTag    `json:"roomTags"`
+	HotelImages []HotelImage `json:"hotelImages"`
+	HotelVideos []HotelVideo `json:"hotelVideos"`
+	SubRatings  []SubRating  `json:"subRatings"`
+}
+
+type Highlight struct {
+	Name string `json:"name"`
+}
+
+// HotelTag otelin ozelligi; ad Tags/ listesinden (tagId) cozulur.
+type HotelTag struct {
+	TagGroupID int  `json:"tagGroupId"`
+	TagID      int  `json:"tagId"`
+	IsPaid     bool `json:"isPaid"`
+}
+
+type RoomTag struct {
+	RoomID int  `json:"roomId"`
+	TagID  int  `json:"tagId"`
+	IsPaid bool `json:"isPaid"`
+}
+
+// HotelImage gorsel; URL = siteURL + /images/hotels/<folderName>/gallery/optimized/<url>.jpg.
+// groupId: 1 Genel, 2 Odalar, 3 Yeme Icme, 4 Cocuk, 5 Aktivite. roomId > 0 ise oda gorseli.
+type HotelImage struct {
+	ID          int     `json:"id"`
+	GroupID     int     `json:"groupId"`
+	RoomID      int     `json:"roomId"`
+	URL         string  `json:"url"`
+	Description *string `json:"description"`
+	Score       int     `json:"score"`
+	IsShown     bool    `json:"isShown"`
+}
+
+type HotelVideo struct {
+	YoutubeVideoID string `json:"youtubeVideoId"`
+}
+
+// SubRating Tripadvisor alt puani (5 uzerinden).
+type SubRating struct {
+	Name  string  `json:"name"`
+	Value float64 `json:"value"`
 }
 
 type detailEnvelope struct {

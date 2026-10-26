@@ -1,0 +1,107 @@
+{
+ "success": true,
+ "data": {
+  "hotel": [
+   {
+    "id": 1433,
+    "type": "HOTEL",
+    "name": "Merit Royal Diamond Hotel & Spa",
+    "destnationId": null,
+    "airportCode": "ECN",
+    "seoPage": {
+     "id": 1459,
+     "slug": "merit-royal-diamond-hotel-spa",
+     "type": "HOTEL"
+    },
+    "destination": [
+     {
+      "id": 8,
+      "name": "Kıbrıs"
+     },
+     {
+      "id": 9,
+      "name": "Girne"
+     }
+    ]
+   },
+   {
+    "id": 1379,
+    "type": "HOTEL",
+    "name": "Merit Royal Gardens Hotel ",
+    "destnationId": null,
+    "airportCode": "ECN",
+    "seoPage": {
+     "id": 1404,
+     "slug": "merit-royal-gardens-hotel",
+     "type": "HOTEL"
+    },
+    "destination": [
+     {
+      "id": 8,
+      "name": "Kıbrıs"
+     },
+     {
+      "id": 24,
+      "name": "Gazimağusa"
+     }
+    ]
+   },
+   {
+    "id": 1429,
+    "type": "HOTEL",
+    "name": "Merit Royal Hotel",
+    "destnationId": null,
+    "airportCode": "ECN",
+    "seoPage": {
+     "id": 1455,
+     "slug": "merit-royal-hotel",
+     "type": "HOTEL"
+    },
+    "destination": [
+     {
+      "id": 8,
+      "name": "Kıbrıs"
+     },
+     {
+      "id": 9,
+      "name": "Girne"
+     }
+    ]
+   },
+   {
+    "id": 1434,
+    "type": "HOTEL",
+    "name": "Merit Royal Premium Hotel",
+    "destnationId": null,
+    "airportCode": "ECN",
+    "seoPage": {
+     "id": 1460,
+     "slug": "merit-royal-premium-hotel",
+     "type": "HOTEL"
+    },
+    "destination": [
+     {
+      "id": 8,
+      "name": "Kıbrıs"
+     },
+     {
+      "id": 9,
+      "name": "Girne"
+     }
+    ]
+   },
+   {
+    "id": 999,
+    "type": "HOTEL",
+    "name": "Slugsuz Otel",
+    "seoPage": null,
+    "destination": []
+   }
+  ],
+  "destination": [],
+  "category": []
+ },
+ "params": [],
+ "error": null,
+ "errorCode": null
+}
