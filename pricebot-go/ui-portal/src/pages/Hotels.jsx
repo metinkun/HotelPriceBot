@@ -42,7 +42,7 @@ export default function Hotels({ me }) {
         {hotels.map((h) => (
           <div className="hotel-card" key={h.internalHotelId}>
             <div><b>{h.hotelName || h.internalHotelId}</b><div className="chips" style={{ marginTop: 6 }}>{h.providers.map((p) => <a key={p.provider} className={"chip " + (p.enabled ? "on" : "off")} href={p.sourceUrl || "#"} target="_blank" rel="noreferrer" title={p.sourceUrl || ""}>{(me.providers.find((x) => x.name === p.provider) || {}).label || p.provider}</a>)}</div></div>
-            <div className="row"><button className="btn ghost" onClick={() => { location.hash = "search/" + h.internalHotelId; }}>Fiyat ara</button><button className="btn secondary" onClick={() => remove(h.internalHotelId)}>Kaldır</button></div>
+            <div className="row"><button className="btn ghost" onClick={() => { location.hash = "hoteldetail/" + h.internalHotelId; }}>Detay</button><button className="btn ghost" onClick={() => { location.hash = "search/" + h.internalHotelId; }}>Fiyat ara</button><button className="btn secondary" onClick={() => remove(h.internalHotelId)}>Kaldır</button></div>
           </div>
         ))}
       </div>

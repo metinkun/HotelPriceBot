@@ -8,6 +8,10 @@ import Logs from "./pages/Logs.jsx";
 import Hotels from "./pages/Hotels.jsx";
 import Admins from "./pages/Admins.jsx";
 import Schedules from "./pages/Schedules.jsx";
+import HotelDetail from "./pages/HotelDetail.jsx";
+import Notifications from "./pages/Notifications.jsx";
+import Import from "./pages/Import.jsx";
+import DetailChanges from "./pages/DetailChanges.jsx";
 
 const PAGES = [
   ["dashboard", "Özet", Dashboard],
@@ -17,8 +21,17 @@ const PAGES = [
   ["usage", "Kullanım", Usage],
   ["logs", "İstek Logları", Logs],
   ["hotels", "Oteller", Hotels],
+  ["import", "Toplu Otel Ekle", Import],
+  ["changes", "Detay Değişiklikleri", DetailChanges],
+  ["notifications", "Bildirimler", Notifications],
   ["admins", "Adminler", Admins],
+  ["hoteldetail", "", HotelDetailPage],
 ];
+
+function HotelDetailPage() {
+  const parts = (location.hash || "").slice(1).split("/");
+  return <HotelDetail me={null} hotelId={parts[1]} apiBase="/api/admin" key={parts[1]} />;
+}
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -75,7 +88,7 @@ export default function App() {
     <div className="app">
       <aside className="side">
         <h1>PriceBot Admin</h1>
-        {PAGES.map(([key, label]) => (
+        {PAGES.filter((p) => p[1]).map(([key, label]) => (
           <button key={key} className={key === current[0] ? "active" : ""} onClick={() => { location.hash = key; }}>{label}</button>
         ))}
         <div className="foot">

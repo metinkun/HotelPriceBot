@@ -1,0 +1,470 @@
+[
+ {
+  "externalId": 2,
+  "name": "CRATOS PREMIUM HOTEL & CASINO & SPA",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 5,
+  "name": "MERIT CRYSTAL COVE HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 6,
+  "name": "ROCKS HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 8,
+  "name": "THE COLONY ARKIN GROUP HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 9,
+  "name": "VUNI PALACE HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 10,
+  "name": "DENIZKIZI ROYAL HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 11,
+  "name": "DENIZKIZI HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 12,
+  "name": "DOME HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 14,
+  "name": "OSCAR RESORT HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 15,
+  "name": "GRAND CENTER BOUTIQUE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 16,
+  "name": "DORANA HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 17,
+  "name": "UPTOWN BUYUK ANADOLU GIRNE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 18,
+  "name": "ALTINKAYA HOLIDAY VILLAGE",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 19,
+  "name": "RIVERSIDE GARDEN RESORT",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 20,
+  "name": "CITY ROYAL HOTEL",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 22,
+  "name": "MERIT LEFKOSA HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 23,
+  "name": "SALAMIS BAY CONTI HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 25,
+  "name": "NUHUN GEMISI DELUXE HOTEL & SPA",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 27,
+  "name": "SEMPATI HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 28,
+  "name": "ADA BEACH HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 29,
+  "name": "LIFE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 31,
+  "name": "BELLA VIEW ART BOUTIQUE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 32,
+  "name": "MANOLYA HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 33,
+  "name": "ARKIN PALM BEACH HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 35,
+  "name": "MERIT PARK HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 36,
+  "name": "PIA BELLA HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 39,
+  "name": "MERIT ROYAL PREMIUM HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 40,
+  "name": "GRAND PASHA KYRENIA HOTEL & CASINO & SPA",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 44,
+  "name": "PARK PALACE HOTEL KYRENIA",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 45,
+  "name": "LE CHATEAU LAMBOUSA HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 47,
+  "name": "MOUNTAIN VIEW HOTEL & VILLAS",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 52,
+  "name": "ELEXUS HOTEL RESORT SPA CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 54,
+  "name": "BARE HILL HOLIDAY VILLAGE",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 57,
+  "name": "LORDS PALACE HOTEL & SPA & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 58,
+  "name": "PORT VIEW HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 60,
+  "name": "THE OLIVE TREE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 682,
+  "name": "THE SHIP INN HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 728,
+  "name": "CONCORDE LUXURY RESORT & CASINO CYPRUS",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 729,
+  "name": "SEA LIFE LONG BEACH HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 732,
+  "name": "LIMAK CYPRUS DELUXE HOTEL",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 741,
+  "name": "LES AMBASSADEURS HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 755,
+  "name": "LORDS RESIDENCE BUTIK OTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 803,
+  "name": "OASIS HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 817,
+  "name": "INGATE HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 827,
+  "name": "GILLHAM VINEYARD HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 894,
+  "name": "LAPIDA GARDEN HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 925,
+  "name": "MERIT ROYAL HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 944,
+  "name": "ROSE GARDENS HOLIDAY VILLAGE",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 1781,
+  "name": "PREMIUM INN BOUTIQUE HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 1879,
+  "name": "MERYEM`S HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 2021,
+  "name": "HOTEL SUN",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 2183,
+  "name": "WHITE PEARL HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 2186,
+  "name": "MIMOZA BEACH HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 2404,
+  "name": "ARDIÇ AĞACI TATIL KÖYÜ",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 2422,
+  "name": "NOYANLAR HOLIDAYS HOMES",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 2528,
+  "name": "GRAND PASHA LEFKOSA HOTEL & CASINO &SPA",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 2605,
+  "name": "MC PALACE HOTEL & SPA CONVENTION",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 2620,
+  "name": "OLİVİA PALM HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 2626,
+  "name": "GRAND SAPPHIRE CITY OTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 2715,
+  "name": "CONCORDE TOWER CONVENTION & SPA",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 2782,
+  "name": "COURTYARD LONG BEACH HOLIDAY RESORT",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 2825,
+  "name": "NOVEL CENTRE POINT INN HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 2874,
+  "name": "ROYAL PALACE HOTEL",
+  "country": "TRNC",
+  "regionId": 3
+ },
+ {
+  "externalId": 3084,
+  "name": "CHAMADA PRESTİGE HOTEL CASINO & SPA",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 3232,
+  "name": "MERIT ROYAL DIAMOND & SPA",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 3233,
+  "name": "THE ARKIN ISKELE HOTEL & CASINO",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3234,
+  "name": "ACAPULCO RESORT HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 3235,
+  "name": "AVENUE HOTEL",
+  "country": "TRNC",
+  "regionId": 2
+ },
+ {
+  "externalId": 3236,
+  "name": "CROWN SALAMİS HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ },
+ {
+  "externalId": 3237,
+  "name": "DEL MARE PARK",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3238,
+  "name": "DORANA RESİDANCE",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3239,
+  "name": "GRAND SAPPHIRE RESORT ISKELE",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3241,
+  "name": "BLUE SEA KARPAZ",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3244,
+  "name": "ALYA ROOMS",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3245,
+  "name": "CELEBİ GARDEN HOTEL",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3246,
+  "name": "CLUB DI MARE HOTEL",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3247,
+  "name": "EDELWEISS HOLIDAY RESIDENCE",
+  "country": "TRNC",
+  "regionId": 5
+ },
+ {
+  "externalId": 3248,
+  "name": "EKOR ELEGANCE HOTEL",
+  "country": "TRNC",
+  "regionId": 4
+ }
+]

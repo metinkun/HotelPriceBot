@@ -38,7 +38,7 @@ export default function Hotels() {
         <thead><tr><th>Id</th><th>Ad</th><th>Provider'lar</th><th></th></tr></thead>
         <tbody>{hotels.map((h) => <tr key={h.internalHotelId}><td><code>{h.internalHotelId}</code></td><td>{h.hotelName}</td>
           <td>{h.providers.map((p) => <span key={p.provider} className={"badge " + (p.isActive ? "ok" : "")} style={{ marginRight: 4 }} title={p.sourceUrl || ""}>{p.provider}</span>)}</td>
-          <td><button className="btn danger" onClick={() => remove(h.internalHotelId)}>Sil</button></td></tr>)}</tbody>
+          <td style={{ whiteSpace: "nowrap" }}><button className="btn secondary" onClick={() => { location.hash = "hoteldetail/" + h.internalHotelId; }}>Detay</button> <button className="btn danger" onClick={() => remove(h.internalHotelId)}>Sil</button></td></tr>)}</tbody>
       </table></div>
     </div>
   );

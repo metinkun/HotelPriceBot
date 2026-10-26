@@ -55,3 +55,10 @@ th { color:var(--muted); font-weight:600; font-size:12px; text-transform:upperca
 .hotel-card { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
 .hotel-card:last-child { border-bottom:0; }
 @media (max-width: 900px) { .shell { flex-direction:column; } .nav { width:auto; flex-direction:row; flex-wrap:wrap; } .nav .spacer, .nav .user { display:none; } .login-wrap { grid-template-columns:1fr; } .login-art { display:none; } .hero svg.art { display:none; } .content { padding:16px; } }
+
+/* Statik detay: ilk goruntulemede degisen alanlar */
+.hl { background:#fef3c7; outline:2px solid #fcd34d; border-radius:6px; padding:0 4px; }
+.gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+.gallery img { width:100%; height:130px; object-fit:cover; border-radius:8px; display:block; }
+.gallery.small { grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); } .gallery.small img { height:80px; }
+ul { margin:6px 0; padding-left:18px; } ul li { margin:3px 0; }
