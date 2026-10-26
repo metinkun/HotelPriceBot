@@ -42,9 +42,12 @@ Production: bkz. [deploy/README.md](deploy/README.md) (Caddy TLS, kapali portlar
 cmd/server             giris noktasi
 cmd/capture            gelistirme araclari (fixture yakalama, ag trafigi kaydi)
 internal/api           router, middleware (request id, CORS, auth), handler'lar, Swagger, admin panel embed
-internal/services      hotel / price / package is mantigi, Fetcher (cache + sinirlayici), usage (kredi/kota)
+internal/services      hotel / price / package is mantigi, Fetcher (cache + sinirlayici), usage (kredi/kota), importer (toplu otel)
+internal/details       statik otel detayi: gunluk cekim, hash/diff, degisiklik bildirimi, ilk goruntulemede vurgu
+internal/portal        musteri portali: aramalar (job uzerinden) ve planli aramalar (30 sn zamanlayici)
 internal/jobs          asenkron is kuyrugu (Redis durum, in-process worker havuzu, tekillestirme, kismi sonuc)
-internal/providers     etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi + registry (+ fixture testleri)
+internal/providers     13 site (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm,
+                       tatilsitesi, prontotour, tatilcikus, tatildukkani) + registry; fiyat, paket, statik detay, isimle arama
 internal/provider      ortak Provider arayuzu ve sonuc tipleri
 internal/cache         Redis cache (provider basina, 5 dk) + singleflight
 internal/limiter       provider basina eszamanlilik, devre kesici, saglik istatistikleri
@@ -55,6 +58,7 @@ internal/browser       chromedp tarayici yoneticisi (sekme siniri, periyodik yen
 internal/httpx         proxy rotasyonlu HTTP istemcisi (4xx/5xx -> hata)
 internal/proxy         Webshare senkronu + round-robin
 ui/                    React/Vite admin paneli (Docker'da derlenip Go'ya gomulur, /admin/)
+ui-portal/             React/Vite musteri portali (/portal/)
 ```
 
 ## Kimlik dogrulama ve planlar
@@ -83,6 +87,10 @@ ui/                    React/Vite admin paneli (Docker'da derlenip Go'ya gomulur
 | GET | /api/admin/providers/health | eszamanlilik, basari/hata, devre kesici, kanarya, cache |
 | POST | /api/admin/providers/{name}/reset-circuit, /api/admin/canary/run | operasyon |
 | CRUD | /api/admin/hotels, /api/admin/mappings | otel ve eslestirme yonetimi |
+| GET/POST | /api/admin/hotels/{id}/details[?provider=], .../details/refresh | acente bazli statik detay (ilk goruntulemede `highlightPaths`), yenile |
+| GET/POST | /api/admin/details/changes, /api/admin/details/run | degisiklik gecmisi, gunluk kontrolu simdi calistir (`DETAILS_RUN_HOUR`, varsayilan 04) |
+| GET/POST | /api/admin/notifications, .../read | admin bildirimleri (portal esdegeri `/api/portal/notifications`) |
+| POST/GET | /api/admin/hotels/import, /api/admin/imports/{id} | isim listesinden toplu otel ekleme (asenkron; `apply:false` = rapor) |
 
 Tam sema: `internal/api/openapi.json` (Swagger `/docs`). Postman koleksiyonu: `postman/` (OpenAPI'den uretilir, bkz. `postman/README.md`).
 
@@ -101,7 +109,8 @@ ve gunluk kanarya (`CANARY_HOTEL_ID`) uyarir.
 ## Ortam degiskenleri
 
 Bkz. [.env.example](.env.example). Onemliler: `DATABASE_URL`, `REDIS_URL`, `ADMIN_API_KEY`, `ADMIN_EMAIL/PASSWORD`, `JWT_SECRET`,
-`REQUIRE_API_KEY`, `CACHE_TTL_SECONDS`, `PROVIDER_CONCURRENCY`, `BROWSER_MAX_TABS`, `CANARY_HOTEL_ID`, `WEBSHARE_API_KEY`.
+`REQUIRE_API_KEY`, `CACHE_TTL_SECONDS`, `PROVIDER_CONCURRENCY`, `BROWSER_MAX_TABS`, `CANARY_HOTEL_ID`, `WEBSHARE_API_KEY`,
+`DETAILS_RUN_HOUR` (statik detay gunluk kontrol saati, Europe/Istanbul).
 
 ## Bilinen durumlar
 
