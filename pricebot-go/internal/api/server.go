@@ -172,6 +172,7 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /api/admin/hotels/import", s.admin(s.adminImportHotels))
 	mux.Handle("GET /api/admin/hotels/import/providers", s.admin(s.adminImportProviders))
 	mux.Handle("GET /api/admin/hotels/import/trnc", s.admin(s.adminImportTRNC))
+	mux.Handle("GET /api/admin/hotels/import/{id}", s.admin(s.adminImportStatus))
 
 	// Admin paneli ve portal (SPA)
 	s.mountAdminUI(mux)

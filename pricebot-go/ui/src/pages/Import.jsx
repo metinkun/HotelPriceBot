@@ -14,9 +14,16 @@ export default function Import() {
   const loadTRNC = async () => { try { const d = await api("/api/admin/hotels/import/trnc"); setText(d.map((h) => `${h.externalId}\t${h.name}`).join("\n")); } catch (e) { setErr(e.message); } };
   const parse = () => text.split("\n").map((l) => l.trim()).filter(Boolean).map((l, i) => { const m = l.match(/^(\d+)\s*[\t;,]\s*(.+)$/); return m ? { externalId: Number(m[1]), name: m[2].trim() } : { externalId: i + 1, name: l }; });
   const run = async (apply) => {
-    setBusy(true); setErr("");
-    try { setRep(await api("/api/admin/hotels/import", { method: "POST", body: { hotels: parse(), providers: sel, minScore: Number(minScore), apply } })); }
-    catch (e) { setErr(e.message); } finally { setBusy(false); }
+    setBusy(true); setErr(""); setRep(null);
+    try {
+      const started = await api("/api/admin/hotels/import", { method: "POST", body: { hotels: parse(), providers: sel, minScore: Number(minScore), apply } });
+      const poll = async () => {
+        const r = await api("/api/admin/hotels/import/" + started.importId);
+        setRep(r);
+        if (r.status === "running") setTimeout(poll, 3000); else setBusy(false);
+      };
+      poll();
+    } catch (e) { setErr(e.message); setBusy(false); }
   };
   const toggle = (n) => setSel(sel.includes(n) ? sel.filter((x) => x !== n) : [...sel, n]);
   return (
@@ -33,7 +40,8 @@ export default function Import() {
       </div>
       {rep && (
         <div className="card">
-          <h3>Rapor · {rep.total} otel · {rep.providers.length} acente · {rep.duration} {rep.applied && <span className="badge ok">eklendi</span>}</h3>
+          <h3>Rapor · {rep.done}/{rep.total} otel · {rep.providers.length} acente · {rep.duration} {rep.status === "running" ? <span className="badge warn">çalışıyor…</span> : rep.applied ? <span className="badge ok">eklendi</span> : <span className="badge">rapor</span>}</h3>
+          {rep.status === "running" && <div className="progress" style={{ height: 6, background: "#e5e7eb", borderRadius: 999, overflow: "hidden", margin: "6px 0 10px" }}><i style={{ display: "block", height: "100%", width: (100 * rep.done / Math.max(1, rep.total)) + "%", background: "#1d4ed8" }} /></div>}
           <table><thead><tr><th>Otel</th><th>Eşleşen</th><th>Düşük güven</th><th>Sonuç</th></tr></thead>
             <tbody>{rep.results.map((r) => <tr key={r.externalId}><td><b>{r.name}</b><div className="muted">#{r.externalId}</div></td>
               <td>{r.matches.map((m) => <div key={m.provider}><span className={"badge " + (m.ambiguous ? "warn" : "ok")}>{m.provider}</span> <a href={m.url} target="_blank" rel="noreferrer">{m.name}</a> <span className="muted">{Math.round(m.score * 100)}%{m.ambiguous ? " · belirsiz" : ""}</span></div>)}</td>

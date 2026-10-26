@@ -238,7 +238,17 @@ func (s *Server) adminImportHotels(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
-	rep := s.importer.Run(r.Context(), body.Hotels, body.Providers, body.MinScore, body.Apply, nil)
+	rep := s.importer.Start(body.Hotels, body.Providers, body.MinScore, body.Apply)
+	writeJSON(w, 202, map[string]any{"importId": rep.ID, "status": rep.Status, "total": rep.Total, "providers": rep.Providers, "statusUrl": "/api/admin/hotels/import/" + rep.ID})
+}
+
+// GET /api/admin/hotels/import/{id} — ilerleyen/biten rapor
+func (s *Server) adminImportStatus(w http.ResponseWriter, r *http.Request) {
+	rep, ok := s.importer.Get(r.PathValue("id"))
+	if !ok {
+		writeError(w, r, apperr.NotFoundf("Ice aktarma isi bulunamadi"))
+		return
+	}
 	writeJSON(w, 200, rep)
 }
 

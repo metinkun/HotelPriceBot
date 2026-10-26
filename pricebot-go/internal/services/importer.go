@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"sort"
 	"strings"
 	"sync"
@@ -45,12 +46,16 @@ type ImportResult struct {
 }
 
 type ImportReport struct {
+	ID        string         `json:"id,omitempty"`
+	Status    string         `json:"status"` // running | done
+	Done      int            `json:"done"`
 	Total     int            `json:"total"`
 	Providers []string       `json:"providers"`
 	Applied   bool           `json:"applied"`
 	MinScore  float64        `json:"minScore"`
 	Results   []ImportResult `json:"results"`
 	Duration  string         `json:"duration"`
+	StartedAt time.Time      `json:"startedAt"`
 }
 
 var stripper = transform.Chain(norm.NFD, runes.Remove(runes.In(unicode.Mn)), norm.NFC)
@@ -123,10 +128,53 @@ func score(a, b string) float64 {
 type Importer struct {
 	reg    *providers.Registry
 	hotels *HotelService
+
+	mu   sync.Mutex
+	jobs map[string]*ImportReport
 }
 
 func NewImporter(reg *providers.Registry, hs *HotelService) *Importer {
-	return &Importer{reg: reg, hotels: hs}
+	return &Importer{reg: reg, hotels: hs, jobs: map[string]*ImportReport{}}
+}
+
+// Start ice aktarmayi arka planda baslatir; rapor ilerledikce Get ile okunur (uzun surer: otel x acente).
+func (im *Importer) Start(hotels []ImportHotel, providerNames []string, minScore float64, apply bool) *ImportReport {
+	id := fmt.Sprintf("imp_%d", time.Now().UnixNano())
+	rep := &ImportReport{ID: id, Status: "running", Total: len(hotels), Providers: providerNames, Applied: apply, MinScore: minScore, Results: []ImportResult{}, StartedAt: time.Now()}
+	if len(rep.Providers) == 0 {
+		rep.Providers = im.SearchProviders()
+	}
+	im.mu.Lock()
+	im.jobs[id] = rep
+	// eski raporlari temizle (son 20)
+	if len(im.jobs) > 20 {
+		oldest, oldestT := "", time.Now()
+		for k, v := range im.jobs {
+			if v.StartedAt.Before(oldestT) {
+				oldest, oldestT = k, v.StartedAt
+			}
+		}
+		delete(im.jobs, oldest)
+	}
+	im.mu.Unlock()
+	go im.Run(context.Background(), hotels, providerNames, minScore, apply, nil, rep)
+	return rep
+}
+
+// Get ilerleyen/biten raporun kopyasini doner.
+func (im *Importer) Get(id string) (*ImportReport, bool) {
+	im.mu.Lock()
+	defer im.mu.Unlock()
+	r, ok := im.jobs[id]
+	if !ok {
+		return nil, false
+	}
+	cp := *r
+	cp.Results = append([]ImportResult{}, r.Results...)
+	if cp.Status == "running" {
+		cp.Duration = time.Since(r.StartedAt).Round(time.Second).String()
+	}
+	return &cp, true
 }
 
 // SearchProviders isimle arama destekleyen provider'lar.
@@ -141,7 +189,7 @@ func (im *Importer) SearchProviders() []string {
 }
 
 // Run her otel icin tum (veya secili) acentelerde arama yapar; apply ile esik ustu eslesmelerden otel olusturur.
-func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames []string, minScore float64, apply bool, hotelName func(ImportHotel) string) *ImportReport {
+func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames []string, minScore float64, apply bool, hotelName func(ImportHotel) string, rep *ImportReport) *ImportReport {
 	start := time.Now()
 	if minScore <= 0 || minScore > 1 {
 		minScore = 0.6
@@ -150,7 +198,9 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 	if len(provs) == 0 {
 		provs = im.SearchProviders()
 	}
-	rep := &ImportReport{Total: len(hotels), Providers: provs, Applied: apply, MinScore: minScore}
+	if rep == nil {
+		rep = &ImportReport{Status: "running", Total: len(hotels), Providers: provs, Applied: apply, MinScore: minScore, StartedAt: start}
+	}
 
 	// Otel bazinda sirali (siteye nezaket), acenteler paralel
 	for _, h := range hotels {
@@ -228,9 +278,15 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 				}
 			}
 		}
+		im.mu.Lock()
 		rep.Results = append(rep.Results, res)
+		rep.Done = len(rep.Results)
+		im.mu.Unlock()
 	}
+	im.mu.Lock()
+	rep.Status = "done"
 	rep.Duration = time.Since(start).Round(time.Second).String()
+	im.mu.Unlock()
 	return rep
 }
 
