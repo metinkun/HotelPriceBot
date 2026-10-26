@@ -105,3 +105,41 @@ probe enuygun price https://www.enuygun.com/otel/detay/acapulco-resort-conventio
 - Sayfa HTML'i CDN'de UA bazli cache'leniyor (tarihsiz detay sayfasi `parsedUa` Amazonbot gostermisti);
   fiyat icin HTML degil, `cf-cache-status: DYNAMIC` olan `detail-search` kullanildigindan etkilenmez.
 - Fiyatlar konaklama toplami (3 gece), gecelik degil. `offerType:"TOTAL"`.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+Kod: `details.go` (+ `html.go` HTML -> metin). Duz HTTP.
+
+**Detay**: ayni `GET /otel/api-detail/<slug>.json?slug=<slug>&type=hotel` ucu (URL cozumlemede kullanilan), ~0.3 sn,
+~180 KB. `data.hotel.details` cok zengin:
+
+| Sema | Kaynak |
+|---|---|
+| name, stars, rating, ratingCount | `details.name`, `starRating`, `reviewScore` (10 uzerinden), `reviewsTotalCount` |
+| address / city / region / country / location | `details.address.{address,town,country}`, `data.region.name`, `details.coordinate` |
+| contact.phone | `data.hotelPhones[0].phoneNumber` |
+| description | `data.hotelDescription` (HTML -> metin) |
+| images | `details.images[].url` (+ `name` caption: Genel, Oda, Havuz, Spa, Lobi, Yeme / İçme, Aktiviteler, Restoran, Toplantı Odası) |
+| facilities | `details.facilities.hotelFacilities[]` -> `type` grup adi (Yeme & İçme, Havuz & Su Parkı, Plaj & Deniz, Spa & Wellness, Spor & Fitness, Eğlence & Aktivite, Çocuk & Aile, İş & Toplantı, Ulaşım & Transfer, Otopark, Ek Hizmetler, Tesis Olanakları); madde = `details` + `: value` + "(Ücretli)" (`isPaymentRequired`) |
+| rooms | `data.hotel.rooms[]`: `type.name` (bosluk farkiyla tekrar edenler birlestirilir), `facilities[]` ("Oda büyüklüğü (m²)" -> size, digerleri feature), `images[]`, `description` |
+| boards | `details.hotelConcepts[].concept` |
+| policies | `hotelPolicy.checkin.begin_time - end_time`, `hotelPolicy.checkout`, `checkin_min_age` -> other |
+| faq | `details.faqs.manuel[]` (+ `auto` liste ise). **Fiyat verisinden uretilen** 2 cevap ("Verilerimize göre ... gecelik X TL (Son güncelleme: tarih)") her gun degistigi icin atlanir |
+| sections | "Otel Hakkında" (hotelDescription), "Önemli Bilgiler" (`importantInfo`), "Bilmeniz Gerekenler" (`know_before_you_go`), "Otel Politikaları" (`instructions`, liste), "Konaklama Konseptleri" (pairs: konsept -> aciklama), "Popüler Özellikler" (`popularFacilities`), "Otel Etiketleri" (`suitabilities[].tag`), "Yakın Çevre" (`poi.*` pairs: ad -> km), "Etkinlikler" (`events[].title`) |
+
+Kullanilmayanlar: `hotelPrice` (gunluk fiyat), `reviews` (kisi adli yorumlar), `recommendedHotels`.
+Deterministiklik: Acapulco iki ardisik cekimde `fetchedAt` disinda birebir ayni JSON.
+
+**Arama**: once `GET https://hot-autocomplete-api.enuygun.com/api/v1/autocomplete?q=<metin>&limit=20`
+(sitenin yeni autocomplete-core servisi; yanit `data.items[] {type,id,name,path,slug,url}`; `type=="hotel"` alinir,
+URL = `https://www.enuygun.com<url>` = `/otel/detay/<slug>/`, `providerHotelId` = `id`, city = `path`
+"Girne, Kıbrıs"). Sonuc yok/hata ise eski uc: `GET https://www.enuygun.com/otel/autocomplete?term=<metin>&locale=tr-tr`
+(`data.HOTEL[] {id,short_name,slug,city,town}`). Her iki uc de header'siz calisir.
+
+```
+probe enuygun details https://www.enuygun.com/otel/detay/acapulco-resort-convention-spa-580512/
+  details 0.4s images=197 facilities=12 rooms=7 faq=7 sections=9 (ikinci cekim ayni)
+probe enuygun search "Merit Royal Premium" -> 1 (id 796492, /otel/detay/merit-royal-premium-hotel-all-inclusive-32796096/)
+probe enuygun search "Acapulco"            -> 6 (ilk: Acapulco Resort Convention & Spa, Girne, 580512; digerleri Meksika/Italya)
+probe enuygun search "Salamis Bay Conti"   -> 1 (id 580503, Gazimağusa)
+```
