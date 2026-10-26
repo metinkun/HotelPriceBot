@@ -1,0 +1,55 @@
+{
+ "success": true,
+ "errorCode": null,
+ "errorMessage": null,
+ "result": [
+  {
+   "title": "Merit Royal Diamond Hotel & Spa, Alsancak",
+   "type": "HOTEL",
+   "state": [
+    "Girne",
+    "Kıbrıs"
+   ],
+   "hasCampaign": false,
+   "campaignText": null,
+   "url": "Merit-Royal-Diamond-Hotel-Spa",
+   "country": "Kıbrıs",
+   "city": "Girne",
+   "region": null,
+   "listingType": "HOTEL_ABROAD",
+   "villa": false
+  },
+  {
+   "title": "Merit Royal Premium Hotel & Spa, Alsancak",
+   "type": "HOTEL",
+   "state": [
+    "Girne",
+    "Kıbrıs"
+   ],
+   "hasCampaign": false,
+   "campaignText": null,
+   "url": "Merit-Royal-Premium-Hotel-Spa",
+   "country": "Kıbrıs",
+   "city": "Girne",
+   "region": null,
+   "listingType": "HOTEL_ABROAD",
+   "villa": false
+  },
+  {
+   "title": "Merit Royal Gardens Hotel, Gazimağusa",
+   "type": "HOTEL",
+   "state": [
+    "Gazimağusa",
+    "Kıbrıs"
+   ],
+   "hasCampaign": false,
+   "campaignText": null,
+   "url": "Merit-Royal-Gardens-Hotel",
+   "country": "Kıbrıs",
+   "city": "Gazimağusa",
+   "region": null,
+   "listingType": "HOTEL_ABROAD",
+   "villa": false
+  }
+ ]
+}

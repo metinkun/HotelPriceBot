@@ -1,0 +1,159 @@
+{
+ "success": true,
+ "result": {
+  "roomSearchId": "x",
+  "roomGroups": [
+   {
+    "rooms": [
+     {
+      "roomId": "6530",
+      "roomName": "Acapulco Villa (Bungalow) - Yarım Pansiyon",
+      "description": "&lt;p&gt;Villa Odalar 30-32 m&lt;sup&gt;2&lt;/sup&gt; b&amp;uuml;y&amp;uuml;kl&amp;uuml;ğ&amp;uuml;ndedir.&amp;nbsp;&lt;/p&gt; ",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "bedTypes": [],
+      "images": [
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005150022_3.jpg",
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005150021_0.jpg"
+      ],
+      "facilities": [
+       {
+        "label": "Split Klima",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Uydu Yayını",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Oda Servisi*",
+        "paid": true,
+        "description": null
+       },
+       {
+        "label": "Duş",
+        "paid": false,
+        "description": null
+       }
+      ],
+      "nightCount": 3,
+      "subBoards": [
+       {
+        "id": "6530-1762",
+        "boardType": {
+         "code": "HB",
+         "label": "Yarım Pansiyon",
+         "icon": "fa-regular fa-croissant"
+        }
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false
+     },
+     {
+      "roomId": "6531",
+      "roomName": "Otel Odası Kara Manzaralı - Yarım Pansiyon",
+      "description": "&lt;p&gt;Kara&amp;nbsp;Tarafı Otel Odaları 30 m2 b&uuml;y&uuml;kl&uuml;ğ&uuml;ndedir.&amp;nbsp;&lt;/p&gt;",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "bedTypes": [],
+      "images": [
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005144855_5.jpg",
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005144855_4.jpg"
+      ],
+      "facilities": [
+       {
+        "label": "Elektronik Anahtar Sistemi",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Duman Dedektörü",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Kasa",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Merkezi Isıtma ve Soğutma Sistemi",
+        "paid": false,
+        "description": null
+       }
+      ],
+      "nightCount": 3,
+      "subBoards": [
+       {
+        "id": "6531-1762",
+        "boardType": {
+         "code": "HB",
+         "label": "Yarım Pansiyon",
+         "icon": "fa-regular fa-croissant"
+        }
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false
+     },
+     {
+      "roomId": "3566",
+      "roomName": "Acapulco Villa (Bungalow)",
+      "description": "&lt;p&gt;Villa Odalar 30-32 m&lt;sup&gt;2&lt;/sup&gt; b&amp;uuml;y&amp;uuml;kl&amp;uuml;ğ&amp;uuml;ndedir.&amp;nbsp;&lt;/p&gt; ",
+      "roomSize": 30,
+      "roomCapacity": null,
+      "maxChildCapacity": null,
+      "maxAdultCapacity": 2,
+      "bedTypes": [],
+      "images": [
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005150022_3.jpg",
+       "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261005150021_0.jpg"
+      ],
+      "facilities": [
+       {
+        "label": "Split Klima",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Uydu Yayını",
+        "paid": false,
+        "description": null
+       },
+       {
+        "label": "Oda Servisi*",
+        "paid": true,
+        "description": null
+       },
+       {
+        "label": "Duş",
+        "paid": false,
+        "description": null
+       }
+      ],
+      "nightCount": 3,
+      "subBoards": [
+       {
+        "id": "3566-1762",
+        "boardType": {
+         "code": "FBP",
+         "label": "Tam Pansiyon Plus",
+         "icon": "fa-regular fa-croissant"
+        }
+       }
+      ],
+      "acceptChild": true,
+      "secretRoom": false
+     }
+    ]
+   }
+  ]
+ }
+}
