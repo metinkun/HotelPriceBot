@@ -1,0 +1,128 @@
+{
+ "success": true,
+ "data": {
+  "items": [
+   {
+    "type": "hotel",
+    "type_code": 2,
+    "type_label": "Tesis",
+    "id": 796492,
+    "name": "Merit Royal Premium Hotel & Spa",
+    "path": "Girne, Kıbrıs",
+    "slug": "merit-royal-premium-hotel-all-inclusive-32796096",
+    "url": "/otel/detay/merit-royal-premium-hotel-all-inclusive-32796096/",
+    "country_code": "CY",
+    "lat": 35.35504,
+    "lon": 33.207658,
+    "extra": {
+     "city": "Kıbrıs",
+     "reviews": 1,
+     "score": 9.0,
+     "star": 0,
+     "subtown": "",
+     "town": "Girne"
+    }
+   },
+   {
+    "type": "hotel",
+    "type_code": 2,
+    "type_label": "Tesis",
+    "id": 1196740,
+    "name": "Merit Royal Diamond Hotel & Spa",
+    "path": "Girne, Kıbrıs",
+    "slug": "merit-royal-diamond-spa-hotel-30421",
+    "url": "/otel/detay/merit-royal-diamond-spa-hotel-30421/",
+    "country_code": "CY",
+    "lat": 35.3552,
+    "lon": 33.209,
+    "extra": {
+     "city": "Kıbrıs",
+     "reviews": 1,
+     "score": 9.0,
+     "star": 0,
+     "subtown": "",
+     "town": "Girne"
+    }
+   },
+   {
+    "type": "hotel",
+    "type_code": 2,
+    "type_label": "Tesis",
+    "id": 580522,
+    "name": "Merit Royal Gardens Hotel",
+    "path": "İskele, Kıbrıs",
+    "slug": "merit-royal-gardens-hotel-580522",
+    "url": "/otel/detay/merit-royal-gardens-hotel-580522/",
+    "country_code": "CY",
+    "lat": 35.2798991,
+    "lon": 33.9266248,
+    "extra": {
+     "city": "Kıbrıs",
+     "reviews": 2,
+     "score": 8.86,
+     "star": 4,
+     "subtown": "",
+     "town": "İskele"
+    }
+   },
+   {
+    "type": "hotel",
+    "type_code": 2,
+    "type_label": "Tesis",
+    "id": 1033737,
+    "name": "Merit Royal Hotel",
+    "path": "Petrogeitonia, Karavas",
+    "slug": "merit-royal-hotel-32796047",
+    "url": "/otel/detay/merit-royal-hotel-32796047/",
+    "country_code": "CY",
+    "lat": 35.354792,
+    "lon": 33.207779,
+    "extra": {
+     "city": "Karavas",
+     "reviews": 0,
+     "score": 0.0,
+     "star": 0,
+     "subtown": "Petrogeitonia",
+     "town": ""
+    }
+   }
+  ],
+  "correction": null,
+  "intent": {
+   "place": {
+    "type": "town",
+    "type_code": 1,
+    "type_label": "Semt",
+    "id": 372519,
+    "name": "Royal Borough of Kensington and Chelsea",
+    "path": "Londra, Londra (ve civarı), Londra Büyük Şehir (ilçesi), İngiltere, Birleşik Krallık, Avrupa",
+    "slug": "royal-borough-of-kensington-and-chelsea-553248634834282816",
+    "url": "/otel/arama/royal-borough-of-kensington-and-chelsea-553248634834282816/",
+    "country_code": "GB",
+    "lat": 51.501717,
+    "lon": -0.192735,
+    "extra": {
+     "long": "Royal Borough of Kensington and Chelsea, Londra, Büyük Britanya",
+     "parents": "Londra, İngiltere, Birleşik Krallık",
+     "rtype": 6
+    }
+   },
+   "filter": {
+    "type": "brand",
+    "type_code": 5,
+    "type_label": "Zincir",
+    "id": 11750,
+    "name": "Merit Otelleri",
+    "path": "",
+    "slug": "merit-otelleri",
+    "url": "",
+    "country_code": "",
+    "lat": null,
+    "lon": null,
+    "extra": {}
+   }
+  },
+  "list_label": null
+ },
+ "meta": {}
+}

@@ -1,0 +1,87 @@
+{
+ "term": "Merit Royal",
+ "data": {
+  "HOTEL": [
+   {
+    "id": "580522",
+    "code": null,
+    "name": "Merit Royal Gardens Hotel, İskele",
+    "short_name": "Merit Royal Gardens Hotel",
+    "slug": "merit-royal-gardens-hotel-580522",
+    "type": 99,
+    "parents": null,
+    "icon_name": "default",
+    "icon_url": "static/images/auto-complete/web/hotel-default.svg",
+    "coordinate": {
+     "latitude": 35.2798991,
+     "longitude": 33.9266248
+    },
+    "countryCode": "TR",
+    "distance": null,
+    "parent_region_id": "2000007",
+    "parent_region_slug": "iskele",
+    "property_count": null,
+    "elastic_type": "hotel",
+    "high_priority_on_elastic": false,
+    "city": "Kıbrıs",
+    "town": "İskele",
+    "subtown": "",
+    "reviewCount": 0
+   },
+   {
+    "id": "1033737",
+    "code": null,
+    "name": "Merit Royal Hotel, Alsancak",
+    "short_name": "Merit Royal Hotel",
+    "slug": "merit-royal-hotel-32796047",
+    "type": 99,
+    "parents": null,
+    "icon_name": "default",
+    "icon_url": "static/images/auto-complete/web/hotel-default.svg",
+    "coordinate": {
+     "latitude": 35.354792,
+     "longitude": 33.207779
+    },
+    "countryCode": "CY",
+    "distance": null,
+    "parent_region_id": "753669",
+    "parent_region_slug": "karavas-3000394286",
+    "property_count": null,
+    "elastic_type": "hotel",
+    "high_priority_on_elastic": false,
+    "city": "Karavas",
+    "town": "",
+    "subtown": "Petrogeitonia",
+    "reviewCount": 0
+   },
+   {
+    "id": "580541",
+    "code": null,
+    "name": "Merit Royal Hotel & Casino, Girne",
+    "short_name": "Merit Royal Hotel & Casino",
+    "slug": "merit-royal-hotel-casino-580541",
+    "type": 99,
+    "parents": null,
+    "icon_name": "default",
+    "icon_url": "static/images/auto-complete/web/hotel-default.svg",
+    "coordinate": {
+     "latitude": 35.355827,
+     "longitude": 33.213615
+    },
+    "countryCode": "TR",
+    "distance": null,
+    "parent_region_id": "2000001",
+    "parent_region_slug": "girne",
+    "property_count": null,
+    "elastic_type": "hotel",
+    "high_priority_on_elastic": false,
+    "city": "Girne",
+    "town": "Yayla",
+    "subtown": "Petrogeitonia",
+    "reviewCount": 0
+   }
+  ],
+  "REGION": [],
+  "LANDING": []
+ }
+}

@@ -1,0 +1,95 @@
+[
+ {
+  "id": 169030,
+  "text": "Merit Royal Diamond Hotel & Spa",
+  "type": "Hotel",
+  "url": "merit-royal-diamond-hotel-spa",
+  "domestic": true,
+  "city": "Girne",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 275615,
+  "text": "Merit Royal Gardens Hotel & Casino",
+  "type": "Hotel",
+  "url": "merit-royal-gardens-hotel-casino",
+  "domestic": true,
+  "city": "Magosa",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 706,
+  "text": "Merit Royal Hotel & Casino & Spa",
+  "type": "Hotel",
+  "url": "merit-royal-hotel-casino-spa",
+  "domestic": true,
+  "city": "Girne",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 821,
+  "text": "Merit Royal Premium Hotel & Casino & Spa",
+  "type": "Hotel",
+  "url": "merit-royal-premium-hotel",
+  "redirectUrl": "merit-royal-premium-hotel-spa",
+  "domestic": true,
+  "city": "Girne",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 181113,
+  "text": "Yesilirmak Merit Otel",
+  "type": "Hotel",
+  "url": "yesilirmak-merit-hotel",
+  "redirectUrl": "yesilirmak-merit-otel",
+  "domestic": true,
+  "city": "Bitlis",
+  "country": "Türkiye"
+ },
+ {
+  "id": 511,
+  "text": "Merit Park Hotel & Casino",
+  "type": "Hotel",
+  "url": "merit-park-hotel",
+  "redirectUrl": "merit-park-hotel-casino",
+  "domestic": true,
+  "city": "Girne",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 502,
+  "text": "Merit Lefkoşa Hotel ",
+  "type": "Hotel",
+  "url": "merit-lefkosa-hotel",
+  "domestic": true,
+  "city": "Lefkoşa",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 2011105,
+  "text": "Liman Hotel & Casino by Merit",
+  "type": "Hotel",
+  "url": "liman-hotel-casino-by-merit",
+  "domestic": true,
+  "city": "Kyrenia",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 497,
+  "text": "Merit Crystal Cove Hotel & Casino & Spa",
+  "type": "Hotel",
+  "url": "merit-crystal-cove-hotel-casino-spa",
+  "domestic": true,
+  "city": "Girne",
+  "country": "Kıbrıs"
+ },
+ {
+  "id": 49,
+  "text": "Merit Otelleri",
+  "type": "HotelChain",
+  "url": "merit-otelleri",
+  "domestic": false,
+  "city": "",
+  "country": ""
+ }
+]

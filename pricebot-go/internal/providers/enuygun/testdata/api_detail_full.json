@@ -1,0 +1,1065 @@
+{
+ "data": {
+  "seo": {
+   "title": "Acapulco Resort Convention & Spa, Girne - Kıbrıs | Enuygun",
+   "description": "Acapulco Resort Convention & Spa için öne çıkan özellikler: Mega Aquapark  ve  Uzun Kumsal. Enuygun'a özel fiyatlar ve taksit fırsatıyla hemen yerini ayırt!",
+   "url": "https://www.enuygun.com/otel/detay/acapulco-resort-convention-spa-580512/",
+   "isNoIndex": false
+  },
+  "slug": "acapulco-resort-convention-spa-580512",
+  "hotel": {
+   "details": {
+    "id": 580512,
+    "name": "Acapulco Resort Convention & Spa",
+    "slug": "acapulco-resort-convention-spa-580512",
+    "address": {
+     "address": "Girne/Kuzey Kıbrıs Türk Cumhuriyeti",
+     "zipCode": null,
+     "country": "Kıbrıs",
+     "countryCode": "CY",
+     "town": "Girne",
+     "townId": null,
+     "subTown": "",
+     "city": "Kıbrıs",
+     "cityId": "2000001",
+     "state": ""
+    },
+    "coordinate": {
+     "latitude": 35.330433,
+     "longitude": 33.42046
+    },
+    "facilities": {
+     "all": [],
+     "count": 78,
+     "hotelFacilities": [
+      {
+       "facilities": [
+        {
+         "id": "11",
+         "details": "Restoran",
+         "priority": 96,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "18",
+         "details": "Bar",
+         "priority": 186,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": true,
+         "payment_data": 1,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "31",
+         "details": "A La Carte Restoran",
+         "priority": 128,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "42",
+         "details": "Açık Restoran",
+         "priority": 206,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "38",
+         "details": "Kapalı Restoran",
+         "priority": 206,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "35",
+         "details": "Lobi Bar",
+         "priority": 266,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": true,
+         "payment_data": 1,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "115",
+         "details": "Taze Sıkılmış Meyve Suları",
+         "priority": 278,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": true,
+         "payment_data": 1,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "617",
+         "details": "Odaya Meyve Sepeti ve Şarap İkramı",
+         "priority": 1000,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        }
+       ],
+       "type": "Yeme & İçme",
+       "slug": "yeme-ve-icme",
+       "description": null
+      },
+      {
+       "facilities": [
+        {
+         "id": "225",
+         "details": "Su Parkı",
+         "priority": 49,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": 0,
+         "value": "",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "30",
+         "details": "Açık Havuz",
+         "priority": 59,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": 0,
+         "value": "",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "65",
+         "details": "Kapalı Yüzme Havuzu",
+         "priority": 85,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": 0,
+         "value": "",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "97",
+         "details": "Su Kaydırağı",
+         "priority": 99,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": 0,
+         "value": "24",
+         "isPopular": true,
+         "iconLink": null,
+         "facilityId": null
+        }
+       ],
+       "type": "Havuz & Su Parkı",
+       "slug": "havuz-ve-plaj",
+       "description": null
+      },
+      {
+       "facilities": [
+        {
+         "id": "106",
+         "details": "Plaj Voleybolu",
+         "priority": 179,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "2",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "87",
+         "details": "Plajı Kum",
+         "priority": 179,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "91",
+         "details": "Denizi Kum",
+         "priority": 422,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "201",
+         "details": "Özel Koy",
+         "priority": 422,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "94",
+         "details": "Deniz Kademeli Derinleşir",
+         "priority": 428,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        },
+        {
+         "id": "187",
+         "details": "Deniz Bisikleti",
+         "priority": 495,
+         "imageTemplate": null,
+         "availability": true,
+         "type": "2",
+         "isPaymentRequired": false,
+         "payment_data": null,
+         "value": "",
+         "isPopular": false,
+         "iconLink": null,
+         "facilityId": null
+        }
+       ],
+       "type": "Plaj & Deniz",
+       "slug": "havuz-ve-plaj",
+       "description": null
+      }
+     ]
+    },
+    "popularFacilities": [
+     {
+      "id": "225",
+      "details": "Su Parkı",
+      "priority": 49,
+      "imageTemplate": null,
+      "availability": true,
+      "type": "2",
+      "isPaymentRequired": false,
+      "payment_data": 0,
+      "value": "",
+      "isPopular": true,
+      "iconLink": "https://cdn.enuygun.com/otel/static/images/facility-icons/waterslide.svg",
+      "facilityId": "225"
+     },
+     {
+      "id": "30",
+      "details": "Açık Havuz",
+      "priority": 59,
+      "imageTemplate": null,
+      "availability": true,
+      "type": "2",
+      "isPaymentRequired": false,
+      "payment_data": 0,
+      "value": "",
+      "isPopular": true,
+      "iconLink": "https://cdn.enuygun.com/otel/static/images/facility-icons/outdoor-pool.svg",
+      "facilityId": "30"
+     },
+     {
+      "id": "65",
+      "details": "Kapalı Yüzme Havuzu",
+      "priority": 85,
+      "imageTemplate": null,
+      "availability": true,
+      "type": "2",
+      "isPaymentRequired": false,
+      "payment_data": 0,
+      "value": "",
+      "isPopular": true,
+      "iconLink": "https://cdn.enuygun.com/otel/static/images/facility-icons/indoor-pool.svg",
+      "facilityId": "65"
+     }
+    ],
+    "suitabilities": [
+     {
+      "code": "1",
+      "name": "Balayı",
+      "description": null,
+      "tag": "Balayı Oteli",
+      "slug": "balayi"
+     },
+     {
+      "code": "2",
+      "name": "Çocuklu Aile",
+      "description": null,
+      "tag": "Çocuk Dostu Otel",
+      "slug": "cocuklu-aile"
+     },
+     {
+      "code": "9",
+      "name": "Aquapark",
+      "description": null,
+      "tag": "Aquapark Oteli",
+      "slug": "aquapark"
+     }
+    ],
+    "images": [
+     {
+      "url": "https://cdn3.enuygun.com/media/lib/1x720/uploads/image/acapulco-convention-spa-kibris-genel-87903911.jpg",
+      "name": "Genel",
+      "type": "general"
+     },
+     {
+      "url": "https://cdn3.enuygun.com/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-genel-87903905.jpg",
+      "name": "Genel",
+      "type": "general"
+     },
+     {
+      "url": "https://cdn3.enuygun.com/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-genel-87903899.jpg",
+      "name": "Genel",
+      "type": "general"
+     }
+    ],
+    "starRating": 5,
+    "reviewScore": 7.24,
+    "reviewsTotalCount": 39,
+    "checkInTime": "15:00",
+    "checkOutTime": "11:00",
+    "domestic": false,
+    "hotelConcepts": [
+     {
+      "description": null,
+      "concept": "Her Şey Dahil",
+      "concept_code": "AI",
+      "parent_code": null
+     },
+     {
+      "description": null,
+      "concept": "Ultra Her Şey Dahil",
+      "concept_code": "AS",
+      "parent_code": null
+     },
+     {
+      "description": "Konsept Bilgisi<br><p>Yarım Pansiyon konaklamalarda sabah ve akşam açık büfe yemekler ücretsizdir. <br/>Otel genelinde alınan tüm içecekler ücretli. <br/>Hizmet Saatleri:<br/>07.00-10.00 Sabah Kahvaltısı<br/>19.00-21.30 Akşam Yemeği<br/></p>",
+      "concept": "Yarım Pansiyon",
+      "concept_code": "HB",
+      "parent_code": null
+     }
+    ],
+    "importantInfo": "<p> Lagoon Suite oda kategorisinde 12 yaş altı çocuklar konaklayamaz.</p>\n<p> 31.12.2026 İzmir Show Band Galası olarak dahildir. </p>\n<p>Derya Uluğ Galasına katılmak isteyen misafirler Derya Uluğ Gala Dahil oda tipinden rezervasyon yaptırmaları gerekmektedir.</p>\n<p>2 Galaya katılım yapılamamaktadır. </p>\n<p>Otel girişlerinde tatil köyü ücretleri, şehir vergileri ve ülke düzenlemelerinden kaynaklanan ek ücretler doğrudan otele ödenir. ENUYGUN ek otel ücretlerinden sorumlu değildir.</p>",
+    "hotelPolicy": {
+     "checkin": {
+      "begin_time": "15:00",
+      "end_time": "23:59"
+     },
+     "checkout": "11:00",
+     "instructions": "<ul>  <li>İlave yatak ücreti alınabilir ve bu ücret, konaklama yeri politikasına göre değişiklik gösterebilir</li><li>Olası ekstra harcamalar için otele girişte, resmi kurumlarca düzenlenmiş fotoğraflı kimlik ve kredi kartı, banka kartı veya nakit depozito gerekebilir</li><li>Özel talepler, otele giriş sırasında müsaitlik durumuna bağlıdır ve ek ödeme gerektirebilir. Özel talepler garanti edilemez</li><li>Bu konaklama yerinde kredi kartları ve banka kartları kabul edilmektedir; nakit kabul edilmez</li><li>Bu konaklama yerindeki güvenlik özellikleri arasında yangın söndürücü, duman dedektörü, güvenlik sistemi, ilk yardım çantası ve pencere korkulukları yer almaktadır</li><li>Bu konaklama yeri, CleanStay (Hilton) yönergelerindeki temizlik ve dezenfeksiyon uygulamalarına uyduğunu belirtmektedir.</li>  </ul> Resepsiyon çalışanları konaklama yerine varışta misafirleri karşılayacaktır. Konaklama yeri tarafından sağlanan bilgiler, otomatik çeviri araçları kullanılarak çevrilmiş olabilir.\n\n<ul>  <li>Yer olması koşuluyla, bağlı/bitişik odalar sunulabilir. Misafirler rezervasyon onayındaki irtibat bilgilerini kullanarak konaklama yerine doğrudan ulaşabilir ve bağlı/birleşik odalar talep edebilir. </li> <li>Temassız giriş imkânı ve temassız çıkış imkânı sunulur.</li> <li>Bu konaklama yeri, ağırladığı misafirler arasında cinsel tercih ve cinsel kimlik ayrımı gözetmez (LGBTQ+ bireyler ağırlanır).</li>  </ul>",
+     "special_instructions": "",
+     "checkin_min_age": 18,
+     "fees": {
+      "mandatory": "",
+      "optional": ""
+     },
+     "know_before_you_go": "Otel odalarında 3+1 veya 2+2 konaklama yapılabilmektedir. Çocuk misafirler için ek yatak sağlanabilmekte olup, ek yatak kullanımı durumunda oda alanı bir miktar daralmaktadır.\nLagoon Suitelere 17 yaş ve üzeri misafir kabul ediliyor."
+    },
+    "isCyprus": true,
+    "faqs": {
+     "auto": null,
+     "manuel": [
+      {
+       "question": "Acapulco Resort Convention & Spa gecelik fiyatları ne kadar?",
+       "answer": "Verilerimize göre, Acapulco Resort Convention & Spa için önümüzdeki 7 gün içindeki başlangıç fiyatı gecelik 25.147 TL. Fiyatlar seçeceğin giriş tarihine, oda tipine ve doluluk durumuna göre değişebilir. (Son güncelleme: 26.10.2026)"
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde konaklamak için en uygun fiyatlı dönem hangisi?",
+       "answer": "Verilerimize göre önümüzdeki 3 ay içinde Acapulco Resort Convention & Spa için en uygun fiyatlı dönem gecelik 12.371 TL'den başlayan fiyatlarla Kasım ayı. Başlangıç fiyatları Aralık'ta 30.002 TL, Ocak'ta ise 28.845 TL civarında."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa nerede, hangi bölgede yer alıyor?",
+       "answer": "Acapulco Resort Convention & Spa, Kıbrıs'ın Girne ilçesinde yer alıyor. Otelin açık adresi ise şöyle: Girne/Kuzey Kıbrıs Türk Cumhuriyeti."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde giriş (check-in) ve çıkış (check-out) saatleri nedir?",
+       "answer": "Giriş (check-in) saati 15:00 ile 23:59 arasındadır. Çıkış (check-out) saati ise 11:00 olarak belirlenmiştir."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde kahvaltı dahil mi?",
+       "answer": "Acapulco Resort Convention & Spa otelinde sunulan konaklama konsepti: Her Şey Dahil, Ultra Her Şey Dahil, Yarım Pansiyon, Alkolsüz Her Şey Dahil, Tam Pansiyon Plus. Bu kapsamda kahvaltı hizmeti sunuluyor."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde otopark var mı, ücretli mi?",
+       "answer": "Evet, Acapulco Resort Convention & Spa'da konaklayan misafirler için ücretsiz otopark hizmeti bulunuyor."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde havuz var mı?",
+       "answer": "Evet, Acapulco Resort Convention & Spa'da açık havuz, kapalı yüzme havuzu, çocuk havuzu bulunuyor."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinin havalimanına uzaklığı ne kadar?",
+       "answer": "Otele en yakın havalimanı olan Ercan Havaalanı yaklaşık 21.7 km uzaklıkta yer alıyor."
+      },
+      {
+       "question": "Acapulco Resort Convention & Spa otelinde çocuklu aileler için neler var?",
+       "answer": "Acapulco Resort Convention & Spa otelinde çocuklu aileler için çocuk kulübü, çocuk havuzu, çocuk bakıcısı, çocuk oyun parkı, bebek / çocuk bakım servisi gibi olanaklar sunuluyor."
+      }
+     ]
+    }
+   },
+   "rooms": [
+    {
+     "reference": null,
+     "type": {
+      "id": "1323274036",
+      "name": "Otel Standard Kara Manzaralı Oda",
+      "typeCode": "",
+      "characteristicCode": ""
+     },
+     "images": [
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-standard-kara-manzarali-oda-41516305.jpg",
+       "name": "Otel Standard Kara Manzaralı Oda",
+       "type": "room"
+      },
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-standard-kara-manzarali-oda-41516306.jpg",
+       "name": "Otel Standard Kara Manzaralı Oda",
+       "type": "room"
+      }
+     ],
+     "offers": [],
+     "facilities": [
+      {
+       "id": "11",
+       "details": "Televizyon",
+       "priority": 701,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "214",
+       "details": "Oda büyüklüğü (m²)",
+       "priority": 753,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "35",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "565",
+       "details": "Küvet",
+       "priority": 573,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "54",
+       "details": "Balkon",
+       "priority": 80,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "780",
+       "details": "Oda Kasası",
+       "priority": 743,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "38",
+       "details": "Saç kurutma makinesi",
+       "priority": 703,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "524",
+       "details": "Uyandırma Servisi",
+       "priority": 507,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1037",
+       "details": "Oda Servisi (Ücretli)",
+       "priority": 709,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1036",
+       "details": "Telefon (Ücretli)",
+       "priority": 137,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1035",
+       "details": "Minibar (Ücretli)",
+       "priority": 214,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      }
+     ],
+     "information": [],
+     "alerts": [],
+     "description": ""
+    },
+    {
+     "reference": null,
+     "type": {
+      "id": "1323553992",
+      "name": "Acapulco Villa Oda - Derya Uluğ Gala Dahil",
+      "typeCode": "",
+      "characteristicCode": ""
+     },
+     "images": [
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-acapulco-oda-derya-ulug-gala-dahil-41516273.jpg",
+       "name": "Acapulco Villa Oda - Derya Uluğ Gala Dahil",
+       "type": "room"
+      },
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-acapulco-oda-derya-ulug-gala-dahil-41516274.jpg",
+       "name": "Acapulco Villa Oda - Derya Uluğ Gala Dahil",
+       "type": "room"
+      }
+     ],
+     "offers": [],
+     "facilities": [
+      {
+       "id": "11",
+       "details": "Televizyon",
+       "priority": 701,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "214",
+       "details": "Oda büyüklüğü (m²)",
+       "priority": 753,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "32 m²",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "826",
+       "details": "Parke Kaplı Zemin",
+       "priority": 369,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "840",
+       "details": "Kasa",
+       "priority": 348,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "54",
+       "details": "Balkon",
+       "priority": 80,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "844",
+       "details": "Banyo (Duşakabin)",
+       "priority": 770,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "38",
+       "details": "Saç kurutma makinesi",
+       "priority": 703,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "781",
+       "details": "Split Klima",
+       "priority": 521,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1036",
+       "details": "Telefon (Ücretli)",
+       "priority": 137,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1037",
+       "details": "Oda Servisi (Ücretli)",
+       "priority": 709,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1035",
+       "details": "Minibar (Ücretli)",
+       "priority": 214,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": null,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      }
+     ],
+     "information": [],
+     "alerts": [],
+     "description": ""
+    },
+    {
+     "reference": null,
+     "type": {
+      "id": "1324401801",
+      "name": "Lagoon Suite Oda",
+      "typeCode": "",
+      "characteristicCode": ""
+     },
+     "images": [
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-https-images-etstur-com-files-images-images-cyb-50111-l-acapulco-convention-spa-oda-386083-jpg-37598424.jpg",
+       "name": "https://images.etstur.com/files/images/hotelImages/CYB/50111/l/Acapulco-Resort-Convention-Spa-Oda-386083.jpg",
+       "type": "room"
+      },
+      {
+       "url": "https://cdn3.enuygun.com/r/media/lib/1x420/uploads/image/acapulco-convention-spa-kibris-https-images-etstur-com-imgproxy-resize-2560x1440-files-images-images-etsrooms-137-acapulco-convention-spa-20240905172527-1-jpg-37598425.jpg",
+       "name": "https://images.etstur.com/imgproxy/resize/2560x1440/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20240905172527_1.jpg",
+       "type": "room"
+      }
+     ],
+     "offers": [],
+     "facilities": [
+      {
+       "id": "38",
+       "details": "Saç kurutma makinesi",
+       "priority": 703,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "321",
+       "details": "Teras",
+       "priority": 76,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "2",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "1055",
+       "details": "Çalışma Masası",
+       "priority": 339,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "779",
+       "details": "Kablosuz İnternet",
+       "priority": 246,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "0",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "781",
+       "details": "Split Klima",
+       "priority": 521,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "33",
+       "details": "Telefon",
+       "priority": 606,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": true,
+       "payment_data": 1,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "29",
+       "details": "Minibar",
+       "priority": 681,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": true,
+       "payment_data": 1,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "2837",
+       "details": "Oturma Grubu",
+       "priority": 314,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "826",
+       "details": "Parke Kaplı Zemin",
+       "priority": 369,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      },
+      {
+       "id": "372",
+       "details": "Elektrikli su ısıtıcısı",
+       "priority": 690,
+       "imageTemplate": null,
+       "availability": true,
+       "type": "1",
+       "isPaymentRequired": false,
+       "payment_data": 0,
+       "value": "",
+       "isPopular": false,
+       "iconLink": null,
+       "facilityId": null
+      }
+     ],
+     "information": [],
+     "alerts": [],
+     "description": null
+    }
+   ]
+  },
+  "region": {
+   "id": 2000001,
+   "slug": "girne",
+   "name": "Girne"
+  },
+  "defaultParameters": {
+   "countryRegion": {
+    "id": 2000000
+   },
+   "region": {
+    "id": 2000001,
+    "slug": "girne",
+    "name": "Girne",
+    "nameLong": "Girne, Kıbrıs",
+    "countryCode": "TR",
+    "type": 3,
+    "isDomestic": false
+   },
+   "hotel": {
+    "id": 580512,
+    "slug": "acapulco-resort-convention-spa-580512",
+    "name": "Acapulco Resort Convention & Spa"
+   }
+  },
+  "hotelDescription": "<p>Girne’de, Akdeniz’in eşsiz kıyısında konumlanan Acapulco Resort Convention SPA Casino Sports, Kuzey Kıbrıs’ın en büyük ve en kapsamlı Resort otellerinden biridir. 1 km uzunluğundaki özel kum plajı, geniş açık alanları ve çok yönlü tesis yapısıyla hem tatil hem de organizasyon amaçlı konaklamalar için öne çıkar.</p>\n\n<p>Özel havuzlu Lagoon Suite’lerden aile villalarına, otel odalarından suit seçeneklerine uzanan konaklama alternatifleri; çiftler, aileler, spor takımları ve iş seyahati yapan misafirler için farklı beklentilere yanıt verir. Kuzey Kıbrıs’ta kongre oteli arayanlar için 18.000 m2 büyüklüğündeki modern Convention Center, toplantı ve büyük ölçekli etkinliklere ev sahipliği yapar.</p>\n\n<p>FIFA standartlarında iki çim futbol sahası ve profesyonel antrenman alanlarıyla spor kampları için tercih edilen tesis; 4.000 m2 spa & wellness alanı, tarladan sofraya gastronomi anlayışı, a la carte restoranlar, çocuk kulübü ve 24 kaydıraklı aquapark ile her yaşa hitap eden bir tatil deneyimi sunar. Ayrıca Acapulco Resort, Kuzey Kıbrıs’ın ilk ve tek lunapark oteline sahip resortu olarak aileler için benzersiz bir eğlence ayrıcalığı sunmaktadır.<p>\n\n<p>Acapulco Resort, çocuklu aileler için özel olarak tasarlanmış Pam Club Kids Club ile güvenli ve eğlenceli bir tatil deneyimi sunar. Kıbrıs’ın en köklü ve aile dostu otellerinden biri olan Acapulco’da Pam Club, çocukların yaş gruplarına uygun aktiviteler, kapalı ve açık oyun alanları ve profesyonel eğitmenler eşliğinde sunulan programlarla hizmet verir.<p>\n<p>Çocuk kulübü bulunan otel arayan aileler için Pam Club; eğlence, güvenlik ve pedagojik yaklaşımı bir arada sunarak, ebeveynlerin tatillerini huzur içinde geçirmelerine olanak tanır. Kuzey Kıbrıs’ta aile tatili planlayan misafirler için Acapulco Resort ve Pam Club, uzun yıllara dayanan deneyimiyle öne çıkan bir tercihtir.<p>\n\n\n",
+  "hotelPhones": [
+   {
+    "id": 10457468,
+    "rawPhoneNumber": "00903928244110",
+    "phoneType": 3,
+    "phoneNumber": "00903928244110",
+    "phoneTypeDesc": "PHONEHOTEL"
+   }
+  ],
+  "poi": {
+   "NearPlaces": [],
+   "Naturalbeauties": [],
+   "HistoricalAndTouristicPlaces": [],
+   "ShoppingCenters": [],
+   "Beach": [],
+   "SkiResort": [],
+   "AirPorts": [
+    {
+     "id": "2002485",
+     "name": "Ercan Havaalanı",
+     "long_name": "Ercan, Kıbrıs",
+     "coordinate": {
+      "lat": "35.14732146768705",
+      "lon": "33.50374774156018"
+     },
+     "country_code": "TR",
+     "type": "11",
+     "sub_type": "11",
+     "calculated_distance": 21.720732325126,
+     "icon": "https://cdn.enuygun.com/otel/static/images/poi-icons/airports.svg"
+    }
+   ],
+   "PublicTransportations": []
+  },
+  "events": [
+   {
+    "title": "2026’da Kıbrıs’ta Müzik Rüzgarları Esecek"
+   },
+   {
+    "title": "Acapulco Wonderkids"
+   }
+  ]
+ }
+}

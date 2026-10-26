@@ -89,3 +89,44 @@ probe gezinomi package ... 2 SAW                        -> 5.9 s, available=true
 - Tek oda sorgulanir; cocuk yasi `age` ile verilir, bebek (`infant`) desteklenmiyor.
 - Chunk/worker yapisi (webpack `u(1196)` kalibi, `k32Hex` mesaj tipi) degisirse `jsSetup` kirilir -> hata mesaji
   "Gezinomi anahtar worker'i kurulamadi"; `capture js` ile `out/gez_setup_test.js` benzeri bir betikle yeniden incelenir.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+Kod: `details.go` (+ `rsc.go` RSC payload, `html.go` HTML -> metin). Tarayici/anahtar gerekmez.
+
+**Detay**: `GET <sourceUrl>` (detay sayfasi, ~0.3 sn). Next.js RSC akisindaki `{"hotelDetail":{...}}` nesnesi
+`json.Decoder` ile alinir; `descriptions[].text` alanlari `"$<id>"` referansi olabilir -> `<id>:T<hexBayt>,` metin
+kayitlarindan cozulur (bkz. setur.md, ayni mekanizma).
+
+| Sema | Kaynak |
+|---|---|
+| name | `hotelName` |
+| region / city / country | `navigationName` "Kıbrıs/Girne" -> region=Kıbrıs, city=Girne; `hotelLocation=="Kıbrıs"` ise country=Kıbrıs |
+| stars | `metaKeyword` icindeki "5 Yıldız" (ayri alan yok) |
+| rating / ratingCount | `commentsRatingTotal.avgRate` (10 uzerinden, 2 ondalik) / `commentsRatignGroup[].count` toplami |
+| location | `latitude`/`longitude` (string) |
+| images | `pictures[]` (`isCampaignPicture` haric; oda gorselleri de dahil). URL = `https://images.gezinomi.com/fit-in/1600x900/filters:quality(100)/filters:format(webp)/assets/<name>-b0.jpg` (`name` uzantisiz; uzantili adlar oldugu gibi; `externalImageUrl` varsa o) |
+| facilities | `propertyList[]` -> `hotelPropertyGroupName` gruplari (Konum Bilgileri, Otel Özellikleri, Plaj ve Havuz Özellikleri, Aktiviteler, Çocuklar İçin, Spa - Sağlık Hizmetleri); madde = ad + `value` + birim (unitId 6=m, 7=km, 13=m²) + `(description)` + "(Ücretli)" |
+| rooms | `hotelRoomCacheModels[]`: `roomName`, `description` (m2 regex ile size), `capacity`/`adultCount` -> "4 kişi (en fazla 3 yetişkin)", `hotelRoomProperties[]` -> features, `pictures[]` |
+| policies | giris/cikis saati: aciklama metinlerinden regex ("giriş saati 15:00, çıkış saati ise en geç 11:00"); childPolicy = `childDesc` + `childAge1/2Min-Max`; petPolicy = "Evcil Hayvan Politikası" aciklamasi; cancellation = `cancelDescription`; `isAdultHotel` -> other |
+| sections | her `descriptions[]` kaydi kendi basligiyla (Tesis Hakkında Genel Bilgiler, Yeme - İçme, Tesis Hakkında Genel Uyarı..., Balayı Ayrıcalıkları, Bebek/Çocuk, Spa, Plaj - Havuz, Evcil Hayvan, Animasyon - Eğlence; bos olanlar atlanir) + "Öne Çıkan Özellikler" (`hotelPropertyProminentCacheModels`) + "Kategoriler" (`hotelCategories`) + "Etkinlikler" (`hotelActivities[].title`) |
+| description | ilk aciklama ("Tesis Hakkında Genel Bilgiler") duz metni |
+
+Atlananlar: `hotelCampaignForAgaveRedis` (saat/gune gore degisen indirim oranlari -> gunluk diff gurultusu),
+`commentsHotelRating` (kisi adli yorumlar), `campaigns` (genel kampanya metinleri). SSS/pansiyon listesi sayfada yok.
+Deterministiklik: Acapulco iki ardisik cekimde `fetchedAt` disinda birebir ayni JSON.
+
+**Arama**: `POST https://apigezinomi.gezinomi.com/api/Hotel/SearchAutoComplete` `{"query":"<metin>"}`. Imzasiz
+(x-session-id/x-client-key'siz) calisir; yanit `Invalid` donerse ve tarayici varsa `signer.post` ile bir kez daha
+denenir. 3 karakterden kisa sorgu bos liste. Yanit `data[] {id,text,url,location,resultType,routeLink,routeMain}`;
+`resultType=="Otel" && routeMain=="hotel-detail"` alinir, URL = `https://www.gezinomi.com/otel/<routeLink>/<url>`,
+city = `location`'in son parcasi. **`providerHotelId` bos**: autocomplete `id`'si (orn. 10868) mapping'de kullanilan
+`hotelId` (932) degildir; URL cozumlemesi (`ResolveFromURL`) doldurur.
+
+```
+probe gezinomi details https://www.gezinomi.com/otel/kibris/girne/acapulco-resort-convention-spa-hotel
+  details 0.1s images=43 facilities=6 rooms=18 faq=0 sections=12 (ikinci cekim ayni)
+probe gezinomi search "Merit Royal"     -> 22 (Merit Royal Diamond/Gardens/Hotel/Premium ... Girne; sonra "Royal" iceren TR otelleri)
+probe gezinomi search "Elexus"          -> 1 (Elexus Hotel & Resort, Girne)
+probe gezinomi search "Cratos Premium"  -> 24 (ilk: Cratos Premium Hotel & Port & Spa, Girne)
+```
