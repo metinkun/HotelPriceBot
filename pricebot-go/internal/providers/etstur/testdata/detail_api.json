@@ -1,0 +1,529 @@
+{
+ "success": true,
+ "errorCode": null,
+ "errorMessage": null,
+ "result": {
+  "hotelId": "61b893df0b29",
+  "groupId": "1",
+  "chainName": null,
+  "name": "Acapulco Resort Convention Spa",
+  "vndType": "KBRS",
+  "marketingVndType": "KBRS",
+  "marketingVndId": "ACAPUL",
+  "vndCode": "ACAPUL",
+  "metaDescription": "Acapulco Resort Convention Spa, kredi kartına 3 taksit imkanı ile muhteşem bir tatil için seni bekliyor. Oteli hemen incele, odanı seç ve kolayca rezervasyon yap!",
+  "operator": "Etstur",
+  "location": {
+   "locationStr": "Girne Merkez, Girne",
+   "state": null,
+   "customRegion": "Girne Merkez",
+   "city": "Girne",
+   "country": "Kıbrıs",
+   "countryCode": "KKTC",
+   "postalCode": "0",
+   "cyprus": true,
+   "locationBreadCrumbs": [
+    {
+     "id": 728,
+     "name": "Kıbrıs",
+     "url": "Kibris-Otelleri",
+     "locationType": "COUNTRY",
+     "geolocationUrl": null,
+     "type": "1",
+     "cityId": 0,
+     "regionId": 0,
+     "countryId": 0,
+     "locationId": 728,
+     "text": null,
+     "parentId": 0
+    },
+    {
+     "id": 2070,
+     "name": "Girne",
+     "url": "Girne-Otelleri",
+     "locationType": "CITY",
+     "geolocationUrl": null,
+     "type": "3",
+     "cityId": 0,
+     "regionId": 0,
+     "countryId": 728,
+     "locationId": 2070,
+     "text": null,
+     "parentId": 0
+    },
+    {
+     "id": 328280,
+     "name": "Girne Merkez",
+     "url": "girne-merkez-328280",
+     "locationType": "CUSTOMREGION",
+     "geolocationUrl": null,
+     "type": "5",
+     "cityId": 2070,
+     "regionId": 0,
+     "countryId": 728,
+     "locationId": 328280,
+     "text": null,
+     "parentId": 0
+    }
+   ]
+  },
+  "suggested": false,
+  "honeymoon": false,
+  "awardWinning": false,
+  "ticket": false,
+  "imageCount": 185,
+  "images": [
+   "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173234_0.png",
+   "https://images.etstur.com/imgproxy/resize/800x450/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173007_7.jpg",
+   "https://images.etstur.com/imgproxy/files/images/hotelImages/CY/50111/m/Acapulco-Resort-Convention-Spa-Genel-122241.jpg"
+  ],
+  "infos": [
+   {
+    "title": "Yaz Sezonu",
+    "startDate": "20-Mart-2026",
+    "endDate": "31-Ekim-2026",
+    "active": true,
+    "generalInfo": {
+     "themes": [
+      {
+       "icon": "fa-regular fa-circle-check",
+       "label": "Spa Oteli",
+       "description": null,
+       "subDescriptions": []
+      },
+      {
+       "icon": "fa-regular fa-circle-check",
+       "label": "Aquapark Oteli",
+       "description": null,
+       "subDescriptions": []
+      },
+      {
+       "icon": "fa-regular fa-circle-check",
+       "label": "Balayı",
+       "description": null,
+       "subDescriptions": []
+      }
+     ],
+     "generalInfoText": "<p>Girne&rsquo;nin en temiz sahillerinden birinde, yeşil&nbsp;ve mavinin buluştuğu bir atmosferde misafirlerini ağırlayan Acapulco Resort Convention Spa Hotel, Kıbrıs&rsquo;ta konforlu bir tatil sunuyor. Tesis; eşsiz kumsalı, aquaparkları, lunaparkı ve farklı &ouml;zelliklerdeki havuzları ile her yaştan misafire hem huzuru hem de eğlenceyi bir arada yaşatıyor.<br /> <br /> 100.000 metrekarelik ala",
+     "facilities": [
+      {
+       "mainTitle": null,
+       "paidType": null,
+       "items": [
+        {
+         "label": "Emanet Kasası",
+         "description": "Odalarda",
+         "paidType": null,
+         "badges": null
+        },
+        {
+         "label": "Hemşire",
+         "description": "",
+         "paidType": null,
+         "badges": null
+        },
+        {
+         "label": "Kablosuz İnternet",
+         "description": "",
+         "paidType": null,
+         "badges": null
+        }
+       ]
+      },
+      {
+       "mainTitle": "Otopark",
+       "paidType": null,
+       "items": [
+        {
+         "label": "Özel Otopark",
+         "description": null,
+         "paidType": null,
+         "badges": null
+        },
+        {
+         "label": "Tesis İçinde",
+         "description": null,
+         "paidType": null,
+         "badges": null
+        },
+        {
+         "label": "Açık Otopark",
+         "description": null,
+         "paidType": null,
+         "badges": null
+        }
+       ]
+      }
+     ]
+    },
+    "importantInfo": {
+     "checkInTime": "15:00",
+     "checkOutTime": "11:00",
+     "checkInPrice": null,
+     "checkOutPrice": null,
+     "quickCheckIn": null,
+     "deposit": null,
+     "desc": "<p>Kış d&ouml;neminde mevsimsel koşullara bağlı olarak tesisin inisiyatifinde, dış kullanım alanları kapalı veya sınırlı şekilde kullanıma a&ccedil;ık olabilir. Genel kullanımı etkilemeyecek şekilde, yenileme gereken alanlarda &ccedil;alışmalar yapılabilir.</p>\r\n\r\n<p>Pegasus Hava Yolları ile alınan "
+    },
+    "facilityCategories": [
+     {
+      "title": {
+       "icon": "fa-regular fa-bell-concierge",
+       "label": "Yeme & İçme",
+       "description": null,
+       "subDescriptions": null
+      },
+      "freeText": "<p>Tam Pansiyon Plus konaklamalarda; Sunset Restoran'da sabah, öğle ve akşam yemekleri ücretsiz. Öğle ve akşam yemeklerinde, tesisin belirlemiş olduğu K.K.T.C yerli alkollü ve alkolsüz premix içecekle",
+      "facilities": [
+       {
+        "mainTitle": null,
+        "paidType": null,
+        "items": [
+         {
+          "label": "Taze Sıkılmış Meyve Suları",
+          "description": "",
+          "paidType": "Ücretli",
+          "badges": null
+         },
+         {
+          "label": "Bar",
+          "description": "",
+          "paidType": "Ücretli",
+          "badges": null
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": {
+       "icon": "fa-regular fa-stars",
+       "label": "Etkinlikler",
+       "description": null,
+       "subDescriptions": null
+      },
+      "freeText": "<p><strong>2026’da Kıbrıs’ta Müzik Rüzgarları Esecek!</strong><br>Acapulco Resort Convention Spa sahnesi 2026 yılında müzik dünyasının yıldız isimlerini ağırlıyor! Hem Kıbrıs’ın büyüleyici atmosferind",
+      "facilities": null
+     },
+     {
+      "title": {
+       "icon": "fa-regular fa-futbol",
+       "label": "Spor & Eğlence",
+       "description": null,
+       "subDescriptions": null
+      },
+      "freeText": "<p>Tesisin belirlemiş olduğu tarihlerde Kıbrıs gecesi d&uuml;zenleniyor.&nbsp;Lunapark g&uuml;n&uuml;n belirli saatlerinde&nbsp;&uuml;cretli hizmet veriyor. Tesisin amfitiyatrosunda disko ve animasyon",
+      "facilities": [
+       {
+        "mainTitle": null,
+        "paidType": null,
+        "items": [
+         {
+          "label": "Amfitiyatro",
+          "description": "",
+          "paidType": null,
+          "badges": null
+         },
+         {
+          "label": "Basketbol",
+          "description": "Saha ışıklandırması ücreti",
+          "paidType": null,
+          "badges": null
+         },
+         {
+          "label": "Kapalı Yüzme Havuzu",
+          "description": "Isıtmalı",
+          "paidType": null,
+          "badges": null
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "title": {
+       "icon": "fa-regular fa-umbrella-beach",
+       "label": "Plaj",
+       "description": null,
+       "subDescriptions": null
+      },
+      "freeText": "<p>Denize sıfır konumdaki tesisin 1 km uzunluğunda ince kumlu&nbsp;özel plajı mevcut. Plajda ve havuzda şezlong, şemsiye, havlu ve minder ücretsiz. Plajda alınan tüm yiyecek ve içecekler ücretli.<br>T",
+      "facilities": [
+       {
+        "mainTitle": null,
+        "paidType": null,
+        "items": [
+         {
+          "label": "Plajı Kum",
+          "description": "",
+          "paidType": null,
+          "badges": null
+         },
+         {
+          "label": "Denizi Kum",
+          "description": "",
+          "paidType": null,
+          "badges": null
+         },
+         {
+          "label": "Özel Koy",
+          "description": "",
+          "paidType": null,
+          "badges": null
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "banners": [],
+  "events": [
+   {
+    "id": "2313",
+    "type": "GENERAL",
+    "title": "2026’da Kıbrıs’ta Müzik Rüzgarları Esecek!",
+    "startDate": "2026-10-24",
+    "endDate": "2027-02-13"
+   }
+  ],
+  "promotions": [],
+  "poiMap": {
+   "name": "Acapulco Resort Convention Spa",
+   "imageUrl": "https://images.etstur.com/imgproxy/resize/2560x1440/files/images/hotelImages/etsrooms/137/Acapulco_Resort_Convention_Spa_20261001173234_0.png",
+   "geoLocation": {
+    "lat": 35.3246072,
+    "lng": 33.3999291
+   },
+   "landmarks": {
+    "HISTORICAL": [
+     {
+      "id": "10338753",
+      "name": "Bellapais Manastırı",
+      "icon": null,
+      "type": "HISTORICAL",
+      "geoLocation": {
+       "lat": 35.307037,
+       "lng": 33.355247
+      },
+      "distance": "4.5"
+     },
+     {
+      "id": "10338754",
+      "name": "Barbarlık Müzesi",
+      "icon": null,
+      "type": "HISTORICAL",
+      "geoLocation": {
+       "lat": 35.190365,
+       "lng": 33.349359
+      },
+      "distance": "15.6"
+     },
+     {
+      "id": "10338748",
+      "name": "Salamis Antik Kenti",
+      "icon": null,
+      "type": "HISTORICAL",
+      "geoLocation": {
+       "lat": 35.184785,
+       "lng": 33.902595
+      },
+      "distance": "48.2"
+     },
+     {
+      "id": "10338749",
+      "name": "Karpaz Yarımadası",
+      "icon": null,
+      "type": "HISTORICAL",
+      "geoLocation": {
+       "lat": 35.499964,
+       "lng": 34.25
+      },
+      "distance": "79.5"
+     }
+    ],
+    "NEARBY": [
+     {
+      "id": "10338757",
+      "name": "Girne Turizm Bilgi Ofisi",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.342527,
+       "lng": 33.319426
+      },
+      "distance": "7.6"
+     },
+     {
+      "id": "8829667",
+      "name": "Girne Kalesi",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.341545,
+       "lng": 33.321965
+      },
+      "distance": "7.3"
+     },
+     {
+      "id": "10338759",
+      "name": "Doğu Akdeniz Üniversitesi",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.142354,
+       "lng": 33.911617
+      },
+      "distance": "50.7"
+     },
+     {
+      "id": "10338758",
+      "name": "Cengiz Topel Hastanesi",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.157565,
+       "lng": 32.868167
+      },
+      "distance": "51.7"
+     },
+     {
+      "id": "10338755",
+      "name": "Saint Sophia Katedrali (Selimiye Camii)",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.176506,
+       "lng": 33.364123
+      },
+      "distance": "16.8"
+     },
+     {
+      "id": "10338750",
+      "name": "İkon Müzesi (Arkhangelos Mikhael Kilisesi)",
+      "icon": null,
+      "type": "NEARBY",
+      "geoLocation": {
+       "lat": 35.342106,
+       "lng": 33.318769
+      },
+      "distance": "7.6"
+     }
+    ],
+    "TRANSPORTATION": [
+     {
+      "id": "10338765",
+      "name": "Ercan Havalimanı",
+      "icon": null,
+      "type": "TRANSPORTATION",
+      "geoLocation": {
+       "lat": 35.1504336,
+       "lng": 33.4994482
+      },
+      "distance": "21.4"
+     }
+    ]
+   },
+   "defaultLandmarks": [
+    {
+     "id": "10338765",
+     "name": "Ercan Havalimanı",
+     "icon": "fa-regular fa-plane",
+     "type": "TRANSPORTATION",
+     "geoLocation": {
+      "lat": 35.1504336,
+      "lng": 33.4994482
+     },
+     "distance": "21.4"
+    },
+    {
+     "id": "10338753",
+     "name": "Bellapais Manastırı",
+     "icon": "fa-regular fa-landmark",
+     "type": "HISTORICAL",
+     "geoLocation": {
+      "lat": 35.307037,
+      "lng": 33.355247
+     },
+     "distance": "4.5"
+    },
+    {
+     "id": "8829667",
+     "name": "Girne Kalesi",
+     "icon": "fa-regular fa-signs-post",
+     "type": "NEARBY",
+     "geoLocation": {
+      "lat": 35.341545,
+      "lng": 33.321965
+     },
+     "distance": "7.3"
+    }
+   ]
+  },
+  "villaDetail": null,
+  "reviews": {
+   "average": {
+    "score": 76.0,
+    "name": "İyi",
+    "reviewCount": 3862
+   },
+   "scoreTypes": [
+    {
+     "name": "Oda",
+     "score": 69.0
+    },
+    {
+     "name": "Yüzme",
+     "score": 87.0
+    },
+    {
+     "name": "Hizmet",
+     "score": 76.0
+    },
+    {
+     "name": "Yemek",
+     "score": 73.0
+    }
+   ],
+   "scoreAverages": [
+    {
+     "name": "Tavsiye Etme",
+     "score": 69.0
+    },
+    {
+     "name": "Fiyat Performans",
+     "score": 64.0
+    }
+   ],
+   "userReviews": [],
+   "hospitableFlags": []
+  },
+  "certificate": {
+   "number": null,
+   "status": null,
+   "note": null
+  },
+  "liveStreamUrl": null,
+  "noIndex": false,
+  "contact": {
+   "email": "reservations@acapulco.com.tr",
+   "webSite": "Acapulco-Resort-Convention-Spa",
+   "addressLines": [
+    "Catalkoy, Kyrenia Turkish Republich of Northern Cyprus"
+   ],
+   "phone": null
+  },
+  "faqs": [
+   {
+    "question": "Acapulco Resort Convention Spa hangi adreste bulunmaktadır?",
+    "answer": "Acapulco Resort Convention Spa Catalkoy, Kyrenia Turkish Republich of Northern Cyprus adresinde bulunmaktadır."
+   },
+   {
+    "question": "Acapulco Resort Convention Spa Her Şey Dahil konseptinde hizmet sunmakta mı?",
+    "answer": "Hayır, Acapulco Resort Convention Spa her şey dahil konseptinde hizmet sunmamaktadır."
+   }
+  ],
+  "starRating": null
+ }
+}
