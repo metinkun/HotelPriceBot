@@ -83,36 +83,37 @@ type seturDetail struct {
 	DistanceList   []seturDistance `json:"distanceList"`
 }
 
-var (
-	reListingData = regexp.MustCompile(`"initialData":\s*\{\s*"data":\s*\[`)
-	reNullData    = regexp.MustCompile(`"initialData":\s*\{\s*"data":\s*null`)
-)
-
 // parseDetailPage sayfa HTML'inden initialData.data'yi cozer ve "$<id>" metin referanslarini yerine koyar.
 func parseDetailPage(page string) (*seturDetail, error) {
 	payload := rscPayload(page)
 	if payload == "" {
 		return nil, fmt.Errorf("Setur sayfasinda RSC payload bulunamadi")
 	}
-	// Yayinda olmayan otel: sayfa liste sayfasina (girne-otelleri) yonlenir -> initialData bir dizi olur;
+	// Yayinda olmayan otel: sayfa liste sayfasina (girne-otelleri) yonlenir -> data bir dizi olur;
 	// veya data:null,isError:true gelir. Ikisi de "satista degil" demektir, parse hatasi degil.
-	if reListingData.MatchString(payload) {
-		return nil, fmt.Errorf("Setur'da otel yayinda degil (sayfa otel listesine yonlendiriliyor)")
-	}
-	if reNullData.MatchString(payload) {
-		return nil, fmt.Errorf("Setur'da otel yayinda degil (detay verisi yok)")
-	}
 	var wrap struct {
-		Data *seturDetail `json:"data"`
+		Data    json.RawMessage `json:"data"`
+		IsError bool            `json:"isError"`
 	}
 	if err := rscExtract(payload, `"initialData":`, &wrap); err != nil {
 		return nil, fmt.Errorf("Setur detay verisi: %w", err)
 	}
-	if wrap.Data == nil || wrap.Data.Name == "" {
+	raw := strings.TrimSpace(string(wrap.Data))
+	if strings.HasPrefix(raw, "[") {
+		return nil, fmt.Errorf("Setur'da otel yayinda degil (sayfa otel listesine yonlendiriliyor)")
+	}
+	if raw == "" || raw == "null" || wrap.IsError {
+		return nil, fmt.Errorf("Setur'da otel yayinda degil (detay verisi yok)")
+	}
+	data := &seturDetail{}
+	if err := json.Unmarshal(wrap.Data, data); err != nil {
+		return nil, fmt.Errorf("Setur detay verisi: %w", err)
+	}
+	if data.Name == "" {
 		return nil, fmt.Errorf("Setur detay verisi bos (otel detay sayfasi URL'i olmali)")
 	}
 	texts := rscTexts(payload)
-	d := wrap.Data
+	d := data
 	d.GeneralConditions = rscRef(d.GeneralConditions, texts)
 	for i := range d.SeasonFeatures {
 		for j := range d.SeasonFeatures[i].Categories {
