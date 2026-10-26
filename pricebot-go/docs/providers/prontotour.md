@@ -75,3 +75,37 @@ Yanit sureleri: HotelDetail ~0.3-1 sn, BundleSearch (ucus aramasi dahil) ~4-6 sn
 - `Allotment:false` odalar (kontenjan yok) lead fiyat ve paket listesine alinmaz; hic kontenjanli oda yoksa tumu kullanilir.
 - Tek oda sorgulanir (coklu oda yok). Bebek (0 yas) fiyati etkilemiyor.
 - Donus tarihli ucus olmayan tarihlerde BundleSearch `ErrorText` doner; sonuc `available:false` + `note` olarak iletilir.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+### Detay — tarihsiz `POST /Hotel/HotelDetail`
+
+Ayni govde, `StartDate/EndDate` bos (2 yetiskin). Yanit otel kimligi disinda su statik alanlari da icerir:
+
+- `HotelListResponse`: `Name`, `Address`, `Latitude/Longitude` ("35,33031" virgullu), `CheckinHours`/`ChecoutHours` (14:00/12:00), `ImgUrl`;
+  `Star`, `City`, `Description`, `Phone` genelde null.
+- `HotelDetailImageList[] {Original}` (7 gorsel, cdn.crtbooking.com) -> `images` (cache-buster sorgusu temizlenir).
+- `HotelDetailFacilityList[] {Name, Type (YES|AVAILABLE|PAID|TEXT|CONTENT), Category, Value, IsPaid, IsActive}` — sayfa JS'i
+  (`app.HotelDetail.Facilities`) ile ayni kurallar: kategori **Genel Bilgiler**'de `CONTENT` ("GENEL AÇIKLAMALAR", HTML) -> `description` +
+  "Otel Hakkında" bolumu; adinda "Saat"/"Hayvan" gecenler -> "Tesis Kuralları" pairs (+ `policies` yedegi); **Konum Bilgileri** -> pairs
+  (LATITUDE/LONGITUDE gizli; SEHİR -> `city`, ÜLKE -> `country`); diger kategoriler (Temalar, Spa & Fitness, Havuz & Plaj, Genel Özellikler,
+  Bebek & Çocuk, Balayı Çiftleri, Aktiviteler) -> ozellik gruplari, `IsPaid` -> "(Ücretli)"; `TEXT` + dolu `Value` -> kategori adli pairs bolumu.
+- `FacilityDistance[] {Name, Distance}` -> "Mesafeler" pairs. `Opportunities`, `ListPolicyStruct {Title, Descripiton}`, `GeneralInformation`
+  (oda sayisi/insa yili) dolu gelirse bolum olur (Acapulco'da null).
+- `HotelRoomDetailsList` (varsayilan arama satirlari, oda x pansiyon): ada gore birlestirilir ve **ad sirasina** gore siralanir;
+  `TourLogicFacility` (kategori "Yeme & İçme Konsepti" haric, pansiyona bagli) -> oda ozellikleri (sirali); `Mealy` -> `boards`.
+  `RoomSize/BedType/ImageList` API'de bos geliyor (m2/gorsel yok). Oda kumesi musaitlige gore degisebilir (gunluk diff'te goze alinmali).
+- `HotelServiceType` yanlis ise `HotelListResponse` null -> hata.
+
+Probe (2026-10-26, Acapulco h3234-8): `images=7 facilities=7 rooms=6 faq=0 sections=4` (Otel Hakkında, Tesis Kuralları, Konum Bilgileri,
+Mesafeler), boards 2, konum 35.33031/33.420868, giris 14:00 / cikis 12:00; iki calistirma birebir ayni JSON. Sure ~0.8 sn.
+
+### Arama — `POST /AutoComplete/Search` `{"Key":"Merit Royal","Type":"H","Id":0,"Source":1}`
+
+- Yanit `[{code, name, type:"H", IdDestType (5 = otel), Parent1 (ilce), Parent2}]`; sadece `IdDestType == 5` alinir. Sonuc yoksa sorgu
+  sondan kisaltilir.
+- Autocomplete servis tipini vermez; detay URL'i icin tarihsiz `HotelDetail` `HotelServiceType` adaylari (once `8`, sonra 1-12) ile
+  dogrulanir (Kibris otellerinde hepsi 8; yanlis tipte `HotelListResponse` null). URL = `https://www.prontotour.com/<Seo-Ad>-h<code>-<tip>`
+  (slug sitenin `getSeoUrl` mantigi; ResolveFromURL yalnizca `-h<kod>-<tip>` ekine bakar). Ad `HotelDetail` yanitindan (bosluklar sadelestirilir).
+- Probe: "Merit Royal" -> 4 otel (Diamond h3232-8, Gardens h24-8 Iskele, Royal h925-8, Premium h39-8), 3.6 sn (otel basina 1 HotelDetail);
+  "Cratos Premium" -> h2-8; "Salamis Bay Conti" -> h23-8; "Elexus" -> h52-8. Prontotour Turkiye otellerini listelemiyor ("Rixos" bos).

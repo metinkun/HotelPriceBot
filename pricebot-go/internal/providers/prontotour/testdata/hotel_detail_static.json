@@ -1,0 +1,1463 @@
+{
+ "HotelListResponse": {
+  "Name": "Acapulco Resort Hotel",
+  "HotelCode": "3234",
+  "City": null,
+  "Price": 81900.0,
+  "PriceTL": 81900.0,
+  "DiscountPrice": 0.0,
+  "DiscountPriceTL": 0.0,
+  "CurrencyType": 0,
+  "Star": null,
+  "ImgUrl": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/J1X9CI_455172418.jpg",
+  "Selected": false,
+  "Phone": null,
+  "Address": "Catalkoy, Kyrenia, Turkish Republich of Northern Kyrenia Kyrenia, Girne, Kuzey Kıbrıs North Cyprus CY",
+  "Latitude": "35,33031",
+  "Longitude": "33,420868",
+  "Description": null,
+  "PayatHotel": false,
+  "NonRefundable": false,
+  "RoomType": null,
+  "MealType": null,
+  "RoomDescription": null,
+  "RoomCategory": null,
+  "CityCode": null,
+  "ServiceCode": null,
+  "FirmCode": null,
+  "SearchCode": null,
+  "Country": null,
+  "Area": null,
+  "Parking": null,
+  "Pets": null,
+  "BedRoomCount": null,
+  "MaxPersonCount": null,
+  "FoodInfo": null,
+  "SporInfo": null,
+  "FacilityInfo": null,
+  "HotelServiceType": 0,
+  "JsonData": null,
+  "Infos": null,
+  "FacilityDistance": null,
+  "FacilityRank": null,
+  "AccommodationTypeName": null,
+  "CancelPolicy": null,
+  "Review": null,
+  "Opportunities": null,
+  "PackingPrice": false,
+  "PriceInfo": null,
+  "Error": null,
+  "ProductType": 0,
+  "VillaInfo": null,
+  "CheckinHours": "14:00",
+  "ChecoutHours": "12:00",
+  "MinimumStay": 0,
+  "FreeCancel": false,
+  "IdApiHotel": 0,
+  "OrderbyPrice": 0.0,
+  "SearchKey": null,
+  "DiscountRate": 0.0
+ },
+ "HotelDetailImageList": [
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/J1X9CI_455172418.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/QNELDA_455172416.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/455172453.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/455172442.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/5R1G0E_455172436.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/NTEQ92_455172432.jpg",
+   "Small": null,
+   "Mid": null
+  },
+  {
+   "Original": "https://cdn.crtbooking.com/hotels/acapulco-resort-hotel/genel.jpg",
+   "Small": null,
+   "Mid": null
+  }
+ ],
+ "HotelDetailFacilityList": [
+  {
+   "Name": "Spa Oteli",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Balayı Oteli",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Bebek Dostu",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Çocuk Dostu",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Aquaparklı Otel",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Konferans Oteli",
+   "Type": "YES",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Temalar",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Jakuzi",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Spa Bilgisi",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": "",
+   "IsPaid": false
+  },
+  {
+   "Name": "Masaj",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Buhar Odası",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Hamam",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Kese - Köpük",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Sauna",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Solarium",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Güzellik Merkezi",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Spa & Fitness",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "HAVALİMANINA MESAFE",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "28 KM",
+   "IsPaid": false
+  },
+  {
+   "Name": "ŞEHİR MERKEZİNE MESAFESİ",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "8 KM",
+   "IsPaid": false
+  },
+  {
+   "Name": "DENİZ MESAFESİ",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "0 KM",
+   "IsPaid": false
+  },
+  {
+   "Name": "ÜLKE",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "Kuzey Kıbrıs",
+   "IsPaid": false
+  },
+  {
+   "Name": "LATITUDE",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "35.330310",
+   "IsPaid": false
+  },
+  {
+   "Name": "LONGITUDE",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "33.420868",
+   "IsPaid": false
+  },
+  {
+   "Name": "SEHİR",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Konum Bilgileri",
+   "Value": "Girne",
+   "IsPaid": false
+  },
+  {
+   "Name": "Su Kaydırağı",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Havuz & Plaj",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Plaj (Kum)",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Havuz & Plaj",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Havlu Servisi",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Havuz & Plaj",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Kapalı Havuz",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Havuz & Plaj",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Açık Havuz",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Havuz & Plaj",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Lobi Bar",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Fitness Center",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Kablosuz İnternet Bağlantısı",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Casino",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Market",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Kuaför",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Kuru Temizleme",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Çamaşırhane",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "İnternet Cafe",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Doktor",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Emanet Kasa",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Butik",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Spa Merkezi",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Telefon / Fax Hizmeti",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Özellikler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "GENEL AÇIKLAMALAR",
+   "Type": "CONTENT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Bilgiler",
+   "Value": "<ul id=\"printableArea\" class=\"facility-detail-info-list\" data-gtm-vis-recent-on-screen96556_1384=\"15992\" data-gtm-vis-first-on-screen96556_1384=\"15992\" data-gtm-vis-total-visible-time96556_1384=\"100\" data-gtm-vis-has-fired96556_1384=\"1\">\n<li id=\"FOOD\" class=\"condDesc facility-detail-info-list-item active\">\n<p>Girne&rsquo;nin en temiz sahillerinden birinde, yeşil&nbsp;ve mavinin buluştuğu bir atmosferde misafirlerini ağırlayan Acapulco Resort Convention Spa Hotel, Kıbrıs&rsquo;ta konforlu bir tatil sunuyor. Tesis; eşsiz kumsalı, aquaparkları, lunaparkı ve farklı &ouml;zelliklerdeki havuzları ile her yaştan misafire hem huzuru hem de eğlenceyi bir arada yaşatıyor.<br /><br />100.000 metrekarelik alan &uuml;zerine kurulu tesiste; otel odası, Suite oda, VIP oda ve villa gibi farklı konaklama se&ccedil;enekleri mevcut.<br /><br />Misafirlerine suyun en eğlenceli halini doyasıya yaşama imkanı sunan tesiste; 2 a&ccedil;ık havuz, 5 kaydırak&nbsp;havuzu ve 24 kaydıraklı aquapark (Sezonda g&uuml;n&uuml;n belirli&nbsp;saatlerinde hizmet veriyor), 17 yaş &uuml;zeri misafirler i&ccedil;in sezonda hizmet veren sonsuzluk havuzu, ısıtmalı kapalı havuz, a&ccedil;ık ve kapalı &ccedil;ocuk havuzu bulunuyor.<br /><br />Farklı mutfaklardan se&ccedil;kin lezzetler sunan tesiste 3 kapalı, 5 a&ccedil;ık restoran hizmet veriyor. Ayrıca kongre merkezi, sağlık merkezi, T&uuml;rk hamamı, masaj uygulamaları, buhar odası, jakuzi, &ccedil;ocuk oyun alanı, tenis kortu, masa tenisi, basketbol, plaj voleybolu ve futbolu, mini market, kuaf&ouml;r, bar, fitness merkezi ve Acapulco Shops gibi olanaklar bulunuyor.</p>\n<p><br />Tesiste yaz sezonunda&nbsp;g&uuml;n&uuml;n belirli saatlerinde 4-12 yaş arası &ccedil;ocuklar i&ccedil;in mini kul&uuml;p bulunuyor. Yine yaz sezonunda animasyon g&ouml;sterileri ve canlı m&uuml;zik programları ger&ccedil;ekleştiriliyor. Ayrıca bu d&ouml;nemde disko da hizmet veriyor.<br /><br />Tesis; Girne Kalesi, Batık Gemi M&uuml;zesi, St. Hilarion Kalesi, Karmi ve Bellapais Manastırı'na yaklaşık 15 dakika mesafede yer alıyor.</p>\n<span id=\"FOODconditionsText\" class=\"conditionsText\"></span></li>\n</ul>",
+   "IsPaid": false
+  },
+  {
+   "Name": "Giriş Saati",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Bilgiler",
+   "Value": "14:00",
+   "IsPaid": false
+  },
+  {
+   "Name": "Çıkış Saati",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Genel Bilgiler",
+   "Value": "11:00",
+   "IsPaid": false
+  },
+  {
+   "Name": "Mini Club",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Oyun Parkı",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Aquaparklı Çocuk Havuzu",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Çocuk Animasyonu",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Bebek Bakıcısı",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Bebek Ve Çocuk Bilgisi",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Bebek & Çocuk",
+   "Value": "",
+   "IsPaid": false
+  },
+  {
+   "Name": "Oda Süslemesi",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Spa İndirimi",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Müsaitlik Doğrultusunda Geç Çıkış",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Müsaitlik Doğrultusunda Erken Giriş",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Odaya Meyve Sepeti Şarap İkramı",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Odaya Kahvaltı Servisi",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "A’la Carte Restoranlarda Öncelik Şansı",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Balayı Konsept Bilgisi",
+   "Type": "TEXT",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Balayı Çiftleri",
+   "Value": "",
+   "IsPaid": false
+  },
+  {
+   "Name": "Lunapark",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Voleybol",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Aerobik",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Tenis Kortu",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Masa Tenisi",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Dart",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Tenis Ekipmanları",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Tavla",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": false
+  },
+  {
+   "Name": "Kano",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Disco",
+   "Type": "PAID",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": true
+  },
+  {
+   "Name": "Canlı Müzik",
+   "Type": "AVAILABLE",
+   "IsActive": true,
+   "Rank": null,
+   "Description": null,
+   "CategoryRank": null,
+   "Icon": null,
+   "Category": "Aktiviteler",
+   "Value": null,
+   "IsPaid": false
+  }
+ ],
+ "FacilityDistance": [
+  {
+   "Name": "Plaj",
+   "Distance": "0 m"
+  }
+ ],
+ "HotelRoomDetailsList": [
+  {
+   "Allotment": true,
+   "Rooms": [],
+   "RoomFacility": [],
+   "Mealy": "Yarım Pansiyon",
+   "MealyCode": "128",
+   "RoomName": "Villa Oda",
+   "RoomCode": "X",
+   "OtherKey": "X",
+   "Price": 81900.0,
+   "PriceTl": 81900.0,
+   "DiscountPrice": 48730.5,
+   "DiscountPriceTl": 48731.0,
+   "BookCode": "X",
+   "RoomCount": 0,
+   "AdultCount": 0,
+   "ChildCount": 0,
+   "Image": null,
+   "SubService": null,
+   "CancelPolicy": [],
+   "ImageList": [],
+   "P_GUID": null,
+   "FreeCancel": false,
+   "PackingPrice": false,
+   "RoomInfo": null,
+   "RoomSize": null,
+   "YatakSayısı": null,
+   "TaxList": null,
+   "BedType": null,
+   "BathroomCount": 0,
+   "OrderByPrice": 0.0,
+   "TourLogicFacility": [
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Kahvaltı",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Akşam Yemeği",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Minibar",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Klima (Split)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Servisi",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Küvet)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Temizlik Hizmeti",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Kasa",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Uydu Yayını",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Duşakabin)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Telefon",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    }
+   ]
+  },
+  {
+   "Allotment": false,
+   "Rooms": [],
+   "RoomFacility": [],
+   "Mealy": "Yarım Pansiyon",
+   "MealyCode": "128",
+   "RoomName": "Kara manzaralı Standart",
+   "RoomCode": "X",
+   "OtherKey": "X",
+   "Price": 84175.0,
+   "PriceTl": 84175.0,
+   "DiscountPrice": 50084.16,
+   "DiscountPriceTl": 50085.0,
+   "BookCode": "X",
+   "RoomCount": 0,
+   "AdultCount": 0,
+   "ChildCount": 0,
+   "Image": null,
+   "SubService": null,
+   "CancelPolicy": [],
+   "ImageList": [],
+   "P_GUID": null,
+   "FreeCancel": false,
+   "PackingPrice": false,
+   "RoomInfo": null,
+   "RoomSize": null,
+   "YatakSayısı": null,
+   "TaxList": null,
+   "BedType": null,
+   "BathroomCount": 0,
+   "OrderByPrice": 0.0,
+   "TourLogicFacility": [
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Kahvaltı",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Akşam Yemeği",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Kasa",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Uydu Yayını",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Balkon",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Servisi",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Halı Kaplı Zemin",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Elektronik Anahtar Sistemi",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Küvet)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Duman Dedektörü",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Merkezi Klima",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Telefon",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Büyüklüğü",
+     "Value": "",
+     "IsPaid": false,
+     "Type": "TEXT"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Temizlik Hizmeti",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    }
+   ]
+  },
+  {
+   "Allotment": true,
+   "Rooms": [],
+   "RoomFacility": [],
+   "Mealy": "Tam Pansiyon Plus",
+   "MealyCode": "127",
+   "RoomName": "Villa Oda",
+   "RoomCode": "X",
+   "OtherKey": "X",
+   "Price": 97825.0,
+   "PriceTl": 97825.0,
+   "DiscountPrice": 58205.91,
+   "DiscountPriceTl": 58206.0,
+   "BookCode": "X",
+   "RoomCount": 0,
+   "AdultCount": 0,
+   "ChildCount": 0,
+   "Image": null,
+   "SubService": null,
+   "CancelPolicy": [],
+   "ImageList": [],
+   "P_GUID": null,
+   "FreeCancel": false,
+   "PackingPrice": false,
+   "RoomInfo": null,
+   "RoomSize": null,
+   "YatakSayısı": null,
+   "TaxList": null,
+   "BedType": null,
+   "BathroomCount": 0,
+   "OrderByPrice": 0.0,
+   "TourLogicFacility": [
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Genel Açıklama",
+     "Value": "<ul id=\"printableArea\" class=\"facility-detail-info-list\" data-gtm-vis-recent-on-screen96556_1384=\"15992\" data-gtm-vis-first-on-screen96556_1384=\"15992\" data-gtm-vis-total-visible-time96556_1384=\"100\" data-gtm-vis-has-fired96556_1384=\"1\">\n<li id=\"FOOD\" class=\"condDesc facility-detail-info-list-item active\">\n<h4 class=\"conditionsTitle\">Yeme / İ&ccedil;me</h4>\n<p>Tam Pansiyon Plus konaklamalarda; Sunset Restoran'da sabah, &ouml;ğle ve akşam yemekleri &uuml;cretsiz.<br />&Ouml;ğle ve akşam yemeklerinde, tesisin belirlemiş olduğu K.K.T.C yerli alkoll&uuml; ve alkols&uuml;z premix i&ccedil;ecekler&nbsp;&uuml;cretsiz.&nbsp;Tesis genelinde alınan k&uuml;&ccedil;&uuml;k şişe su ve lobi barlardan&nbsp;alınacak demleme &ccedil;ay &uuml;cretsiz.</p>\n<p>Bistro A la Carte Restaurant&nbsp;24 saat hizmet veriyor. A la carte restoranlar &uuml;cretli.<br /><br />Tesiste ayrıca Pine Court, Sea Side, La Femme Lounge, Disco, Aqua Pool, Moon Rise ve Lobby bar olmak &uuml;zere 7 adet bar hizmet veriyor.</p>\n<span id=\"FOODconditionsText\" class=\"conditionsText\"></span></li>\n</ul>",
+     "IsPaid": false,
+     "Type": "CONTENT"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Öğle Yemeği",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Akşam Yemeği",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Kahvaltı",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Minibar",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Klima (Split)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Servisi",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Küvet)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Temizlik Hizmeti",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Kasa",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Uydu Yayını",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Duşakabin)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Telefon",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    }
+   ]
+  },
+  {
+   "Allotment": false,
+   "Rooms": [],
+   "RoomFacility": [],
+   "Mealy": "Yarım Pansiyon",
+   "MealyCode": "128",
+   "RoomName": "Deniz Manzaralı Standart",
+   "RoomCode": "X",
+   "OtherKey": "X",
+   "Price": 98175.0,
+   "PriceTl": 98175.0,
+   "DiscountPrice": 58414.16,
+   "DiscountPriceTl": 58415.0,
+   "BookCode": "X",
+   "RoomCount": 0,
+   "AdultCount": 0,
+   "ChildCount": 0,
+   "Image": null,
+   "SubService": null,
+   "CancelPolicy": [],
+   "ImageList": [],
+   "P_GUID": null,
+   "FreeCancel": false,
+   "PackingPrice": false,
+   "RoomInfo": null,
+   "RoomSize": null,
+   "YatakSayısı": null,
+   "TaxList": null,
+   "BedType": null,
+   "BathroomCount": 0,
+   "OrderByPrice": 0.0,
+   "TourLogicFacility": [
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Kahvaltı",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Yeme & İçme Konsepti",
+     "Name": "Akşam Yemeği",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Merkezi Klima",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Kasa",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Duşakabin)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Banyo (Küvet)",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Elektronik Anahtar Sistemi",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Balkon",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Temizlik Hizmeti",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Duman Dedektörü",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Telefon",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Halı Kaplı Zemin",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Uydu Yayını",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Laminant Kaplı Zemin",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Servisi",
+     "Value": null,
+     "IsPaid": false,
+     "Type": "AVAILABLE"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Minibar",
+     "Value": null,
+     "IsPaid": true,
+     "Type": "PAID"
+    },
+    {
+     "Category": "Oda Özellikleri",
+     "Name": "Oda Büyüklüğü",
+     "Value": "",
+     "IsPaid": false,
+     "Type": "TEXT"
+    }
+   ]
+  }
+ ],
+ "HotelServiceType": 8,
+ "Review": null,
+ "Opportunities": null,
+ "S_GUID": null,
+ "ListPolicyStruct": null,
+ "GeneralInformation": null
+}

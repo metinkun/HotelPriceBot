@@ -1,0 +1,91 @@
+{
+ "d": {
+  "Cities": [],
+  "Towns": [],
+  "Concepts": [],
+  "Hotels": [
+   {
+    "text": "Acapulco Resort Hotel & Convention & SPA",
+    "gotoid": "acapulco-resort-hotel--convention--spa",
+    "inMarket": 17,
+    "code": "ACAPULCO"
+   },
+   {
+    "text": "Ada Beach Hotel",
+    "gotoid": "ada-beach-hotel",
+    "inMarket": 17,
+    "code": "ADABEACHKIBRIS"
+   },
+   {
+    "text": "Cratos Premium Hotel Port Spa",
+    "gotoid": "cratos-premium-hotel--port-spa",
+    "inMarket": 17,
+    "code": "CRATOSPREMIUM"
+   },
+   {
+    "text": "Crown Salamis Hotel",
+    "gotoid": "crown-salamis-hotel",
+    "inMarket": 17,
+    "code": "CROSALHOT"
+   },
+   {
+    "text": "Elexus Hotel Resort",
+    "gotoid": "elexus-hotel-resort-",
+    "inMarket": 17,
+    "code": "ELEHOTRESCAS"
+   },
+   {
+    "text": "Merit Crystal Cove Hotel & Spa",
+    "gotoid": "merit-crystal-cove-hotel---spa",
+    "inMarket": 17,
+    "code": "MERITCRYSTALCOVE"
+   },
+   {
+    "text": "Merit Royal Gardens Hotel",
+    "gotoid": "merit-cyprus-gardens-holiday-village",
+    "inMarket": 17,
+    "code": "MERITGARDENS"
+   },
+   {
+    "text": "Merit Lefkoşa Hotel Spa",
+    "gotoid": "merit-lefkosa-hotel--spa",
+    "inMarket": 17,
+    "code": "MERITLEFKOSA"
+   },
+   {
+    "text": "Merit Royal Premium Hotel",
+    "gotoid": "merit-royal-premium-hotel--",
+    "inMarket": 17,
+    "code": "MERITROYALPRM"
+   },
+   {
+    "text": "Merit Park Hotel & Spa",
+    "gotoid": "merit-park-hotel",
+    "inMarket": 17,
+    "code": "MERPARHOTSPA"
+   },
+   {
+    "text": "Merit Royal Diamond Hotel & Spa",
+    "gotoid": "merit-royal-imperial-hotel-spa",
+    "inMarket": 17,
+    "code": "MERROYIMPHOTSPA"
+   },
+   {
+    "text": "Merit Royal Hotel",
+    "gotoid": "merit-royal-hotel--",
+    "inMarket": 17,
+    "code": "MRTRYL"
+   },
+   {
+    "text": "Salamis Bay Conti Resort Hotel",
+    "gotoid": "salamis-bay-conti-resort-hotel",
+    "inMarket": 17,
+    "code": "SALAMISBAYCONTIHOTEL"
+   }
+  ],
+  "Hotels2": [],
+  "Hotels3": [],
+  "Hotels4": [],
+  "specialDays": []
+ }
+}
