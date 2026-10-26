@@ -3,6 +3,8 @@
 //	probe <provider> resolve <url>
 //	probe <provider> price   <url> <checkIn> <checkOut> <adults> [children] [childAges 5,8]
 //	probe <provider> package <url> <checkIn> <checkOut> <adults> <airportCode>
+//	probe <provider> details <url>            (otel statik detayi: HotelDetails JSON)
+//	probe <provider> search  <otel adi>       (isimle arama: HotelCandidate listesi)
 //
 // URL once resolveFromUrl ile cozulur, cikan mapping ile fiyat/paket sorgusu yapilir.
 // Tarayici gerektiren provider'lar icin app imajinda calistirin (bkz. docs/phase3-research.md).
@@ -51,6 +53,21 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
 
+	if mode == "search" {
+		hs, ok := p.(provider.HotelSearcher)
+		if !ok {
+			die("provider isimle aramayi desteklemiyor (HotelSearcher yok)")
+		}
+		t0 := time.Now()
+		cands, err := hs.SearchHotels(ctx, strings.Join(os.Args[3:], " "))
+		if err != nil {
+			die("search: %v", err)
+		}
+		fmt.Printf("# search (%.1fs) %d sonuc\n", time.Since(t0).Seconds(), len(cands))
+		dump(cands)
+		return
+	}
+
 	rr, ok := providers.ResolverOf(p)
 	if !ok {
 		die("provider URL cozumlemeyi desteklemiyor")
@@ -64,6 +81,20 @@ func main() {
 	dump(res)
 	m := &provider.Mapping{Provider: name, InternalHotelID: "probe", ProviderHotelID: res.ProviderHotelID, HotelName: res.HotelName, Metadata: res.Metadata, IsActive: true}
 	if mode == "resolve" {
+		return
+	}
+	if mode == "details" {
+		dp, ok := p.(provider.DetailProvider)
+		if !ok {
+			die("provider statik detayi desteklemiyor (DetailProvider yok)")
+		}
+		t1 := time.Now()
+		d, err := dp.GetDetails(ctx, m)
+		if err != nil {
+			die("details: %v", err)
+		}
+		fmt.Printf("# details (%.1fs) images=%d facilities=%d rooms=%d faq=%d sections=%d\n", time.Since(t1).Seconds(), len(d.Images), len(d.Facilities), len(d.Rooms), len(d.FAQ), len(d.Sections))
+		dump(d)
 		return
 	}
 	if len(os.Args) < 7 {

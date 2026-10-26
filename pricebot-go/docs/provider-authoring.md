@@ -67,3 +67,22 @@ Kurallar:
   sinirlar (orn. paket yok, cocuk yasi desteklenmiyor), probe ciktisi ozeti, tarayici gerekip gerekmedigi ve nedeni.
 - `go vet ./...` ve `go test ./...` temiz; `gofmt -l .` bos.
 - Degisiklikleri commit et (mesaj: `<site>: provider eklendi`).
+
+## 4. Statik detay (`DetailProvider`) ve isimle arama (`HotelSearcher`)
+
+`internal/provider/details.go` iki opsiyonel arayuz tanimlar:
+
+- `GetDetails(ctx, mapping) (*HotelDetails, error)` — acentenin otel detay sayfasini ORTAK semaya normalize eder:
+  ad, aciklama, yildiz/puan, adres/sehir/konum, iletisim, **gorseller** (tam URL), **ozellik gruplari** (acentedeki grup
+  adiyla), **odalar** (ad, m2, kapasite, ozellikler, gorseller), pansiyon tipleri, **politikalar** (giris/cikis saati, cocuk,
+  evcil, iptal), **soru-cevap**, ve `Sections`: acentenin kendi basliklariyla tum metin/listeler (ham gorunum icin;
+  `kind` text|list|pairs|html; HTML temizlenmis olmali, script/style yok). Bos alanlari atla ama dizi alanlarini `nil`
+  degil bos dizi birak. Metinleri `provider.DecodeEntities` ile temizle. Mapping metadata'da `sourceUrl` varsa onu kullan.
+  Veri her gun yeniden cekilip onceki snapshot ile karsilastirilir: **deterministik** ol (siralama sabit, tarih/sayac gibi
+  her istekte degisen alanlari koyma, gorsel URL'lerinde cache-buster parametresi varsa temizle).
+- `SearchHotels(ctx, query) ([]HotelCandidate, error)` — acentenin arama/autocomplete API'siyle otel adina gore aday
+  listesi: `Name`, `URL` (ResolveFromURL'in kabul ettigi detay URL'i), `City`, `ProviderHotelID`. Sadece OTEL sonuclari
+  (destinasyon/bolge degil). Toplu otel ekleme (78 KKTC oteli) bu arayuzle yapilir; Turkce karakter/buyuk-kucuk harf
+  farklarina dayanikli ol (acente API'si izin veriyorsa kisaltilmis sorgu da dene).
+
+Test: `bin/probe <site> details <url>` ve `bin/probe <site> search "<otel adi>"` (ornek: "Merit Royal", "Elexus").
