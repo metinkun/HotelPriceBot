@@ -88,3 +88,38 @@ probe tatilsitesi package <url> 2026-12-05 2026-12-08 2 SAW # 12-40 sn (ilk ucus
 - Talep Et (`StopSale/Release/AskSale`) satirlari lead fiyatta atlanir; pakette `cancellation: "Talep üzerine"` ile listelenir.
 - `city` alani bos (sayfa sehir adini vermiyor; sadece CityCode/CityID).
 - Tarayici gerekmedi: tum uclar duz HTTP ile cerezsiz calisiyor; Cloudflare challenge gozlenmedi.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+### Detay — Methods.aspx WebMethod'lari (cerezsiz JSON)
+
+Sayfa JS'i (HotelDetail.js) ile ayni cagrilar, hepsi `POST /Methods.aspx/<Method>`:
+
+| Method | Govde | Kullanim |
+|---|---|---|
+| `GetHotelInfo` | `{"HotelCode":"ACAPULCO"}` | `d.Info`: `HotelName`, `Star`, `CityName` (Kıbrıs -> region/country), `TownName` (Girne -> city), `Url` (slug), `PageDescription`, `ImageList[] {stFilePath, inActive, inOrder, stImageType, inID}`, ve HTML metin alanlari: `GeneralInfo` (tanitim + `<details>` SSS), `BriefInfo`, `HotelFeatures`, `Facilities`, `HotelLocation`, `HotelTransportation`, `HotelFoodConcept`, `ChildConcept`, `BeachInfo`, `RoomInfo`, `HoneymoonInfo`, `FreeServices`, `PaidServices`, `ConceptDates`, `Winter*`, `GeneralNotice`, `Notes`, `AdditionalInfo` (~200 KB yanit) |
+| `getHDDetailContent` | `{"hotelCode":"ACAPULCO"}` | one cikan ikon listesi -> ozellik grubu "Öne Çıkanlar" |
+| `getHDChildAges` | `{"hotelCode":...}` | `{stHeader:"1. Çocuk", stContent:"0-11,99 Yaş Ücretsiz"}` -> `policies.childPolicy` + "Çocuk Yaş Politikası" pairs |
+| `getHDAccomodation` | `{"hotelCode":...}` | pansiyon tipleri -> `boards` |
+| `Get_HotelCoordinat` | `{"hotelCode":...}` | `inGoogleX` = enlem, `inGoogleY` = boylam |
+
+- HTML alanlari duz metne cevrilir (style/script/img atilir, blok etiketleri satir); bos (`<br>`) alanlar bolum olmaz.
+  Bolum basliklari sitedeki sekme adlari: Hakkında, Öne Çıkanlar, Tesis Özellikleri, Genel Özellikler, Konum, Ulaşım, Yeme & İçme, Çocuk,
+  Plaj & Havuz, Odalar, Balayı, Ücretsiz/Ücretli Hizmetler, Konsept Tarihleri, Kış *, Önemli Bilgiler, Notlar, Ek Bilgiler, Pansiyon Tipleri,
+  Çocuk Yaş Politikası. SSS `GeneralInfo` icindeki `<details><summary>` ciftlerinden.
+- Gorseller: aktif olanlar `(inOrder, inID)` sirali, caption = `stImageType` ("Ana Fotoğraf", "Genel", "Oda", "Havuz" ...).
+- `petPolicy`: "evcil" gecen cumle (Notlar). Giris/cikis saati metinde yoksa bos (Acapulco'da yok).
+- `rooms` bos: oda listesi yalnizca tarihli `hotelDetailSearch` ile geliyor (musaitlige bagli); oda ozellikleri "Odalar" bolumunde metin.
+  `getRoomPhotos {hotelCode, roomID, provider}` oda fotograflari da arama satirina bagli oldugu icin kullanilmadi.
+- `GetHotelInfo` zorunlu; diger 4 cagri hata verirse detay yine uretilir (ilgili alanlar bos kalir).
+
+Probe (2026-10-26, Acapulco): `images=25 facilities=1 (Öne Çıkanlar 5) rooms=0 faq=7 sections=18`, boards 2, konum 35.330304/33.421408;
+iki calistirma birebir ayni JSON. Sure ~1.2-1.5 sn.
+
+### Arama — GetGeneralList
+
+- `POST /Methods.aspx/GetGeneralList` `{}` -> `d.Hotels[] {text, gotoid (slug), code (hotelCODE)}` (65 otel; sitenin tum oteli, ~500 KB yanit).
+- Eslesme: Turkce karakterler sadelestirilir (ı->i, ş->s ...), sorgunun her kelimesi otel adindaki bir kelimenin on eki olmali;
+  sonuc yoksa sorgu sondan kisaltilir. URL = `https://www.tatilsitesi.com/<gotoid>`, `providerHotelId = code`. Liste sehir vermiyor (`city` bos).
+- Probe: "Merit Royal" -> 4 (Gardens MERITGARDENS `/merit-cyprus-gardens-holiday-village`, Premium MERITROYALPRM `/merit-royal-premium-hotel--`,
+  Diamond MERROYIMPHOTSPA, Royal MRTRYL); "Elexus" -> ELEHOTRESCAS `/elexus-hotel-resort-`; "Cratos Premium" -> CRATOSPREMIUM. ~0.6 sn.

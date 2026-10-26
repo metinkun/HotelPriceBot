@@ -82,3 +82,35 @@ probe mngturizm package <url> 2026-12-05 2026-12-08 2 SAW    -> 6 oda / 12 board
 - `{{PASIF}}` / `{{BITTARIH}}` gibi sablon artiklari yanitta kaliyor; parse etkilenmez.
 - Cloudflare kurali degisirse (Referer yetmez, cf_clearance ister) hibrit tarayiciya gecilmesi gerekir; su an gerekmiyor.
 - `data-total` sadece ucus fark tutaridir; iptal kosulu (`cancellation`) yanitta yok.
+
+## Statik detay (`GetDetails`) ve isimle arama (`SearchHotels`)
+
+### Detay — otel sayfasi HTML + galeri JSON
+
+- `GET <sourceUrl>` (tarayici header seti, referer gerekmez). Sayfa sunucu tarafli render; okunanlar:
+  `h1.title` (ad), `.bread a` (bolge > ilce: "Kıbrıs" > "Girne" -> `region`/`city`), `data-koords="lat, lng"` (konum),
+  `.otelpuan .point` (5 uzerinden puan -> x2, 10 uzerinden), baslik altindaki ilk `<p>` (aciklama),
+  `.one-cikan-ozellik span` (ozellik grubu "Tesis Özellikleri"), `.cyas` (cocuk: "0 - 11 Yaş Ücretsiz"),
+  `#otel-hakkinda .tour-content-box` (`<p><strong>Baslik</strong></p>` + p/ul bloklari -> `Sections`; "Ücretsiz/Ücretli Hizmetler"
+  listeleri ayrica ozellik grubu), `.hncText span+p` (SSS), `#otel-ekstra .kampanyadetay` ("Kampanya ve Fırsatlar" pairs; "İptal"
+  iceren kampanya -> `policies.cancellation`), `#otel-etkinlik .oteldetay-etkinlik` ("Etkinlikler" listesi).
+  Giris/cikis saati Tesis Bilgileri metninden regex ile ("Giriş saati 14:00", "çıkış saati ... 12:00"); evcil hayvan cumlesi `petPolicy`.
+- Galeri: `POST index.php?s=fotograflar` (form) `data=<#resim_value>&islem=liste` -> kategoriler `{kategori, toplam, id}`;
+  `islem=tumu` -> `{img:"/images/hotel/5729_t.jpg", kategori:1}`. **Referer sart** (XHR kurali). URL `https://www.mngturizm.com` + img,
+  caption = kategori adi. Galeri hata verirse sayfadaki `.galleryGrid img` (5 gorsel) yedek.
+- `rooms` bos: oda listesi yalnizca tarihli `otelprice` yanitinda (musaitlige bagli) var. Oda tipleri metin olarak
+  "Standart Oda / VIP Suite / Villa" bolumlerinde (Sections) geliyor. Pansiyon listesi de yok (`boards` bos).
+- Deterministik: sayfa ve galeri sirasi sabit; `fetchedAt` doldurulmaz (cagiran doldurur).
+
+Probe (2026-10-26, Acapulco): `images=63 facilities=3 (Tesis Özellikleri 12, Ücretsiz 8, Ücretli 13) rooms=0 faq=10 sections=15`,
+puan 9.6, konum 35.3303/33.4209, giris 14:00 / cikis 12:00; iki calistirma birebir ayni JSON. Sure ~1-3 sn.
+
+### Arama — ana sayfa autocomplete + hotelsearch yonlendirmesi
+
+- `GET searchjson.php?q=<metin>&il=1&ilce=1&otel=1&otelkat=1&semt=1` -> `[{label, category ("Otel"|"İl"|...), categoryid (sifreli)}]`.
+  Sadece `category == "Otel"` alinir; sonuc yoksa sorgu sondan kisaltilip tekrar denenir.
+- Her otel icin `GET index.php?s=hotelsearch&yasehir=<label>&aramaKategoriId=<categoryid>` -> 302 `Location: <slug>`; yonlendirme
+  takip edilir, son URL detay URL'i (`https://www.mngturizm.com/<slug>`), gelen sayfadan `#rezotelid` (providerHotelId) ve
+  `CD_Area` (city) okunur. En fazla 10 aday (her biri ~1 sn).
+- Probe: "Merit Royal" -> 4 otel (Diamond 14628 `/merit-royal-imperial-hotel`, Gardens 25892, Royal 13819, Premium 13820);
+  "Cratos Premium" -> 13799 `/cratos-premium-hotel-port-spa`; "Salamis Bay Conti" -> 13763 `/salamis-bay-conti-resort-hotel`.
