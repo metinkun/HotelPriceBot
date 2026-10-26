@@ -56,8 +56,22 @@ func TestScoreStrict(t *testing.T) {
 		{"ALTINKAYA HOLIDAY VILLAGE", "Altınkaya Tatil Köyü"},
 		{"ELEXUS HOTEL RESORT SPA CASINO", "Elexus Hotel Resort"},
 		{"GRAND PASHA KYRENIA HOTEL & CASINO & SPA", "Grand Pasha Kyrenia Hotel & Spa"},
+		{"MERYEM`S HOTEL", "Meryem's Otel"},
+		{"NOYANLAR HOLIDAYS HOMES", "Noyanlar Holiday Homes"},
+		{"PREMIUM INN BOUTIQUE HOTEL", "Premium Inn Hotel"},
+		{"NOVEL CENTRE POINT INN HOTEL", "Novel Centre Point Hotel"},
+		{"BELLA VIEW ART BOUTIQUE HOTEL", "Bella View Art Botique Hotel"},
+		{"GILLHAM VINEYARD HOTEL", "Gillham Vineyard Hotel - Adults Only"},
+		{"OLİVİA PALM HOTEL", "Olivia Palm Butik Hotel"},
+		{"MERIT ROYAL DIAMOND & SPA", "Merit Royal Diamond Hotel & Spa +14"},
 	}
 	reject := [][2]string{
+		{"DORANA RESİDANCE", "Dorana Hotel"},
+		{"ROYAL PALACE HOTEL", "Royal Alhambra Palace"},
+		{"ADA BEACH HOTEL", "Kleopatra Ada Beach Hotel"},
+		{"ADA BEACH HOTEL", "Bodrum Ada Suites Beach Hotel"},
+		{"BLUE SEA KARPAZ", "Protaras Blue Sea Apartment"},
+		{"EDELWEISS HOLIDAY RESIDENCE", "Hotel Edelweiss"},
 		{"MERIT ROYAL PREMIUM HOTEL & CASINO", "Merit Royal Hotel & Spa"},
 		{"OSCAR RESORT HOTEL & CASINO", "Oscar Park Hotel"},
 		{"LIFE HOTEL", "Life Point Hotel"},
@@ -85,13 +99,22 @@ func TestScoreStrict(t *testing.T) {
 	}
 }
 
+func TestCityConflict(t *testing.T) {
+	if !cityConflict("GRAND SAPPHIRE RESORT ISKELE", "Grand Sapphire City Hotel", "Gazimağusa") {
+		t.Error("Iskele vs Gazimagusa catisma bekleniyordu")
+	}
+	if cityConflict("GRAND SAPPHIRE RESORT ISKELE", "Grand Sapphire Resort", "Yeni İskele") || cityConflict("DORANA HOTEL", "Dorana Hotel", "Gazimağusa") || cityConflict("GRAND SAPPHIRE RESORT ISKELE", "Grand Sapphire Resort", "") {
+		t.Error("catisma beklenmiyordu")
+	}
+}
+
 func TestCityAllowed(t *testing.T) {
 	for _, c := range []string{"", "Girne", "Girne, Kıbrıs", "Lefkoşa", "Gazimagosa", "Kıbrıs Magosa", "Kyrenia, Kıbrıs", "Merkez", "Lower Kyrenia, Girne"} {
 		if !cityAllowed(c, "TRNC") {
 			t.Errorf("izin bekleniyordu: %q", c)
 		}
 	}
-	for _, c := range []string{"Muğla", "Alanya Merkez, Alanya", "Belek, Serik, Antalya, Türkiye", "Milano, İtalya", "Bodrum", "Göynük, Kemer, Antalya"} {
+	for _, c := range []string{"Muğla", "Alanya Merkez, Alanya", "Belek, Serik, Antalya, Türkiye", "Milano, İtalya", "Bodrum", "Göynük, Kemer, Antalya", "Turgutreis", "Kapparis, Paralimni", "Cenevre, İsviçre", "Çolaklı"} {
 		if cityAllowed(c, "TRNC") {
 			t.Errorf("red bekleniyordu: %q", c)
 		}

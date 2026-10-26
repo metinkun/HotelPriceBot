@@ -178,6 +178,9 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 						continue
 					}
 					sc := score(h.Name, c.Name)
+					if cityConflict(h.Name, c.Name, c.City) {
+						sc *= 0.7
+					}
 					key := normName(c.Name)
 					if sc > best.Score {
 						if key != normName(best.Name) {

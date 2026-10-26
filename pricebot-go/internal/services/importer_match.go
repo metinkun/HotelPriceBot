@@ -27,13 +27,13 @@ func stripDiacritics(s string) string {
 var genericWords = map[string]bool{
 	"hotel": true, "otel": true, "and": true, "the": true, "casino": true, "spa": true, "resort": true,
 	"convention": true, "group": true, "holiday": true, "village": true, "tatil": true, "koyu": true,
-	"kibris": true, "cyprus": true, "kktc": true, "wellness": true, "pansiyon": false,
+	"kibris": true, "cyprus": true, "kktc": true, "wellness": true, "merkez": true, "turkiye": false,
 }
 
 // Zayif kelimeler: ayirt edici gucu dusuk (eksik/fazla olmasi az ceza).
 var weakWords = map[string]bool{
 	"villa": true, "suite": true, "apart": true, "apartment": true, "residence": true, "residance": true,
-	"inn": true, "boutique": true, "butik": true, "deluxe": true, "luxury": true, "beach": false,
+	"inn": true, "boutique": true, "butik": true, "deluxe": true, "luxury": true, "beach": true, "adults": true, "only": true,
 }
 
 // Konum kelimeleri (KKTC): esanlamlilar tek bicime indirgenir; iki tarafta farkli konum varsa ayri otel.
@@ -43,15 +43,17 @@ var locationWords = map[string]string{
 	"iskele": "iskele", "bafra": "bafra", "lapta": "lapta", "alsancak": "alsancak", "karpaz": "karpaz", "dipkarpaz": "karpaz",
 	"esentepe": "esentepe", "catalkoy": "catalkoy", "karavas": "alsancak", "bogaz": "bogaz", "guzelyurt": "guzelyurt",
 	"lefke": "lefke", "tatlisu": "tatlisu", "kumyali": "kumyali", "yenierenkoy": "yenierenkoy", "karaoglanoglu": "karaoglanoglu",
-	"ozankoy": "ozankoy", "bellapais": "bellapais", "zeytinlik": "zeytinlik", "alagadi": "alagadi",
+	"ozankoy": "ozankoy", "bellapais": "bellapais", "zeytinlik": "zeytinlik", "alagadi": "alagadi", "salamis": "famagusta", "yeniiskele": "iskele", "longbeach": "iskele",
 }
 
-var synonyms = map[string]string{"otel": "hotel", "hotels": "hotel", "butik": "boutique", "villas": "villa", "suites": "suite", "apartments": "apartment", "gardens": "garden", "rocks": "rock"}
+var synonyms = map[string]string{"otel": "hotel", "hotels": "hotel", "holidays": "holiday", "homes": "home", "residances": "residence", "butik": "boutique", "villas": "villa", "suites": "suite", "apartments": "apartment", "gardens": "garden", "rocks": "rock"}
 
 // normWords kucuk harf, aksansiz, noktalama temiz kelimeler.
 func normWords(s string) []string {
 	s = strings.ToLower(s)
-	s = strings.NewReplacer("ı", "i", "ş", "s", "ğ", "g", "ç", "c", "ö", "o", "ü", "u", "İ", "i", "&", " and ", "`", "'", "’", "'", "'s ", " ").Replace(s)
+	s = strings.NewReplacer("`", "'", "’", "'", "‘", "'").Replace(s)
+	s = strings.NewReplacer("'s ", " ", "'s", " ").Replace(s + " ") // Meryem's -> Meryem
+	s = strings.NewReplacer("ı", "i", "ş", "s", "ğ", "g", "ç", "c", "ö", "o", "ü", "u", "İ", "i", "&", " and ").Replace(s)
 	s = stripDiacritics(s)
 	var b strings.Builder
 	for _, r := range s {
@@ -61,11 +63,15 @@ func normWords(s string) []string {
 			b.WriteRune(' ')
 		}
 	}
-	words := strings.Fields(b.String())
-	for i, w := range words {
+	words := []string{}
+	for _, w := range strings.Fields(b.String()) {
 		if syn, ok := synonyms[w]; ok {
-			words[i] = syn
+			w = syn
 		}
+		if len(w) == 1 && !unicode.IsDigit(rune(w[0])) { // "s", "a" gibi artiklar
+			continue
+		}
+		words = append(words, w)
 	}
 	return words
 }
@@ -148,16 +154,33 @@ func score(a, b string) float64 {
 	sa, sb := toSet(ta.strong), toSet(tb.strong)
 	wa, wb := toSet(ta.weak), toSet(tb.weak)
 	interS, missS := countIn(ta.strong, sb) // sorgunun guclu kelimeleri adayda var/yok
-	_, extraS := countIn(tb.strong, sa)     // adayin fazladan guclu kelimeleri
 	interW, missW := countIn(ta.weak, wb)
 	_, extraW := countIn(tb.weak, wa)
+	// Adayin fazladan guclu kelimeleri: sona eklenen (Cratos Premium ... Port) hafif,
+	// basa/araya giren (Royal ALHAMBRA Palace, KLEOPATRA Ada Beach) agir ceza.
+	lastMatch := -1
+	for i, w := range tb.strong {
+		if sa[w] {
+			lastMatch = i
+		}
+	}
+	extraS, insertS := 0, 0
+	for i, w := range tb.strong {
+		if !sa[w] {
+			if i < lastMatch {
+				insertS++
+			} else {
+				extraS++
+			}
+		}
+	}
 	inter := float64(interS) + 0.5*float64(interW)
 	if inter == 0 {
 		return 0
 	}
-	denom := inter + 1.5*float64(missS) + 0.5*float64(missW) + 0.5*float64(extraS) + 0.25*float64(extraW)
+	denom := inter + 1.5*float64(missS) + 1.0*float64(missW) + 0.5*float64(extraS) + 1.5*float64(insertS) + 0.25*float64(extraW)
 	sc := inter / denom
-	if len(ta.strong) == 1 && extraS > 0 && sc > 0.5 {
+	if len(ta.strong) == 1 && extraS+insertS > 0 && sc > 0.5 {
 		sc = 0.5
 	}
 	if sc > 1 {
@@ -172,7 +195,8 @@ var nonTRNCMarkers = []string{"turkiye", "antalya", "alanya", "mugla", "marmaris
 	"avsa", "marmara", "eskisehir", "odunpazari", "cankaya", "azerbaycan", "italya", "yunanistan", "larnaka", "avsallar", "beldibi",
 	"kundu", "davutlar", "sigacik", "altinkum", "geyikli", "ezine", "buca", "atasehir", "karaman", "gence", "milano", "tasos",
 	"goynuk", "sisli", "mersin", "adana", "bursa", "sakarya", "trabzon", "rize", "nevsehir", "kapadokya", "denizli", "pamukkale",
-	"afyon", "yalova", "kirklareli", "edirne", "tekirdag", "sapanca", "bolu", "abant", "kartepe", "uludag", "erzurum", "kayseri"}
+	"afyon", "yalova", "kirklareli", "edirne", "tekirdag", "sapanca", "bolu", "abant", "kartepe", "uludag", "erzurum", "kayseri",
+	"turgutreis", "colakli", "manavgat", "cesme", "konya", "cenevre", "isvicre", "protaras", "paralimni", "kapparis", "ayia", "agia", "napa", "limasol", "limassol", "baf", "pafos", "paphos", "yunan", "rodos", "girit"}
 
 // cityAllowed aday sehri, otelin ulkesiyle uyumlu mu? Ulke verilmemisse veya sehir bossa filtre yok.
 func cityAllowed(city, country string) bool {
@@ -194,4 +218,28 @@ func cityAllowed(city, country string) bool {
 		}
 	}
 	return true // bilinmeyen sehir: engelleme
+}
+
+// cityConflict otel adinda konum var (Grand Sapphire Resort ISKELE) ama aday adinda yok ve acentenin sehir alani
+// baska bir KKTC konumu gosteriyorsa (Gazimagusa) -> muhtemelen farkli otel; skor cezasi uygulanir.
+func cityConflict(query, candName, candCity string) bool {
+	tq, tc := tokenize(query), tokenize(candName)
+	if len(tq.loc) == 0 || len(tc.loc) > 0 || candCity == "" {
+		return false
+	}
+	cityLoc := map[string]bool{}
+	for _, w := range normWords(candCity) {
+		if l := locationWords[w]; l != "" {
+			cityLoc[l] = true
+		}
+	}
+	if len(cityLoc) == 0 {
+		return false
+	}
+	for l := range tq.loc {
+		if cityLoc[l] {
+			return false
+		}
+	}
+	return true
 }
