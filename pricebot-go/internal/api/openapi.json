@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Hotel Price Bot API",
-    "version": "2.1.0",
-    "description": "Birlesik cok-saglayicili otel fiyat botu (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
+    "version": "2.2.0",
+    "description": "Birlesik cok-saglayicili otel fiyat botu (13 site: etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, tatilsitesi, prontotour, tatilcikus, tatildukkani).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
   },
   "servers": [
     {
@@ -3696,6 +3696,667 @@
           }
         }
       }
+    },
+    "/api/portal/hotels/{id}/details": {
+      "get": {
+        "tags": [
+          "Portal - Otel Detayi & Bildirim"
+        ],
+        "summary": "Otel statik detayi (ozet veya acente gorunumu)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detay gorunumu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "fetchedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "changedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
+                    },
+                    "highlightPaths": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Son degisiklikte degisen alan yollari (orn. images[0], facilities.Genel[3], rooms.Deluxe.size). Sadece degisiklik sonrasi ILK goruntulemede dolu."
+                    },
+                    "lastChange": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "provider parametresiz: otelin acenteleri, cekilme/degisiklik durumu (unseenChange) ve son 20 degisiklik. provider ile: o acentenin tam detayi; degisiklik sonrasi ilk goruntulemede highlightPaths dolu gelir, sonraki goruntulemelerde bos. Sadece hesabiniz icin etkin siteler.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verilirse o acentenin tam detay gorunumu (ilk goruntulemede highlightPaths dolu gelir ve goruldu isaretlenir). Verilmezse ozet: acente listesi + son degisiklikler."
+          },
+          {
+            "name": "peek",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "true ise goruldu isaretlenmez (vurgu bir sonraki goruntulemede de kalir)."
+          }
+        ]
+      }
+    },
+    "/api/portal/hotels/{id}/details/refresh": {
+      "post": {
+        "tags": [
+          "Portal - Otel Detayi & Bildirim"
+        ],
+        "summary": "Detayi simdi yenile (acente veya tum acenteler)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{provider, version, changed, fetchedAt} veya {refreshed, errors}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verilirse sadece o acente yenilenir; verilmezse otelin tum acenteleri."
+          }
+        ]
+      }
+    },
+    "/api/portal/notifications": {
+      "get": {
+        "tags": [
+          "Portal - Otel Detayi & Bildirim"
+        ],
+        "summary": "Bildirimlerim (detay degisiklikleri)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bildirimler",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unread": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "hotelId": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "readAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "unread",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "true: sadece okunmamislar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ]
+      }
+    },
+    "/api/portal/notifications/read": {
+      "post": {
+        "tags": [
+          "Portal - Otel Detayi & Bildirim"
+        ],
+        "summary": "Bildirimleri okundu isaretle",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ok, unread}"
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Bos/verilmezse tumu okundu isaretlenir"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/{id}/details": {
+      "get": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Otel statik detayi (ozet veya acente gorunumu)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detay gorunumu",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "fetchedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "changedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "description": "Ortak sema: name, description, images[], facilities{grup:[...]}, rooms[], boards[], policies{}, faq[], sections[] (acentenin kendi gorunumu)"
+                    },
+                    "highlightPaths": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Son degisiklikte degisen alan yollari (orn. images[0], facilities.Genel[3], rooms.Deluxe.size). Sadece degisiklik sonrasi ILK goruntulemede dolu."
+                    },
+                    "lastChange": {
+                      "type": "object",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Portal ile ayni sema; tum acenteler gorulebilir.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verilirse o acentenin tam detay gorunumu (ilk goruntulemede highlightPaths dolu gelir ve goruldu isaretlenir). Verilmezse ozet: acente listesi + son degisiklikler."
+          },
+          {
+            "name": "peek",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "true ise goruldu isaretlenmez (vurgu bir sonraki goruntulemede de kalir)."
+          }
+        ]
+      }
+    },
+    "/api/admin/hotels/{id}/details/refresh": {
+      "post": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Detayi simdi yenile",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Verilirse sadece o acente yenilenir; verilmezse otelin tum acenteleri."
+          }
+        ]
+      }
+    },
+    "/api/admin/details/changes": {
+      "get": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Tum otellerdeki son detay degisiklikleri + son gunluk kontrol raporu",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{items[], lastRun{}, supported[]}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/details/run": {
+      "post": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Gunluk statik detay kontrolunu simdi calistir (arka plan)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Baslatildi"
+          }
+        },
+        "description": "Normalde her gun DETAILS_RUN_HOUR (varsayilan 04:00) saatinde calisir. Degisen acenteler icin admin + otelin sahibi musterilere bildirim uretir."
+      }
+    },
+    "/api/admin/notifications": {
+      "get": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Admin bildirimleri",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bildirimler",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unread": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "hotelId": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "readAt": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "unread",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "true: sadece okunmamislar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/notifications/read": {
+      "post": {
+        "tags": [
+          "Admin - Otel Detayi & Bildirim"
+        ],
+        "summary": "Bildirimleri okundu isaretle",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Bos/verilmezse tumu okundu isaretlenir"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/import": {
+      "post": {
+        "tags": [
+          "Admin - Toplu Otel Ekle"
+        ],
+        "summary": "Isim listesinden toplu otel ekle (asenkron)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "{importId, status, total, providers, statusUrl}"
+          }
+        },
+        "description": "Her otel adi, isimle arama destekleyen acentelerde aranir; normalize edilmis isim benzerligi (Jaccard + onek bonusu) minScore ustundeyse eslesir. Ikinci en iyi aday 0.1 icinde ise 'ambiguous' isaretlenir ve apply modunda atlanir. 202 ile importId doner; durum GET /api/admin/imports/{id}.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "hotels"
+                ],
+                "properties": {
+                  "hotels": {
+                    "type": "array",
+                    "maxItems": 200,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "externalId": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "example": [
+                      {
+                        "externalId": "1001",
+                        "name": "ACAPULCO RESORT CONVENTION SPA"
+                      }
+                    ]
+                  },
+                  "providers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Bos: destekleyen tum acenteler"
+                  },
+                  "minScore": {
+                    "type": "number",
+                    "default": 0.6
+                  },
+                  "apply": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "false: sadece rapor (deneme). true: eslesenleri otel + eslestirme olarak kaydet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/import/providers": {
+      "get": {
+        "tags": [
+          "Admin - Toplu Otel Ekle"
+        ],
+        "summary": "Isimle arama destekleyen acenteler",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/import/trnc": {
+      "get": {
+        "tags": [
+          "Admin - Toplu Otel Ekle"
+        ],
+        "summary": "Ornek liste: KKTC 78 otel (HotelList-Test-TRNC.xlsx)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/imports/{id}": {
+      "get": {
+        "tags": [
+          "Admin - Toplu Otel Ekle"
+        ],
+        "summary": "Toplu ekleme durumu / raporu",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{id, status: running|done, done, total, duration, apply, providers[], results[{externalId, name, hotelId?, matches[{provider, name, url, score, ambiguous}], errors[]}]}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
     }
   },
   "tags": [
@@ -3731,6 +4392,18 @@
     },
     {
       "name": "Admin - Otel Eslestirme"
+    },
+    {
+      "name": "Portal - Otel Detayi & Bildirim",
+      "description": "Acente bazli statik otel detayi (gorsel, ozellik, oda, politika, SSS), gunluk degisiklik kontrolu ve bildirimler."
+    },
+    {
+      "name": "Admin - Otel Detayi & Bildirim",
+      "description": "Statik detay goruntuleme/yenileme, degisiklik gecmisi, gunluk kontrolu tetikleme, admin bildirimleri."
+    },
+    {
+      "name": "Admin - Toplu Otel Ekle",
+      "description": "Isim listesinden acentelerde arama ile toplu otel ekleme (asenkron, importId ile takip)."
     }
   ]
 }

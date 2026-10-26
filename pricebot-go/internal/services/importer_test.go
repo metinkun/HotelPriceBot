@@ -39,3 +39,64 @@ func TestScore(t *testing.T) {
 		t.Errorf("Turkce karakter farki skoru dusurmemeli: %v", s)
 	}
 }
+
+func TestScoreStrict(t *testing.T) {
+	accept := [][2]string{
+		{"MERIT ROYAL PREMIUM HOTEL & CASINO", "Merit Royal Premium Hotel & Spa"},
+		{"DORANA HOTEL", "Dorana Hotel Girne"},
+		{"ROCKS HOTEL & CASINO", "Rocks Hotel"},
+		{"DOME HOTEL & CASINO", "Dome Hotel"},
+		{"CRATOS PREMIUM HOTEL & CASINO & SPA", "Cratos Premium Hotel & Port & Spa"},
+		{"THE COLONY ARKIN GROUP HOTEL & CASINO", "The Arkın Colony Hotel"},
+		{"UPTOWN BUYUK ANADOLU GIRNE HOTEL", "Uptown Büyük Anadolu Hotel Girne"},
+		{"PARK PALACE HOTEL KYRENIA", "Hotel Park Palace"},
+		{"GRAND CENTER BOUTIQUE HOTEL", "Grand Center Butik Hotel"},
+		{"MOUNTAIN VIEW HOTEL & VILLAS", "Mountain View Hotel"},
+		{"ACAPULCO RESORT CONVENTION SPA", "Acapulco Resort Hotel"},
+		{"ALTINKAYA HOLIDAY VILLAGE", "Altınkaya Tatil Köyü"},
+		{"ELEXUS HOTEL RESORT SPA CASINO", "Elexus Hotel Resort"},
+		{"GRAND PASHA KYRENIA HOTEL & CASINO & SPA", "Grand Pasha Kyrenia Hotel & Spa"},
+	}
+	reject := [][2]string{
+		{"MERIT ROYAL PREMIUM HOTEL & CASINO", "Merit Royal Hotel & Spa"},
+		{"OSCAR RESORT HOTEL & CASINO", "Oscar Park Hotel"},
+		{"LIFE HOTEL", "Life Point Hotel"},
+		{"LIFE HOTEL", "Ak Life Hotel Suite"},
+		{"ADA BEACH HOTEL", "Ada Life Otel"},
+		{"GRAND PASHA KYRENIA HOTEL & CASINO & SPA", "Grand Pasha Lefkoşa Hotel & Spa"},
+		{"DENIZKIZI ROYAL HOTEL", "Denizkızı Hotel"},
+		{"DENIZKIZI HOTEL", "Denizkızı Sevilay Pansiyon"},
+		{"DENIZKIZI HOTEL", "Denizkızı Royal Hotel"},
+		{"SEA LIFE LONG BEACH HOTEL", "Sea Life Family Resort Hotel"},
+		{"SEA LIFE LONG BEACH HOTEL", "Life Hotel"},
+		{"DEL MARE PARK", "Holiday Park Resort"},
+		{"BELLA VIEW ART BOUTIQUE HOTEL", "Bella Hotel"},
+		{"PORT VIEW HOTEL", "Cratos Premium Hotel & Port & Spa"},
+	}
+	for _, c := range accept {
+		if s := score(c[0], c[1]); s < 0.6 {
+			t.Errorf("kabul bekleniyordu %q ~ %q: %.2f", c[0], c[1], s)
+		}
+	}
+	for _, c := range reject {
+		if s := score(c[0], c[1]); s >= 0.6 {
+			t.Errorf("red bekleniyordu %q ~ %q: %.2f", c[0], c[1], s)
+		}
+	}
+}
+
+func TestCityAllowed(t *testing.T) {
+	for _, c := range []string{"", "Girne", "Girne, Kıbrıs", "Lefkoşa", "Gazimagosa", "Kıbrıs Magosa", "Kyrenia, Kıbrıs", "Merkez", "Lower Kyrenia, Girne"} {
+		if !cityAllowed(c, "TRNC") {
+			t.Errorf("izin bekleniyordu: %q", c)
+		}
+	}
+	for _, c := range []string{"Muğla", "Alanya Merkez, Alanya", "Belek, Serik, Antalya, Türkiye", "Milano, İtalya", "Bodrum", "Göynük, Kemer, Antalya"} {
+		if cityAllowed(c, "TRNC") {
+			t.Errorf("red bekleniyordu: %q", c)
+		}
+		if !cityAllowed(c, "") {
+			t.Errorf("ulke yoksa filtre olmamali: %q", c)
+		}
+	}
+}

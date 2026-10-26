@@ -6,13 +6,14 @@ export default function Import() {
   const [providers, setProviders] = useState([]);
   const [text, setText] = useState("");
   const [minScore, setMinScore] = useState(0.6);
+  const [country, setCountry] = useState("");
   const [sel, setSel] = useState([]);
   const [rep, setRep] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   useEffect(() => { api("/api/admin/hotels/import/providers").then((d) => { setProviders(d.providers); setSel(d.providers); }).catch((e) => setErr(e.message)); }, []);
-  const loadTRNC = async () => { try { const d = await api("/api/admin/hotels/import/trnc"); setText(d.map((h) => `${h.externalId}\t${h.name}`).join("\n")); } catch (e) { setErr(e.message); } };
-  const parse = () => text.split("\n").map((l) => l.trim()).filter(Boolean).map((l, i) => { const m = l.match(/^(\d+)\s*[\t;,]\s*(.+)$/); return m ? { externalId: Number(m[1]), name: m[2].trim() } : { externalId: i + 1, name: l }; });
+  const loadTRNC = async () => { try { const d = await api("/api/admin/hotels/import/trnc"); setText(d.map((h) => `${h.externalId}\t${h.name}`).join("\n")); setCountry("TRNC"); } catch (e) { setErr(e.message); } };
+  const parse = () => text.split("\n").map((l) => l.trim()).filter(Boolean).map((l, i) => { const m = l.match(/^(\d+)\s*[\t;,]\s*(.+)$/); const h = m ? { externalId: Number(m[1]), name: m[2].trim() } : { externalId: i + 1, name: l }; if (country.trim()) h.country = country.trim(); return h; });
   const run = async (apply) => {
     setBusy(true); setErr(""); setRep(null);
     try {
@@ -33,6 +34,7 @@ export default function Import() {
       <div className="card">
         <p className="muted">Her satır bir otel: <code>ID[tab]Otel adı</code> veya sadece ad. Sistem her acentede isimle arar, en iyi eşleşmeyi puanlar. Önce "Sadece ara" ile raporu inceleyin, sonra "Ara ve ekle".</p>
         <div className="row"><button className="btn secondary" onClick={loadTRNC}>KKTC listesini yükle (78 otel)</button>
+          <div><label>Ülke (opsiyonel)</label><input value={country} onChange={(e) => setCountry(e.target.value)} placeholder="TRNC" title="TRNC/KKTC girilirse Türkiye ve yurt dışı şehirlerindeki adaylar elenir" style={{ width: 90 }} /></div>
           <div><label>Eşik (0-1)</label><input type="number" step="0.05" min="0.3" max="1" value={minScore} onChange={(e) => setMinScore(e.target.value)} style={{ width: 90 }} /></div></div>
         <textarea value={text} onChange={(e) => setText(e.target.value)} rows={10} style={{ width: "100%", marginTop: 10, fontFamily: "monospace" }} placeholder={"3234\tACAPULCO RESORT HOTEL\n5\tMERIT CRYSTAL COVE HOTEL & CASINO"} />
         <div style={{ marginTop: 8 }}><label>Aranacak acenteler ({sel.length}/{providers.length})</label><div className="row">{providers.map((p) => <label key={p}><input type="checkbox" checked={sel.includes(p)} onChange={() => toggle(p)} /> {p}</label>)}</div>{providers.length === 0 && <span className="muted">Henüz isimle arama destekleyen acente yok.</span>}</div>

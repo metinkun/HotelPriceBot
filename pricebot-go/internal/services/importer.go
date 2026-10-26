@@ -9,8 +9,6 @@ import (
 	"time"
 	"unicode"
 
-	"golang.org/x/text/unicode/norm"
-
 	"pricebot/internal/provider"
 	"pricebot/internal/providers"
 )
@@ -54,82 +52,6 @@ type ImportReport struct {
 	Results   []ImportResult `json:"results"`
 	Duration  string         `json:"duration"`
 	StartedAt time.Time      `json:"startedAt"`
-}
-
-// stripDiacritics aksanlari atar (NFD ayristirma + Mn isaretlerini silme). x/text transform.Chain bazi
-// girdilerde "slice bounds out of range" panigi uretiyor; bu yuzden elle yapilir.
-func stripDiacritics(s string) string {
-	d := norm.NFD.String(s)
-	var b strings.Builder
-	b.Grow(len(d))
-	for _, r := range d {
-		if !unicode.Is(unicode.Mn, r) {
-			b.WriteRune(r)
-		}
-	}
-	return norm.NFC.String(b.String())
-}
-
-// normName Turkce karakter/noktalama/kucuk-buyuk farklarini ve gurultu kelimeleri atar.
-func normName(s string) string {
-	s = strings.ToLower(s)
-	s = strings.NewReplacer("ı", "i", "ş", "s", "ğ", "g", "ç", "c", "ö", "o", "ü", "u", "İ", "i", "&", " and ", "`", "'", "’", "'").Replace(s)
-	s = stripDiacritics(s)
-	var b strings.Builder
-	for _, r := range s {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == ' ' {
-			b.WriteRune(r)
-		} else {
-			b.WriteRune(' ')
-		}
-	}
-	words := strings.Fields(b.String())
-	noise := map[string]bool{"hotel": true, "otel": true, "and": true, "the": true, "casino": true, "spa": true, "resort": true, "convention": true, "boutique": true, "butik": true, "deluxe": true, "premium": true, "luxury": true, "holiday": true, "village": true, "tatil": true, "koyu": true, "koyü": true, "hotels": true, "group": true, "cyprus": true, "kibris": true, "kyrenia": true, "girne": true, "lefkosa": true, "nicosia": true, "beach": true, "city": true, "residence": true, "residance": true, "inn": true, "suites": true, "suite": true}
-	out := []string{}
-	for _, w := range words {
-		if !noise[w] {
-			out = append(out, w)
-		}
-	}
-	if len(out) == 0 {
-		return strings.Join(words, " ")
-	}
-	return strings.Join(out, " ")
-}
-
-// score iki otel adinin benzerligi (0..1): kelime kesisimi (Jaccard) + on ek bonusu.
-func score(a, b string) float64 {
-	na, nb := normName(a), normName(b)
-	if na == "" || nb == "" {
-		return 0
-	}
-	if na == nb {
-		return 1
-	}
-	wa, wb := strings.Fields(na), strings.Fields(nb)
-	set := map[string]bool{}
-	for _, w := range wa {
-		set[w] = true
-	}
-	inter := 0
-	for _, w := range wb {
-		if set[w] {
-			inter++
-		}
-	}
-	union := len(wa) + len(wb) - inter
-	if union == 0 {
-		return 0
-	}
-	j := float64(inter) / float64(union)
-	// Tum sorgu kelimeleri adayda geciyorsa (aday daha uzun olsa da) guclu eslesme
-	if inter == len(wa) || inter == len(wb) {
-		j = (j + 1) / 2
-	}
-	if strings.HasPrefix(nb, na) || strings.HasPrefix(na, nb) {
-		j = (j + 1) / 2
-	}
-	return j
 }
 
 // Importer isim listesinden acente URL'leri bulur ve istenirse otelleri olusturur.
@@ -249,17 +171,32 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 				if len(cands) == 0 {
 					return
 				}
-				best, second := ImportMatch{}, 0.0
+				best, second, secondKey, rejected := ImportMatch{}, 0.0, "", 0
 				for _, c := range cands {
+					if !cityAllowed(c.City, h.Country) {
+						rejected++
+						continue
+					}
 					sc := score(h.Name, c.Name)
+					key := normName(c.Name)
 					if sc > best.Score {
-						second = best.Score
+						if key != normName(best.Name) {
+							second, secondKey = best.Score, normName(best.Name)
+						}
 						best = ImportMatch{Provider: pn, Name: c.Name, URL: c.URL, City: c.City, Score: sc, Candidates: len(cands)}
-					} else if sc > second {
-						second = sc
+					} else if sc > second && key != normName(best.Name) {
+						second, secondKey = sc, key
 					}
 				}
-				best.Ambiguous = best.Score > 0 && second > 0 && best.Score-second < 0.1 && second >= minScore
+				_ = secondKey
+				if best.URL == "" {
+					if rejected > 0 {
+						res.Errors = append(res.Errors, fmt.Sprintf("%s: %d aday baska bolgede (sehir filtresi)", pn, rejected))
+					}
+					return
+				}
+				// Belirsiz: farkli adli ikinci aday en iyiye cok yakin (ve esik ustu)
+				best.Ambiguous = best.Score < 1 && second > 0 && best.Score-second < 0.1 && second >= minScore
 				if best.Score >= minScore {
 					res.Matches = append(res.Matches, best)
 				} else if best.URL != "" {
