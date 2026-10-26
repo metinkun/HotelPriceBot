@@ -218,11 +218,16 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 				}
 			}
 			if len(urls) > 0 {
-				name := h.Name
+				name := displayName(h.Name)
 				if hotelName != nil {
 					name = hotelName(h)
 				}
-				out, err := im.hotels.AddFromURLs(ctx, AddHotelInput{URLs: urls, HotelName: name})
+				// Excel kimligi varsa kalici, izlenebilir otel ID'si (tekrar calistirmada ayni otel guncellenir)
+				internalID := ""
+				if h.ExternalID > 0 {
+					internalID = fmt.Sprintf("ext_%d", h.ExternalID)
+				}
+				out, err := im.hotels.AddFromURLs(ctx, AddHotelInput{URLs: urls, HotelName: name, InternalHotelID: internalID})
 				if err != nil {
 					res.Errors = append(res.Errors, "ekleme: "+err.Error())
 				} else {
@@ -243,6 +248,34 @@ func (im *Importer) Run(ctx context.Context, hotels []ImportHotel, providerNames
 	rep.Duration = time.Since(start).Round(time.Second).String()
 	im.mu.Unlock()
 	return rep
+}
+
+// displayName BUYUK HARFLI listeden okunabilir ad: "MERIT CRYSTAL COVE HOTEL & CASINO" -> "Merit Crystal Cove Hotel & Casino".
+func displayName(name string) string {
+	name = strings.Join(strings.Fields(strings.ReplaceAll(name, "`", "'")), " ")
+	if strings.ToUpper(name) != name {
+		return name // zaten karisik harf
+	}
+	words := strings.Fields(strings.ToLower(strings.NewReplacer("I", "ı", "İ", "i").Replace(name)))
+	for i, w := range words {
+		r := []rune(w)
+		if len(r) == 0 {
+			continue
+		}
+		if r[0] == 'ı' {
+			r[0] = 'I'
+		} else if r[0] == 'i' {
+			r[0] = 'İ'
+		} else {
+			r[0] = unicode.ToUpper(r[0])
+		}
+		// Ingilizce kelimelerde noktasiz i yanlis olur: ingilizce/ortak kelimelerde i'ye cevir
+		words[i] = strings.NewReplacer("ı", "i").Replace(string(r))
+		if r[0] == 'I' && len(r) > 1 {
+			words[i] = "I" + strings.NewReplacer("ı", "i").Replace(string(r[1:]))
+		}
+	}
+	return strings.Join(words, " ")
 }
 
 // searchQuery arama kutusuna yazilacak sorgu: baslik bicimli, "&" sade.

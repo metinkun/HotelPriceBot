@@ -123,3 +123,17 @@ func TestCityAllowed(t *testing.T) {
 		}
 	}
 }
+
+func TestDisplayName(t *testing.T) {
+	cases := map[string]string{
+		"MERIT CRYSTAL COVE HOTEL & CASINO": "Merit Crystal Cove Hotel & Casino",
+		"MERYEM`S HOTEL":                    "Meryem's Hotel",
+		"Dorana Hotel":                      "Dorana Hotel",
+		"THE ARKIN ISKELE HOTEL & CASINO":   "The Arkin Iskele Hotel & Casino",
+	}
+	for in, want := range cases {
+		if got := displayName(in); got != want {
+			t.Errorf("displayName(%q) = %q, bekleniyordu %q", in, got, want)
+		}
+	}
+}
