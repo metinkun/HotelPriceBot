@@ -19,6 +19,7 @@ import (
 	"pricebot/internal/canary"
 	"pricebot/internal/config"
 	"pricebot/internal/db"
+	"pricebot/internal/details"
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
 	"pricebot/internal/providers"
@@ -78,7 +79,11 @@ func main() {
 	jm := jobs.New(rc, priceSvc, pkgSvc, cfg.JobResultTTL, cfg.JobMaxQueued, 16)
 	defer jm.Stop()
 
-	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage})
+	det := details.New(database, reg, lim, cfg.DetailsRunHour) // otel statik verisi: gunluk degisiklik kontrolu
+	det.Start()
+	defer det.Stop()
+
+	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage, Details: det})
 	apiSrv.Portal().Start() // yarim aramalari kapat + planli arama zamanlayicisi
 	defer apiSrv.Portal().Stop()
 

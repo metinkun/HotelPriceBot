@@ -14,6 +14,7 @@ import (
 	"pricebot/internal/canary"
 	"pricebot/internal/config"
 	"pricebot/internal/db"
+	"pricebot/internal/details"
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
 	"pricebot/internal/portal"
@@ -29,33 +30,41 @@ type Deps struct {
 	Canary  *canary.Canary
 	Jobs    *jobs.Manager
 	Usage   *services.Usage
+	Details *details.Service
 }
 
 type Server struct {
-	cfg       *config.Config
-	db        *db.DB
-	reg       *providers.Registry
-	deps      Deps
-	hotels    *services.HotelService
-	prices    *services.PriceService
-	packages  *services.PackageService
-	usage     *services.Usage
-	portalSvc *portal.Service
-	started   time.Time
+	cfg        *config.Config
+	db         *db.DB
+	reg        *providers.Registry
+	deps       Deps
+	hotels     *services.HotelService
+	prices     *services.PriceService
+	packages   *services.PackageService
+	usage      *services.Usage
+	portalSvc  *portal.Service
+	detailsSvc *details.Service
+	importer   *services.Importer
+	started    time.Time
 }
 
 func New(cfg *config.Config, d *db.DB, reg *providers.Registry, deps Deps) *Server {
 	hotels := services.NewHotelService(d, reg)
 	return &Server{
 		cfg: cfg, db: d, reg: reg, deps: deps,
-		hotels:    hotels,
-		prices:    services.NewPriceService(d, reg, deps.Fetcher),
-		packages:  services.NewPackageService(d, reg, deps.Fetcher),
-		usage:     deps.Usage,
-		portalSvc: portal.New(d, deps.Jobs, reg, hotels),
-		started:   time.Now(),
+		hotels:     hotels,
+		prices:     services.NewPriceService(d, reg, deps.Fetcher),
+		packages:   services.NewPackageService(d, reg, deps.Fetcher),
+		usage:      deps.Usage,
+		portalSvc:  portal.New(d, deps.Jobs, reg, hotels),
+		detailsSvc: deps.Details,
+		importer:   services.NewImporter(reg, hotels),
+		started:    time.Now(),
 	}
 }
+
+// contextWithoutCancel istegin iptalinden bagimsiz arka plan context'i (kimlik korunur).
+func contextWithoutCancel(r *http.Request) context.Context { return context.WithoutCancel(r.Context()) }
 
 // Portal portal servisi (main lifecycle: Start/Stop).
 func (s *Server) Portal() *portal.Service { return s.portalSvc }
@@ -147,6 +156,21 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("PUT /api/portal/schedules/{id}", s.portal(s.portalUpdateSchedule))
 	mux.Handle("DELETE /api/portal/schedules/{id}", s.portal(s.portalDeleteSchedule))
 	mux.Handle("POST /api/portal/schedules/{id}/run", s.portal(s.portalRunSchedule))
+	// Portal - otel statik detayi ve bildirimler
+	mux.Handle("GET /api/portal/hotels/{id}/details", s.portal(s.portalHotelDetails))
+	mux.Handle("POST /api/portal/hotels/{id}/details/refresh", s.portal(s.portalHotelDetailsRefresh))
+	mux.Handle("GET /api/portal/notifications", s.portal(s.portalNotifications))
+	mux.Handle("POST /api/portal/notifications/read", s.portal(s.portalNotificationsRead))
+
+	// Admin - otel statik detayi, degisiklikler, bildirimler, toplu ice aktarma
+	mux.Handle("GET /api/admin/hotels/{id}/details", s.admin(s.adminHotelDetails))
+	mux.Handle("POST /api/admin/hotels/{id}/details/refresh", s.admin(s.adminHotelDetailsRefresh))
+	mux.Handle("GET /api/admin/details/changes", s.admin(s.adminDetailChanges))
+	mux.Handle("POST /api/admin/details/run", s.admin(s.adminDetailRunAll))
+	mux.Handle("GET /api/admin/notifications", s.admin(s.adminNotifications))
+	mux.Handle("POST /api/admin/notifications/read", s.admin(s.adminNotificationsRead))
+	mux.Handle("POST /api/admin/hotels/import", s.admin(s.adminImportHotels))
+	mux.Handle("GET /api/admin/hotels/import/providers", s.admin(s.adminImportProviders))
 
 	// Admin paneli ve portal (SPA)
 	s.mountAdminUI(mux)

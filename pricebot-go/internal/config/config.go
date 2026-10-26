@@ -50,6 +50,7 @@ type Config struct {
 	JobResultTTL time.Duration
 	JobMaxQueued int
 
+	DetailsRunHour   int    // otel statik detayi gunluk kontrol saati (Istanbul)
 	RequireAPIKey    bool   // musteri uclari API anahtari ister (prod'da true)
 	JWTSecret        string // admin oturumu imzasi
 	AdminEmail       string // ilk admin (bootstrap)
@@ -152,6 +153,7 @@ func Load() *Config {
 		JobResultTTL: time.Duration(envInt("JOB_RESULT_TTL_SECONDS", 3600)) * time.Second,
 		JobMaxQueued: envInt("JOB_MAX_QUEUED", 200),
 
+		DetailsRunHour:   envInt("DETAILS_RUN_HOUR", 4),
 		RequireAPIKey:    envBool("REQUIRE_API_KEY", envName == "production"),
 		JWTSecret:        env("JWT_SECRET", ""),
 		AdminEmail:       env("ADMIN_EMAIL", ""),
