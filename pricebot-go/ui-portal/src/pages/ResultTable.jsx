@@ -1,7 +1,7 @@
 import React from "react";
 import { fmtTL } from "../api.js";
 
-// Satir = otel, sutun = site. Fiyat aramasinda lead fiyat; pakette en ucuz oda/pansiyon.
+// Satir = otel, sutun = site. Fiyat aramasinda lead fiyat; pakette en ucuz oda/pansiyon. Matris oldugu icin DataTable degil.
 export default function ResultTable({ result, providers, kind }) {
   const label = (n) => (providers.find((p) => p.name === n) || {}).label || n;
   const cols = [];
@@ -23,23 +23,33 @@ export default function ResultTable({ result, providers, kind }) {
     if (!r.found || !p?.available || p.price == null) return { text: "müsait değil" };
     return { text: fmtTL(p.price), sub: (p.boardType || "") + (p.listPrice && p.listPrice > p.price ? ` · liste ${fmtTL(p.listPrice)} (%${p.discountRate})` : ""), val: p.price, cached: r.cached };
   };
+  const hotels = result.hotels || [];
+  if (hotels.length === 0) return <div className="muted" style={{ padding: 12 }}>Sonuç yok.</div>;
 
   return (
-    <table>
-      <thead><tr><th>Otel</th>{cols.map((c) => <th key={c}>{label(c)}</th>)}</tr></thead>
-      <tbody>
-        {(result.hotels || []).map((h) => {
-          const cells = cols.map((c) => cell(h, c));
-          const vals = cells.map((c) => c.val).filter((v) => v != null);
-          const best = vals.length ? Math.min(...vals) : null;
-          return (
-            <tr key={h.hotelId}>
-              <td><b>{h.hotelName || h.hotelId}</b><div className="muted" style={{ fontSize: 12 }}>{h.status === "done" ? "tamam" : h.status === "failed" ? "hata: " + (h.error || "") : "sorgulanıyor…"}</div></td>
-              {cells.map((c, i) => <td key={i} className={"price-cell " + (c.val != null && c.val === best ? "best" : "")} title={c.title || c.note || ""}>{c.text}{c.sub && <small>{c.sub}</small>}{c.cached && <small>önbellek</small>}</td>)}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="sr-table-wrap">
+      <div className="sr-table-scroll">
+        <table className="sr-table">
+          <thead><tr><th style={{ minWidth: 200 }}>Otel</th>{cols.map((c) => <th key={c} className="num">{label(c)}</th>)}</tr></thead>
+          <tbody>
+            {hotels.map((h) => {
+              const cells = cols.map((c) => cell(h, c));
+              const vals = cells.map((c) => c.val).filter((v) => v != null);
+              const best = vals.length ? Math.min(...vals) : null;
+              return (
+                <tr key={h.hotelId}>
+                  <td><div className="sr-cell-primary">{h.hotelName || h.hotelId}</div><div className="sr-cell-sub">{h.status === "done" ? "tamamlandı" : h.status === "failed" ? "hata: " + (h.error || "") : "sorgulanıyor…"}</div></td>
+                  {cells.map((c, i) => (
+                    <td key={i} className={"num sr-price-cell " + (c.val != null && c.val === best ? "sr-best" : "")} title={c.title || c.note || ""}
+                      style={c.cls === "bad" ? { color: "var(--bad)" } : c.cls === "wait" || c.val == null ? { color: "var(--muted)" } : undefined}>
+                      {c.text}{c.sub && <small>{c.sub}</small>}{c.cached && <small>önbellek</small>}
+                    </td>))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

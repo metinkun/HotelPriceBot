@@ -1,39 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { api, fmtDate, parseReq } from "../api.js";
-import { Icon } from "../Art.jsx";
+import { PageHeader, Stat, Card, DataTable, Badge, Chip, Button, EmptyState, statusTone, statusLabel } from "@kit";
 
-export default function Dashboard({ me }) {
+export default function Dashboard({ me, navigate }) {
   const [hotels, setHotels] = useState([]);
   const [searches, setSearches] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    api("/api/portal/hotels").then(setHotels).catch(() => {});
-    api("/api/portal/searches?limit=8").then(setSearches).catch(() => {});
-    api("/api/portal/schedules").then(setSchedules).catch(() => {});
+    Promise.all([
+      api("/api/portal/hotels").then(setHotels).catch(() => {}),
+      api("/api/portal/searches?limit=8").then(setSearches).catch(() => {}),
+      api("/api/portal/schedules").then(setSchedules).catch(() => {}),
+    ]).finally(() => setLoading(false));
   }, []);
   const enabled = me.providers.filter((p) => p.enabled);
   const next = schedules.filter((s) => s.isActive && s.nextRunAt).sort((a, b) => new Date(a.nextRunAt) - new Date(b.nextRunAt))[0];
+  const open = (s) => navigate("history", s.id);
+
   return (
     <div>
-      <div className="grid">
-        <div className="stat"><div className="ic"><Icon name="hotel" /></div><div><div className="k">Takip edilen otel</div><div className="v">{hotels.length}</div></div></div>
-        <div className="stat"><div className="ic"><Icon name="sites" /></div><div><div className="k">Etkin site</div><div className="v">{enabled.length}</div></div></div>
-        <div className="stat"><div className="ic"><Icon name="clock" /></div><div><div className="k">Aktif plan</div><div className="v">{schedules.filter((s) => s.isActive).length}</div></div></div>
-        <div className="stat"><div className="ic"><Icon name="history" /></div><div><div className="k">Sonraki planlı arama</div><div className="v" style={{ fontSize: 14 }}>{next ? fmtDate(next.nextRunAt) : "—"}</div></div></div>
+      <PageHeader title={`Hoş geldiniz, ${me.client.name}`} description="Otellerinizin güncel fiyatlarını tek ekrandan takip edin." actions={<Button icon="search" onClick={() => navigate("search")}>Fiyat ara</Button>} />
+      <div className="sr-grid">
+        <Stat icon="building" label="Takip edilen otel" value={hotels.length} onClick={() => navigate("hotels")} />
+        <Stat icon="globe" label="Etkin site" value={enabled.length} unit={`/ ${me.providers.length}`} soft onClick={() => navigate("sites")} />
+        <Stat icon="calendar" label="Aktif plan" value={schedules.filter((s) => s.isActive).length} soft onClick={() => navigate("schedules")} />
+        <Stat icon="clock" label="Sonraki planlı arama" value={<span style={{ fontSize: 15 }}>{next ? fmtDate(next.nextRunAt) : "—"}</span>} sub={next ? next.name : "planlı arama yok"} soft />
       </div>
-      <div className="row" style={{ alignItems: "flex-start", marginTop: 18 }}>
-        <div className="card" style={{ flex: 1, minWidth: 360 }}>
-          <h3>Son aramalar</h3>
-          {searches.length === 0 && <div className="muted">Henüz arama yok. <a href="#search">İlk aramanızı yapın →</a></div>}
-          <table><tbody>{searches.map((s) => <tr key={s.id} onClick={() => { location.hash = "history/" + s.id; }} style={{ cursor: "pointer" }}>
-            <td className="muted">{fmtDate(s.createdAt)}</td><td>{s.kind === "packages" ? "Paket" : "Otel"} · {(parseReq(s.request).hotelIds || []).length} otel</td>
-            <td><span className={"badge " + (s.status === "done" ? "ok" : s.status === "failed" ? "bad" : "warn")}>{s.status}</span></td><td>{s.scheduleId ? <span className="badge brand">planlı</span> : ""}</td></tr>)}</tbody></table>
-        </div>
-        <div className="card" style={{ flex: 1, minWidth: 320 }}>
-          <h3>Etkin siteler</h3>
-          <div className="chips">{enabled.map((p) => <span key={p.name} className="chip on">{p.label}</span>)}{me.providers.filter((p) => !p.enabled).map((p) => <span key={p.name} className="chip off">{p.label}</span>)}</div>
-          <p className="muted" style={{ marginTop: 12 }}>Site eklemek veya kapatmak için hesap yöneticinizle iletişime geçin.</p>
-        </div>
+      <div className="sr-grid cols-2" style={{ marginTop: 16, alignItems: "start" }}>
+        <Card title="Son aramalar" subtitle="Anlık ve planlı aramaların sonuçları" actions={<Button size="sm" variant="ghost" iconRight="arrowRight" onClick={() => navigate("history")}>Tümü</Button>} pad0>
+          <div style={{ padding: "0 0 4px" }}>
+            {searches.length === 0 && !loading ? (
+              <EmptyState icon="search" title="Henüz arama yok" text="İlk aramanızı yapın, sonuçlar burada görünsün." action={<Button icon="search" onClick={() => navigate("search")}>İlk aramanızı yapın</Button>} />
+            ) : (
+              <DataTable dense rows={searches} loading={loading} className="sr-card-flush" pageSize={0}
+                columns={[
+                  { key: "createdAt", title: "Zaman", primary: true, render: (s) => fmtDate(s.createdAt) },
+                  { key: "kind", title: "Arama", render: (s) => `${s.kind === "packages" ? "Paket" : "Otel"} · ${(parseReq(s.request).hotelIds || []).length} otel` },
+                  { key: "status", title: "Durum", render: (s) => <Badge tone={statusTone(s.status)}>{statusLabel(s.status)}</Badge> },
+                  { key: "scheduleId", title: "Kaynak", render: (s) => (s.scheduleId ? <Badge tone="info" dot={false}>planlı</Badge> : <Badge tone="neutral" dot={false}>anlık</Badge>), hideOnMobile: true },
+                ]}
+                actions={(s) => [{ icon: "eye", title: "Sonucu aç", onClick: open }]} onRowDoubleClick={open} />
+            )}
+          </div>
+        </Card>
+        <Card title="Etkin siteler" subtitle={`${enabled.length} site fiyat kaynağı olarak açık`}>
+          <div className="sr-chips">
+            {enabled.map((p) => <Chip key={p.name} on>{p.label}</Chip>)}
+            {me.providers.filter((p) => !p.enabled).map((p) => <Chip key={p.name} off>{p.label}</Chip>)}
+          </div>
+          <p className="muted small" style={{ marginTop: 14 }}>Site eklemek veya kapatmak için hesap yöneticinizle iletişime geçin.</p>
+        </Card>
       </div>
     </div>
   );

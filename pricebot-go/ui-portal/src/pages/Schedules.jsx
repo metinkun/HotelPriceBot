@@ -1,73 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { api, fmtDate, WEEKDAYS, parseReq } from "../api.js";
+import { api, fmtDate, WEEKDAYS_SHORT, parseReq } from "../api.js";
+import { PageHeader, DataTable, Button, FormModal, Field, Input, FormGrid, FormSection, Segmented, Switch, ChipSelect, Badge, Alert, useConfirm, useToast } from "@kit";
 
 const empty = { name: "", kind: "prices", weekdays: [1], runTime: "14:00", hotelIds: [], providers: [], daysAhead: 30, nights: 3, adults: 2, children: 0, airportCode: "SAW", isActive: true };
 
-export default function Schedules({ me }) {
+export default function Schedules({ me, navigate }) {
   const [list, setList] = useState([]);
   const [hotels, setHotels] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(null);
   const [err, setErr] = useState("");
-  const [msg, setMsg] = useState("");
   const enabled = me.providers.filter((p) => p.enabled);
-  const load = () => Promise.all([api("/api/portal/schedules"), api("/api/portal/hotels")]).then(([s, h]) => { setList(s); setHotels(h); }).catch((e) => setErr(e.message));
+  const confirm = useConfirm(); const toast = useToast();
+  const load = () => Promise.all([api("/api/portal/schedules"), api("/api/portal/hotels")]).then(([s, h]) => { setList(s); setHotels(h); }).catch((e) => setErr(e.message)).finally(() => setLoading(false));
   useEffect(() => { load(); }, []);
 
-  const toggle = (arr, v) => (arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
-  const save = async (e) => {
-    e.preventDefault(); setErr(""); setMsg("");
+  const save = async () => {
     const body = { name: form.name, kind: form.kind, weekdays: form.weekdays, runTime: form.runTime, timezone: "Europe/Istanbul", isActive: form.isActive,
       request: { hotelIds: form.hotelIds, providers: form.providers, daysAhead: Number(form.daysAhead), nights: Number(form.nights), adults: Number(form.adults), children: Number(form.children), airportCode: form.kind === "packages" ? form.airportCode : undefined } };
-    try {
-      if (form.id) await api("/api/portal/schedules/" + form.id, { method: "PUT", body }); else await api("/api/portal/schedules", { method: "POST", body });
-      setForm(null); await load(); setMsg("Plan kaydedildi.");
-    } catch (ex) { setErr(ex.message); }
+    if (!form.hotelIds.length) throw new Error("En az bir otel seçin.");
+    if (form.id) await api("/api/portal/schedules/" + form.id, { method: "PUT", body }); else await api("/api/portal/schedules", { method: "POST", body });
+    setForm(null); await load(); toast.success("Plan kaydedildi.");
   };
   const edit = (s) => { const r = parseReq(s.request); setForm({ id: s.id, name: s.name, kind: s.kind, weekdays: s.weekdays, runTime: s.runTime, hotelIds: r.hotelIds || [], providers: r.providers || [], daysAhead: r.daysAhead || 30, nights: r.nights || 3, adults: r.adults || 2, children: r.children || 0, airportCode: r.airportCode || "SAW", isActive: s.isActive }); };
-  const remove = async (id) => { if (!confirm("Plan silinsin mi?")) return; try { await api("/api/portal/schedules/" + id, { method: "DELETE" }); await load(); } catch (e) { setErr(e.message); } };
-  const runNow = async (id) => { try { const s = await api(`/api/portal/schedules/${id}/run`, { method: "POST" }); setMsg(`Arama başlatıldı (#${s.id}).`); location.hash = "history/" + s.id; } catch (e) { setErr(e.message); } };
+  const remove = async (s) => { if (!(await confirm({ title: "Plan silinsin mi?", message: s.name, confirmText: "Sil", danger: true }))) return; try { await api("/api/portal/schedules/" + s.id, { method: "DELETE" }); toast.success("Plan silindi."); await load(); } catch (e) { toast.error(e.message); } };
+  const runNow = async (s) => { try { const r = await api(`/api/portal/schedules/${s.id}/run`, { method: "POST" }); toast.success(`Arama başlatıldı (#${r.id}).`); navigate("history", r.id); } catch (e) { toast.error(e.message); } };
+  const f = (k) => (e) => setForm({ ...form, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value });
 
   return (
     <div>
-      {err && <div className="err">{err}</div>}{msg && <div className="badge ok" style={{ marginBottom: 10 }}>{msg}</div>}
-      <div className="card">
-        <div className="row" style={{ justifyContent: "space-between" }}><h3>Planlarım</h3><button className="btn" onClick={() => setForm({ ...empty, hotelIds: hotels.slice(0, 1).map((h) => h.internalHotelId) })}>Yeni plan</button></div>
-        <p className="muted">Örnek: her Pazartesi 14:00'te, 30 gün sonrasına 3 gecelik fiyat araması. Sonuçlar "Geçmiş" sayfasında birikir.</p>
-        <table>
-          <thead><tr><th>Ad</th><th>Zaman</th><th>Arama</th><th>Sonraki</th><th>Son</th><th>Durum</th><th></th></tr></thead>
-          <tbody>{list.map((s) => { const r = parseReq(s.request); return (
-            <tr key={s.id}><td><b>{s.name}</b></td>
-              <td>{(s.weekdays.length ? s.weekdays.map((d) => WEEKDAYS[d].slice(0, 3)).join(", ") : "Her gün")} {s.runTime}</td>
-              <td>{s.kind === "packages" ? "Paket" : "Otel"} · {(r.hotelIds || []).length} otel · +{r.daysAhead} gün, {r.nights} gece, {r.adults} yetişkin</td>
-              <td>{fmtDate(s.nextRunAt)}</td><td className="muted">{fmtDate(s.lastRunAt)}</td>
-              <td>{s.isActive ? <span className="badge ok">aktif</span> : <span className="badge">pasif</span>}</td>
-              <td style={{ whiteSpace: "nowrap" }}><button className="btn ghost" onClick={() => runNow(s.id)}>Şimdi çalıştır</button><button className="btn ghost" onClick={() => edit(s)}>Düzenle</button><button className="btn ghost" onClick={() => remove(s.id)}>Sil</button></td></tr>); })}</tbody>
-        </table>
-        {list.length === 0 && <div className="muted">Henüz plan yok.</div>}
-      </div>
-      {form && (
-        <div className="card"><h3>{form.id ? "Planı düzenle" : "Yeni plan"}</h3>
-          <form onSubmit={save}>
-            <div className="row">
-              <div><label>Plan adı</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required style={{ width: 260 }} /></div>
-              <div><label>Tür</label><select value={form.kind} onChange={(e) => setForm({ ...form, kind: e.target.value })}><option value="prices">Sadece otel</option><option value="packages" disabled={!me.plan.allowPackages}>Otel + uçak + transfer</option></select></div>
-              <div><label>Saat (İstanbul)</label><input type="time" value={form.runTime} onChange={(e) => setForm({ ...form, runTime: e.target.value })} /></div>
-              <div><label>Aktif</label><input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} style={{ minWidth: 0 }} /></div>
-            </div>
-            <div style={{ marginTop: 10 }}><label>Günler (boş = her gün)</label><div className="days">{WEEKDAYS.map((d, i) => <span key={i} className={"chip " + (form.weekdays.includes(i) ? "on" : "")} onClick={() => setForm({ ...form, weekdays: toggle(form.weekdays, i) })}>{d.slice(0, 3)}</span>)}</div></div>
-            <div className="row" style={{ marginTop: 10 }}>
-              <div><label>Kaç gün sonrası için</label><input type="number" min="1" max="400" value={form.daysAhead} onChange={(e) => setForm({ ...form, daysAhead: e.target.value })} style={{ width: 110 }} /></div>
-              <div><label>Gece</label><input type="number" min="1" max="30" value={form.nights} onChange={(e) => setForm({ ...form, nights: e.target.value })} style={{ width: 90 }} /></div>
-              <div><label>Yetişkin</label><input type="number" min="1" max="8" value={form.adults} onChange={(e) => setForm({ ...form, adults: e.target.value })} style={{ width: 90 }} /></div>
-              <div><label>Çocuk</label><input type="number" min="0" max="6" value={form.children} onChange={(e) => setForm({ ...form, children: e.target.value })} style={{ width: 90 }} /></div>
-              {form.kind === "packages" && <div><label>Kalkış (IATA)</label><input value={form.airportCode} maxLength={3} onChange={(e) => setForm({ ...form, airportCode: e.target.value.toUpperCase() })} style={{ width: 90 }} /></div>}
-            </div>
-            <div style={{ marginTop: 10 }}><label>Oteller</label><div className="chips">{hotels.map((h) => <span key={h.internalHotelId} className={"chip " + (form.hotelIds.includes(h.internalHotelId) ? "on" : "")} onClick={() => setForm({ ...form, hotelIds: toggle(form.hotelIds, h.internalHotelId) })}>{h.hotelName || h.internalHotelId}</span>)}</div></div>
-            <div style={{ marginTop: 10 }}><label>Siteler (boş = tüm etkin siteler)</label><div className="chips">{enabled.map((p) => <span key={p.name} className={"chip " + (form.providers.includes(p.name) ? "on" : "")} onClick={() => setForm({ ...form, providers: toggle(form.providers, p.name) })}>{p.label}</span>)}</div></div>
-            <div className="row" style={{ marginTop: 14 }}><button className="btn">Kaydet</button><button type="button" className="btn secondary" onClick={() => setForm(null)}>Vazgeç</button></div>
-          </form>
-        </div>
-      )}
+      <PageHeader title="Planlı aramalar" description="Örnek: her Pazartesi 14:00'te, 30 gün sonrasına 3 gecelik fiyat araması. Sonuçlar Geçmiş sayfasında birikir." actions={<Button icon="plus" onClick={() => setForm({ ...empty, hotelIds: hotels.slice(0, 1).map((h) => h.internalHotelId) })}>Yeni plan</Button>} />
+      {err && <Alert tone="bad">{err}</Alert>}
+      <DataTable rows={list} loading={loading} onRowDoubleClick={edit}
+        columns={[
+          { key: "name", title: "Plan", primary: true, sortable: true },
+          { key: "time", title: "Zaman", render: (s) => `${s.weekdays.length ? s.weekdays.map((d) => WEEKDAYS_SHORT[d]).join(", ") : "Her gün"} ${s.runTime}` },
+          { key: "req", title: "Arama", render: (s) => { const r = parseReq(s.request); return `${s.kind === "packages" ? "Paket" : "Otel"} · ${(r.hotelIds || []).length} otel · +${r.daysAhead} gün, ${r.nights} gece, ${r.adults} yetişkin`; } },
+          { key: "nextRunAt", title: "Sonraki", render: (s) => fmtDate(s.nextRunAt), sortable: true },
+          { key: "lastRunAt", title: "Son", render: (s) => <span className="muted">{fmtDate(s.lastRunAt)}</span>, hideOnMobile: true },
+          { key: "isActive", title: "Durum", render: (s) => (s.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="neutral">pasif</Badge>) },
+        ]}
+        actions={(s) => [{ icon: "play", title: "Şimdi çalıştır", tone: "primary", onClick: runNow }, { icon: "pencil", title: "Düzenle", onClick: edit }, { icon: "trash", title: "Sil", tone: "danger", onClick: remove }]}
+        empty={{ icon: "calendar", title: "Henüz plan yok", text: "Belirlediğiniz gün ve saatte otomatik fiyat araması kurun.", action: <Button icon="plus" onClick={() => setForm({ ...empty, hotelIds: hotels.slice(0, 1).map((h) => h.internalHotelId) })}>Yeni plan</Button> }} />
+
+      <FormModal open={!!form} onClose={() => setForm(null)} title={form?.id ? "Planı düzenle" : "Yeni plan"} size="md" onSubmit={save}>
+        {form && (<>
+          <FormGrid>
+            <Field label="Plan adı" required className="span-2"><Input value={form.name} onChange={f("name")} required autoFocus placeholder="Örn. Haftalık Girne kontrolü" /></Field>
+            <Field label="Saat (İstanbul)"><Input type="time" value={form.runTime} onChange={f("runTime")} required /></Field>
+          </FormGrid>
+          <div className="sr-row center" style={{ marginTop: 12, gap: 18 }}>
+            <Segmented value={form.kind} onChange={(v) => setForm({ ...form, kind: v })} options={[{ value: "prices", label: "Sadece otel" }, { value: "packages", label: "Otel + uçak + transfer", disabled: !me.plan.allowPackages }]} />
+            <Switch label="Aktif" checked={form.isActive} onChange={f("isActive")} />
+          </div>
+          <Field label="Günler" hint="Boş = her gün" style={{ marginTop: 12 }}><ChipSelect value={form.weekdays} onChange={(v) => setForm({ ...form, weekdays: v })} options={WEEKDAYS_SHORT.map((d, i) => ({ value: i, label: d }))} className="sr-days" /></Field>
+          <FormSection>Arama</FormSection>
+          <FormGrid style={{ gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))" }}>
+            <Field label="Kaç gün sonrası"><Input type="number" min="1" max="400" value={form.daysAhead} onChange={f("daysAhead")} /></Field>
+            <Field label="Gece"><Input type="number" min="1" max="30" value={form.nights} onChange={f("nights")} /></Field>
+            <Field label="Yetişkin"><Input type="number" min="1" max="8" value={form.adults} onChange={f("adults")} /></Field>
+            <Field label="Çocuk"><Input type="number" min="0" max="6" value={form.children} onChange={f("children")} /></Field>
+            {form.kind === "packages" && <Field label="Kalkış (IATA)"><Input value={form.airportCode} maxLength={3} onChange={(e) => setForm({ ...form, airportCode: e.target.value.toUpperCase() })} /></Field>}
+          </FormGrid>
+          <Field label="Oteller" required style={{ marginTop: 12 }}><ChipSelect value={form.hotelIds} onChange={(v) => setForm({ ...form, hotelIds: v })} options={hotels.map((h) => ({ value: h.internalHotelId, label: h.hotelName || h.internalHotelId }))} /></Field>
+          <Field label="Siteler" hint="Boş = tüm etkin siteler" style={{ marginTop: 12 }}><ChipSelect value={form.providers} onChange={(v) => setForm({ ...form, providers: v })} options={enabled.map((p) => ({ value: p.name, label: p.label }))} /></Field>
+        </>)}
+      </FormModal>
     </div>
   );
 }

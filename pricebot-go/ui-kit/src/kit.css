@@ -225,6 +225,7 @@ button { font-family: inherit; }
 .sr-table-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; flex-wrap: wrap; }
 .sr-cards-mobile { display: none; }
 .sr-table .sr-best { background: var(--ok-soft); color: var(--ok-text); font-weight: 700; border-radius: 8px; }
+.sr-card-flush, .sr-card .sr-table-wrap.flush { border: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
 
 /* ---------- Modal / drawer / toast ---------- */
 .sr-modal-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(11,16,38,.55); backdrop-filter: blur(3px); display: grid; place-items: center; padding: 20px; animation: sr-fade .15s ease-out; }
@@ -271,6 +272,7 @@ button { font-family: inherit; }
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) { :root { --sidebar-w: 232px; } .sr-content, .sr-topbar { padding-left: 20px; padding-right: 20px; } }
 @media (max-width: 860px) {
+  .hide-mobile { display: none !important; }
   .sr-shell { grid-template-columns: 1fr; }
   .sr-side { position: fixed; left: 0; top: 0; bottom: 0; width: min(300px, 84vw); z-index: 120; transform: translateX(-100%); transition: transform .22s ease; height: 100vh; }
   .sr-side.open { transform: none; box-shadow: var(--shadow-lg); }
