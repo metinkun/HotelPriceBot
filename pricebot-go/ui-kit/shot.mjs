@@ -28,7 +28,9 @@ try {
   await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 2, mobile: flag("--mobile") });
   if (flag("--mobile")) await send("Emulation.setTouchEmulationEnabled", { enabled: true });
   const origin = new URL(url).origin;
-  await send("Page.navigate", { url: origin + "/" }); await sleep(600);
+  // Once ayni origin'de bos bir sayfaya git ve origin oturana kadar bekle (localStorage dogru origin'e yazilsin)
+  await send("Page.navigate", { url: origin + "/favicon.svg" });
+  for (let i = 0; i < 40; i++) { const r = await send("Runtime.evaluate", { expression: "location.origin", returnByValue: true }); if (r.result?.value === origin) break; await sleep(100); }
   const setup = [];
   if (token) { const [k, ...v] = token.split("="); setup.push(`localStorage.setItem(${JSON.stringify(k)}, ${JSON.stringify(v.join("="))});`); }
   setup.push(`localStorage.setItem("smartrate_theme", ${JSON.stringify(flag("--dark") ? "dark" : "light")});`);

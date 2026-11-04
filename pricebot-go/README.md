@@ -57,6 +57,7 @@ internal/auth          kimlik context'i, HS256 JWT, anahtar hash
 internal/browser       chromedp tarayici yoneticisi (sekme siniri, periyodik yeniden baslatma)
 internal/httpx         proxy rotasyonlu HTTP istemcisi (4xx/5xx -> hata)
 internal/proxy         Webshare senkronu + round-robin
+ui-kit/                SmartRate tasarim sistemi (tokenlar, acik/koyu tema, AppShell, DataTable, modal/toast, mobil); iki uygulama @kit ile kullanir
 ui/                    React/Vite admin paneli (Docker'da derlenip Go'ya gomulur, /admin/)
 ui-portal/             React/Vite musteri portali (/portal/)
 ```
@@ -93,6 +94,18 @@ ui-portal/             React/Vite musteri portali (/portal/)
 | POST/GET | /api/admin/hotels/import, /api/admin/imports/{id} | isim listesinden toplu otel ekleme (asenkron; `apply:false` = rapor) |
 
 Tam sema: `internal/api/openapi.json` (Swagger `/docs`). Postman koleksiyonu: `postman/` (OpenAPI'den uretilir, bkz. `postman/README.md`).
+
+## Arayuz (UI)
+
+Admin paneli ve musteri portali ayni tasarim dilini `ui-kit/` uzerinden paylasir (marka: SmartRate; bkz. `ui-kit/README.md`).
+Listeler satir sonu aksiyon ikonlu tablolardir, satira cift tiklama detaya goturur; kisa formlar modal, uzun formlar sayfa
+icinde karttir; 860 px altinda menu alt cubuga iner ve tablolar karta donusur. Yerel gelistirme:
+
+```bash
+cd ui && npm install && npx vite --port 5173        # http://localhost:5173/admin/  (API: localhost:3000'e proxy)
+cd ui-portal && npm install && npx vite --port 5174 # http://localhost:5174/portal/
+node ui-kit/shot.mjs "http://localhost:5173/admin/#hotels" out.png --token pricebot_admin_token=<jwt> [--mobile] [--dark]
+```
 
 ## Gelistirme
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { api } from "../api.js";
+import { api, fmtDate, today } from "../api.js";
+import { PageHeader, Stat, DataTable, Button, Badge, Alert, Skeleton, useToast } from "@kit";
 
 export default function Dashboard() {
   const [health, setHealth] = useState(null);
@@ -7,6 +8,7 @@ export default function Dashboard() {
   const [usage, setUsage] = useState(null);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const toast = useToast();
 
   const load = async () => {
     try {
@@ -16,46 +18,55 @@ export default function Dashboard() {
   };
   useEffect(() => { load(); const t = setInterval(load, 15000); return () => clearInterval(t); }, []);
 
-  const runCanary = async () => { setBusy(true); try { await api("/api/admin/canary/run", { method: "POST" }); await load(); } catch (e) { setErr(e.message); } finally { setBusy(false); } };
-  const reset = async (name) => { try { await api(`/api/admin/providers/${name}/reset-circuit`, { method: "POST" }); await load(); } catch (e) { setErr(e.message); } };
+  const runCanary = async () => {
+    setBusy(true);
+    try { const r = await api("/api/admin/canary/run", { method: "POST" }); await load(); toast.success(`Kanarya tamamlandı: ${r.healthy}/${r.total} site sağlıklı.`); }
+    catch (e) { toast.error(e.message); } finally { setBusy(false); }
+  };
+  const reset = async (p) => { try { await api(`/api/admin/providers/${p.provider}/reset-circuit`, { method: "POST" }); toast.success(`${p.provider} devre kesicisi sıfırlandı.`); await load(); } catch (e) { toast.error(e.message); } };
 
-  if (err) return <div className="err">{err}</div>;
-  if (!health) return <div className="muted">Yükleniyor…</div>;
+  if (err && !health) return <div><PageHeader title="Özet" /><Alert tone="bad">{err}</Alert></div>;
+  if (!health) return <div><PageHeader title="Özet" /><div className="sr-grid">{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} h={78} />)}</div></div>;
   const canary = health.canary;
+  const check = (p) => canary?.checks?.find((x) => x.provider === p.provider);
+  const status = (p) => {
+    if (p.circuitOpen) return <Badge tone="bad">devre açık</Badge>;
+    const c = check(p);
+    if (!c) return <Badge tone="neutral">bilinmiyor</Badge>;
+    if (c.ok && c.found) return <Badge tone="ok">sağlıklı</Badge>;
+    return <Badge tone="warn">{c.error ? "kanarya: hata" : "kanarya: fiyat yok"}</Badge>;
+  };
+
   return (
     <div>
-      <h2>Özet</h2>
-      <div className="grid">
-        <div className="stat"><div className="k">Bugünkü kredi</div><div className="v">{usage?.totals?.credits ?? 0}</div></div>
-        <div className="stat"><div className="k">Bugünkü istek</div><div className="v">{usage?.totals?.requests ?? 0}</div></div>
-        <div className="stat"><div className="k">Kuyrukta / çalışan iş</div><div className="v">{jobs?.queued ?? 0} / {jobs?.running ?? 0}</div></div>
-        <div className="stat"><div className="k">Cache</div><div className="v">{health.cache?.enabled ? `${health.cache.ttlSeconds}s` : "kapalı"}</div></div>
-        <div className="stat"><div className="k">Kanarya</div><div className="v">{canary ? `${canary.healthy}/${canary.total}` : "—"}</div>
-          <div className="muted" style={{ fontSize: 12 }}>{canary ? new Date(canary.ranAt).toLocaleString("tr-TR") : "henüz çalışmadı"}</div></div>
+      <PageHeader title="Özet" description="Bugünkü kullanım, iş kuyruğu ve 13 sitenin sağlık durumu. Sayfa 15 saniyede bir yenilenir." />
+      {err && <Alert tone="bad">{err}</Alert>}
+      <div className="sr-grid">
+        <Stat icon="zap" label="Bugünkü kredi" value={usage?.totals?.credits ?? 0} sub="site çağrısı" />
+        <Stat icon="activity" label="Bugünkü istek" value={usage?.totals?.requests ?? 0} soft />
+        <Stat icon="layers" label="Kuyrukta / çalışan iş" value={`${jobs?.queued ?? 0} / ${jobs?.running ?? 0}`} soft />
+        <Stat icon="server" label="Cache" value={health.cache?.enabled ? health.cache.ttlSeconds : "—"} unit={health.cache?.enabled ? "sn" : "kapalı"} soft />
+        <Stat icon="shield" label="Kanarya" value={canary ? `${canary.healthy}/${canary.total}` : "—"} sub={canary ? "son çalışma: " + fmtDate(canary.ranAt) : "henüz çalışmadı"} soft={!canary || canary.healthy < canary.total} />
       </div>
-      <div className="card" style={{ marginTop: 16 }}>
-        <div className="row" style={{ justifyContent: "space-between" }}><h3>Provider sağlığı</h3>
-          <button className="btn secondary" onClick={runCanary} disabled={busy}>{busy ? "Çalışıyor…" : "Kanaryayı şimdi çalıştır"}</button></div>
-        <table>
-          <thead><tr><th>Provider</th><th>Durum</th><th>Eşzamanlı</th><th>Toplam</th><th>Başarılı</th><th>Hata</th><th>Bulunamadı</th><th>Ort. ms</th><th>Son hata</th><th></th></tr></thead>
-          <tbody>
-            {health.providers.map((p) => {
-              const c = canary?.checks?.find((x) => x.provider === p.provider);
-              const badge = p.circuitOpen ? <span className="badge bad">devre açık</span> : c ? (c.ok && c.found ? <span className="badge ok">sağlıklı</span> : <span className="badge warn">kanarya: {c.error ? "hata" : "fiyat yok"}</span>) : <span className="badge">bilinmiyor</span>;
-              return (
-                <tr key={p.provider}>
-                  <td><b>{p.provider}</b>{health.capabilities?.[p.provider]?.requiresPuppeteer && <span className="badge" style={{ marginLeft: 6 }}>tarayıcı</span>}</td>
-                  <td>{badge}</td><td>{p.inFlight}/{p.concurrency}</td><td>{p.total}</td><td>{p.success}</td><td>{p.failed}</td><td>{p.notFound}</td><td>{p.avgLatencyMs}</td>
-                  <td className="muted" style={{ maxWidth: 260, fontSize: 12 }}>{p.lastError}</td>
-                  <td>{p.circuitOpen && <button className="btn secondary" onClick={() => reset(p.provider)}>Sıfırla</button>}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+
+      <div style={{ marginTop: 16 }}>
+        <DataTable rows={health.providers} rowKey={(p) => p.provider} dense pageSize={0}
+          toolbar={<h3>Site sağlığı</h3>}
+          toolbarRight={<Button size="sm" variant="secondary" icon="play" loading={busy} onClick={runCanary}>Kanaryayı şimdi çalıştır</Button>}
+          columns={[
+            { key: "provider", title: "Site", primary: true, render: (p) => <span className="sr-row center" style={{ gap: 6 }}>{p.provider}{health.capabilities?.[p.provider]?.requiresPuppeteer && <Badge tone="neutral" dot={false}>tarayıcı</Badge>}</span> },
+            { key: "status", title: "Durum", render: status },
+            { key: "inFlight", title: "Eşzamanlı", align: "num", render: (p) => `${p.inFlight}/${p.concurrency}`, hideOnMobile: true },
+            { key: "total", title: "Toplam", align: "num", sortable: true },
+            { key: "success", title: "Başarılı", align: "num", hideOnMobile: true },
+            { key: "failed", title: "Hata", align: "num", sortable: true, render: (p) => (p.failed ? <span style={{ color: "var(--bad)", fontWeight: 600 }}>{p.failed}</span> : 0) },
+            { key: "notFound", title: "Bulunamadı", align: "num", hideOnMobile: true },
+            { key: "avgLatencyMs", title: "Ort. ms", align: "num", sortable: true, hideOnMobile: true },
+            { key: "lastError", title: "Son hata", render: (p) => <span className="muted small truncate" title={p.lastError || ""} style={{ display: "block", maxWidth: 260 }}>{p.lastError || "—"}</span>, hideOnMobile: true },
+          ]}
+          actions={(p) => [{ icon: "refresh", title: "Devre kesiciyi sıfırla", hidden: !p.circuitOpen, onClick: reset }]}
+          empty={{ icon: "server", title: "Site bilgisi yok" }} />
       </div>
     </div>
   );
 }
-
-function today() { return new Date().toISOString().slice(0, 10); }
