@@ -40,16 +40,17 @@ type PlanInput struct {
 }
 
 type Client struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Email     *string   `json:"email"`
-	Notes     *string   `json:"notes"`
-	PlanID    *int      `json:"planId"`
-	PlanCode  *string   `json:"planCode"`
-	IsActive  bool      `json:"isActive"`
-	KeyCount  int       `json:"keyCount"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID         int       `json:"id"`
+	Name       string    `json:"name"`
+	Email      *string   `json:"email"`
+	Notes      *string   `json:"notes"`
+	PlanID     *int      `json:"planId"`
+	PlanCode   *string   `json:"planCode"`
+	IsActive   bool      `json:"isActive"`
+	KeyCount   int       `json:"keyCount"`
+	ClientType string    `json:"clientType"` // api | portal | both
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
 type ClientInput struct {
@@ -168,12 +169,12 @@ WHERE id=$10 RETURNING `+planCols,
 // ---- Musteriler ----
 
 const clientCols = `c.id, c.name, c.email, c.notes, c.plan_id, p.code, c.is_active,
- (SELECT count(*) FROM api_keys k WHERE k.client_id=c.id AND k.is_active AND k.revoked_at IS NULL), c.created_at, c.updated_at`
+ (SELECT count(*) FROM api_keys k WHERE k.client_id=c.id AND k.is_active AND k.revoked_at IS NULL), c.client_type, c.created_at, c.updated_at`
 const clientFrom = ` FROM clients c LEFT JOIN plans p ON p.id=c.plan_id `
 
 func scanClient(row pgx.Row) (*Client, error) {
 	var c Client
-	if err := row.Scan(&c.ID, &c.Name, &c.Email, &c.Notes, &c.PlanID, &c.PlanCode, &c.IsActive, &c.KeyCount, &c.CreatedAt, &c.UpdatedAt); err != nil {
+	if err := row.Scan(&c.ID, &c.Name, &c.Email, &c.Notes, &c.PlanID, &c.PlanCode, &c.IsActive, &c.KeyCount, &c.ClientType, &c.CreatedAt, &c.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &c, nil
