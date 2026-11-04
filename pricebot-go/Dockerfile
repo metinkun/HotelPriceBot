@@ -3,6 +3,7 @@ FROM node:22-alpine AS ui
 WORKDIR /ui
 COPY ui/package.json ui/package-lock.json* ./
 RUN npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
+COPY ui-kit/ /ui-kit/
 COPY ui/ .
 RUN npm run build
 
@@ -11,6 +12,7 @@ FROM node:22-alpine AS portal
 WORKDIR /ui
 COPY ui-portal/package.json ui-portal/package-lock.json* ./
 RUN npm ci --no-audit --no-fund 2>/dev/null || npm install --no-audit --no-fund
+COPY ui-kit/ /ui-kit/
 COPY ui-portal/ .
 RUN npm run build
 
