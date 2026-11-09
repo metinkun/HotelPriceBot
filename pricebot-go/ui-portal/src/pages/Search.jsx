@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { api, addDays } from "../api.js";
-import { PageHeader, Card, Button, Field, Input, FormGrid, FormSection, Segmented, ChipSelect, Badge, Progress, Alert, EmptyState, statusTone, statusLabel } from "@kit";
+import { PageHeader, Card, Button, Field, Input, FormGrid, FormSection, Segmented, ChipSelect, Badge, Progress, Alert, EmptyState, Icon, statusTone, statusLabel } from "@kit";
 import ResultTable from "./ResultTable.jsx";
 
-export default function Search({ me, param, navigate }) {
+export default function Search({ me, param, navigate, refreshMe }) {
   const [hotels, setHotels] = useState([]);
   const [sel, setSel] = useState([]);
   const [kind, setKind] = useState("prices");
@@ -18,10 +18,21 @@ export default function Search({ me, param, navigate }) {
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const enabled = me.providers.filter((p) => p.enabled);
+  const isOtel = me.client?.kind === "otel" && !!me.client?.ownHotelId;
+  const ownId = isOtel ? me.client.ownHotelId : null;
+  const L = me.limits || {}; const U = me.usage || {};
+  const quotaFull = L.dailySearches > 0 && (U.searches || 0) >= L.dailySearches;
 
   useEffect(() => {
-    api("/api/portal/hotels").then((h) => { setHotels(h); if (param) setSel([param]); else if (h.length) setSel([h[0].internalHotelId]); }).catch((e) => setErr(e.message));
+    api("/api/portal/hotels").then((h) => {
+      setHotels(h);
+      let init = param ? [param] : h.length ? [h[0].internalHotelId] : [];
+      if (ownId && h.some((x) => x.internalHotelId === ownId)) init = [ownId, ...init.filter((x) => x !== ownId)];
+      setSel(init);
+    }).catch((e) => setErr(e.message));
   }, []);
+  // OTEL turu: kendi oteli her zaman secili kalir
+  const setSelLocked = (v) => setSel(ownId ? [ownId, ...v.filter((x) => x !== ownId)] : v);
 
   // Sonuc bitene kadar sorgula (1.5 sn)
   useEffect(() => {
@@ -35,7 +46,8 @@ export default function Search({ me, param, navigate }) {
     try {
       const body = { kind, hotelIds: sel, checkIn, checkOut, adults: Number(adults), children: Number(children), childAges: childAges.split(",").map((x) => Number(x.trim())).filter((x) => !Number.isNaN(x) && childAges.trim()), providers: provs, airportCode: kind === "packages" ? airport : undefined };
       setSearch(await api("/api/portal/searches", { method: "POST", body }));
-    } catch (ex) { setErr(ex.message); } finally { setBusy(false); }
+      refreshMe && refreshMe();
+    } catch (ex) { setErr(ex.data?.error || ex.message); } finally { setBusy(false); }
   };
   const result = search?.result;
   const running = search && search.status !== "done" && search.status !== "failed";
@@ -48,7 +60,10 @@ export default function Search({ me, param, navigate }) {
         <form onSubmit={run}>
           <FormSection>Oteller</FormSection>
           {hotels.length === 0 ? <EmptyState icon="building" title="Önce otel ekleyin" action={<Button variant="secondary" icon="plus" onClick={() => navigate("hotels")}>Otellerim</Button>} />
-            : <ChipSelect value={sel} onChange={setSel} options={hotels.map((h) => ({ value: h.internalHotelId, label: h.hotelName || h.internalHotelId }))} />}
+            : <ChipSelect value={sel} onChange={setSelLocked} options={hotels.map((h) => (h.internalHotelId === ownId
+                ? { value: h.internalHotelId, label: <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}><Icon name="lock" size={13} /> Otelim · {h.hotelName || h.internalHotelId}</span>, disabled: true, title: "Oteliniz her aramada yer alır" }
+                : { value: h.internalHotelId, label: h.hotelName || h.internalHotelId }))} />}
+          {isOtel && <p className="muted small" style={{ marginTop: 8 }}>Oteliniz her aramaya dahildir; karşılaştırmak istediğiniz rakipleri seçin.</p>}
           <FormSection>Tarih ve kişi</FormSection>
           <div style={{ marginBottom: 12 }}>
             <Segmented value={kind} onChange={setKind} options={[{ value: "prices", label: "Sadece otel" }, { value: "packages", label: "Otel + uçak + transfer", disabled: !me.plan.allowPackages }]} />
@@ -63,11 +78,13 @@ export default function Search({ me, param, navigate }) {
             {kind === "packages" && <Field label="Kalkış (IATA)"><Input value={airport} onChange={(e) => setAirport(e.target.value.toUpperCase())} maxLength={3} placeholder="SAW" /></Field>}
           </FormGrid>
           <FormSection>Siteler <span className="muted" style={{ textTransform: "none", letterSpacing: 0, fontWeight: 500 }}>(boş = tüm etkin siteler)</span></FormSection>
-          <ChipSelect value={provs} onChange={setProvs} options={enabled.map((p) => ({ value: p.name, label: p.label, hint: p.requiresBrowser ? "~10 sn" : undefined }))} />
+          <ChipSelect value={provs} onChange={setProvs} options={[...enabled.map((p) => ({ value: p.name, label: p.label, hint: p.requiresBrowser ? "~10 sn" : undefined })), ...me.providers.filter((p) => p.maintenance).map((p) => ({ value: p.name, label: p.label, hint: "bakımda", disabled: true, title: "Site geçici olarak kapalı" }))]} />
           <div className="sr-row center" style={{ marginTop: 20 }}>
-            <Button type="submit" size="lg" icon="search" loading={busy} disabled={sel.length === 0}>Fiyatları getir</Button>
-            <span className="muted small">{sel.length} otel · {provs.length || enabled.length} site</span>
+            <Button type="submit" size="lg" icon="search" loading={busy} disabled={sel.length === 0 || quotaFull}>Fiyatları getir</Button>
+            <span className="muted small">{sel.length} otel · {provs.length || enabled.length} site{L.dailySearches > 0 && ` · bugün ${U.searches || 0}/${L.dailySearches} arama`}</span>
           </div>
+          {quotaFull && <div style={{ marginTop: 12 }} />}
+          {quotaFull && <Alert tone="warn">Günlük arama hakkınız doldu ({L.dailySearches}). Hak her gün 00:00'da yenilenir; daha fazlası için yetkilinizle iletişime geçin.</Alert>}
         </form>
       </Card>
       {search && (
@@ -75,7 +92,7 @@ export default function Search({ me, param, navigate }) {
           {running && result && <Progress value={result.done || 0} max={result.total || 1} style={{ marginBottom: 14 }} />}
           {running && !result && <Progress indeterminate style={{ marginBottom: 14 }} />}
           {search.error && <Alert tone="bad">{search.error}</Alert>}
-          {result && <ResultTable result={result} providers={me.providers} kind={kind} />}
+          {result && <ResultTable result={result} providers={me.providers} kind={kind} ownHotelId={ownId} />}
         </Card>
       )}
     </div>

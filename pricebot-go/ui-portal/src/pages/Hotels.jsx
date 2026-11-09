@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "../api.js";
 import { PageHeader, DataTable, Button, FormModal, Field, Input, FormGrid, Badge, Alert, useConfirm, useToast } from "@kit";
 
-export default function Hotels({ me, navigate }) {
+export default function Hotels({ me, navigate, refreshMe }) {
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -13,6 +13,9 @@ export default function Hotels({ me, navigate }) {
   const enabled = me.providers.filter((p) => p.enabled);
   const label = (n) => (me.providers.find((x) => x.name === n) || {}).label || n;
   const confirm = useConfirm(); const toast = useToast();
+  const L = me.limits || {};
+  const ownId = me.client?.kind === "otel" ? me.client?.ownHotelId : null;
+  const full = L.maxHotels > 0 && hotels.length >= L.maxHotels;
 
   const load = () => api("/api/portal/hotels").then(setHotels).catch((e) => setErr(e.message)).finally(() => setLoading(false));
   useEffect(() => { load(); }, []);
@@ -24,6 +27,7 @@ export default function Hotels({ me, navigate }) {
       const r = await api("/api/portal/hotels", { method: "POST", body: { hotelName: name, urls: clean } });
       setResult(r); setModal(false); setName(""); setUrls({}); await load();
       toast.success(`Otel eklendi: ${r.hotelName || r.internalHotelId}` + (r.errors?.length ? ` (${r.errors.length} site çözülemedi)` : ""));
+      refreshMe && refreshMe();
     } catch (ex) { throw new Error(ex.message + (ex.data?.details ? " " + ex.data.details.map((d) => `${d.provider}: ${d.error}`).join(" · ") : "")); }
   };
   const remove = async (h) => {
@@ -34,16 +38,17 @@ export default function Hotels({ me, navigate }) {
 
   return (
     <div>
-      <PageHeader title="Otellerim" description="Takip ettiğiniz oteller ve her sitedeki eşleştirmeleri. Satıra çift tıklayarak detayına gidin." actions={<Button icon="plus" onClick={() => setModal(true)}>Otel ekle</Button>} />
+      <PageHeader title="Otellerim" description={`Takip ettiğiniz oteller ve her sitedeki eşleştirmeleri. Satıra çift tıklayarak detayına gidin.${L.maxHotels > 0 ? ` Paket limiti: ${hotels.length}/${L.maxHotels} otel.` : ""}`} actions={<span title={full ? `Paketinizdeki otel sınırı doldu (${L.maxHotels}). Daha fazla otel için yetkilinizle iletişime geçin.` : ""}><Button icon="plus" disabled={full} onClick={() => setModal(true)}>Otel ekle</Button></span>} />
+      {full && <Alert tone="warn">Paketinizdeki otel sınırı doldu ({L.maxHotels}). Yeni otel eklemek için yetkilinizle iletişime geçin.</Alert>}
       {err && <Alert tone="bad">{err}</Alert>}
       {result?.errors?.length > 0 && <Alert tone="warn">Çözümlenemeyen siteler: {result.errors.map((e) => `${label(e.provider)}: ${e.error}`).join(" · ")}</Alert>}
       <DataTable rows={hotels} rowKey={(h) => h.internalHotelId} loading={loading} search={hotels.length > 8 ? { placeholder: "Otel ara…", keys: ["hotelName", "internalHotelId"] } : undefined}
         columns={[
-          { key: "hotelName", title: "Otel", primary: true, sortable: true, render: (h) => h.hotelName || h.internalHotelId, sub: (h) => <code>{h.internalHotelId}</code> },
+          { key: "hotelName", title: "Otel", primary: true, sortable: true, render: (h) => <span className="sr-row center" style={{ gap: 8 }}>{h.internalHotelId === ownId && <Badge tone="info" dot={false}>Otelim</Badge>}{h.hotelName || h.internalHotelId}</span>, sub: (h) => <code>{h.internalHotelId}</code> },
           { key: "providers", title: "Siteler", render: (h) => <div className="sr-chips" style={{ gap: 4 }}>{h.providers.map((p) => <Badge key={p.provider} tone={p.enabled ? "info" : "neutral"} dot={false} title={p.sourceUrl || ""}>{label(p.provider)}</Badge>)}</div>, hideOnMobile: true },
           { key: "count", title: "Site", align: "num", width: 70, sortable: true, sortValue: (h) => h.providers.length, render: (h) => h.providers.length },
         ]}
-        actions={(h) => [{ icon: "eye", title: "Detay", onClick: open }, { icon: "search", title: "Fiyat ara", tone: "primary", onClick: (x) => navigate("search", x.internalHotelId) }, { icon: "trash", title: "Kaldır", tone: "danger", onClick: remove }]}
+        actions={(h) => [{ icon: "eye", title: "Detay", onClick: open }, { icon: "search", title: "Fiyat ara", tone: "primary", onClick: (x) => navigate("search", x.internalHotelId) }, { icon: "trash", title: "Kaldır", tone: "danger", hidden: h.internalHotelId === ownId, onClick: remove }]}
         onRowDoubleClick={open} empty={{ icon: "building", title: "Henüz otel eklenmedi", text: "Takip etmek istediğiniz otelleri site linkleriyle ekleyin.", action: <Button icon="plus" onClick={() => setModal(true)}>Otel ekle</Button> }} />
 
       <FormModal open={modal} onClose={() => setModal(false)} title="Yeni otel ekle" subtitle="Otelin her sitedeki detay sayfası linkini yapıştırın. Sistem otel kimliğini otomatik çözer; en az bir site yeterlidir." size="md" onSubmit={add} submitText="Oteli ekle">

@@ -36,7 +36,7 @@ export default function History({ me, param }) {
           {!sel ? <Card><EmptyState icon="search" title="Bir arama seçin" text="Detay ve karşılaştırma tablosu burada görünür." /></Card> : (
             <Card title={`Arama #${sel.id}`} subtitle={`${sel.result?.checkIn || ""} → ${sel.result?.checkOut || ""} · ${fmtDate(sel.createdAt)}`} actions={<><Badge tone={statusTone(sel.status)}>{statusLabel(sel.status)}</Badge>{sel.scheduleId && <Badge tone="info" dot={false}>planlı</Badge>}</>}>
               {sel.error && <Alert tone="bad">{sel.error}</Alert>}
-              {sel.result ? <ResultTable result={sel.result} providers={me.providers} kind={sel.kind} /> : <div className="muted">Sonuç bekleniyor…</div>}
+              {sel.result ? <ResultTable result={sel.result} providers={me.providers} kind={sel.kind} ownHotelId={me.client?.kind === "otel" ? me.client?.ownHotelId : null} /> : <div className="muted">Sonuç bekleniyor…</div>}
             </Card>
           )}
         </div>

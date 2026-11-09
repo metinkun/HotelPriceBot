@@ -29,7 +29,7 @@ export default function Schedules({ me, navigate }) {
 
   return (
     <div>
-      <PageHeader title="Planlı aramalar" description="Örnek: her Pazartesi 14:00'te, 30 gün sonrasına 3 gecelik fiyat araması. Sonuçlar Geçmiş sayfasında birikir." actions={<Button icon="plus" onClick={() => setForm({ ...empty, hotelIds: hotels.slice(0, 1).map((h) => h.internalHotelId) })}>Yeni plan</Button>} />
+      <PageHeader title="Planlı aramalar" description={`Örnek: her Pazartesi 14:00'te, 30 gün sonrasına 3 gecelik fiyat araması. Sonuçlar Geçmiş sayfasında birikir. Bugün ${me.usage?.scheduledRuns ?? 0}/${me.limits?.dailyScheduledRuns ? me.limits.dailyScheduledRuns : "∞"} planlı çalışma.`} actions={<Button icon="plus" onClick={() => setForm({ ...empty, hotelIds: hotels.slice(0, 1).map((h) => h.internalHotelId) })}>Yeni plan</Button>} />
       {err && <Alert tone="bad">{err}</Alert>}
       <DataTable rows={list} loading={loading} onRowDoubleClick={edit}
         columns={[
