@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { api, fmtDate, today } from "../api.js";
 import { PageHeader, Stat, DataTable, Button, Badge, Alert, Skeleton, useToast } from "@kit";
 
-export default function Dashboard() {
+export default function Dashboard({ navigate }) {
   const [health, setHealth] = useState(null);
   const [jobs, setJobs] = useState(null);
   const [usage, setUsage] = useState(null);
+  const [pending, setPending] = useState(null);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const toast = useToast();
@@ -14,6 +15,7 @@ export default function Dashboard() {
     try {
       const [h, j, u] = await Promise.all([api("/api/admin/providers/health"), api("/api/admin/jobs/stats"), api("/api/admin/usage?from=" + today() + "&to=" + today())]);
       setHealth(h); setJobs(j); setUsage(u); setErr("");
+      api("/api/admin/approvals?status=pending&limit=1").then((a) => setPending(a.pending || 0)).catch(() => {});
     } catch (e) { setErr(e.message); }
   };
   useEffect(() => { load(); const t = setInterval(load, 15000); return () => clearInterval(t); }, []);
@@ -47,6 +49,7 @@ export default function Dashboard() {
         <Stat icon="layers" label="Kuyrukta / çalışan iş" value={`${jobs?.queued ?? 0} / ${jobs?.running ?? 0}`} soft />
         <Stat icon="server" label="Cache" value={health.cache?.enabled ? health.cache.ttlSeconds : "—"} unit={health.cache?.enabled ? "sn" : "kapalı"} soft />
         <Stat icon="shield" label="Kanarya" value={canary ? `${canary.healthy}/${canary.total}` : "—"} sub={canary ? "son çalışma: " + fmtDate(canary.ranAt) : "henüz çalışmadı"} soft={!canary || canary.healthy < canary.total} />
+        <Stat icon="clipboardCheck" label="Onay bekleyen" value={pending ?? "—"} sub="cihaz talepleri" soft={!pending} onClick={() => navigate && navigate("approvals")} />
       </div>
 
       <div style={{ marginTop: 16 }}>

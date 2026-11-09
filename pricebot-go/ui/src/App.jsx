@@ -14,6 +14,9 @@ import HotelDetail from "./pages/HotelDetail.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Import from "./pages/Import.jsx";
 import DetailChanges from "./pages/DetailChanges.jsx";
+import Approvals from "./pages/Approvals.jsx";
+import LoginLogs from "./pages/LoginLogs.jsx";
+import Sites from "./pages/Sites.jsx";
 
 // key, menu etiketi, ikon, bilesen, ust cubuk basligi, (menu grubu). Etiketi bos olanlar menude gorunmez.
 const PAGES = [
@@ -21,9 +24,12 @@ const PAGES = [
   { key: "clients", label: "Müşteriler", icon: "users", comp: Clients, title: "Müşteriler", section: "Müşteri" },
   { key: "plans", label: "Planlar", icon: "layers", comp: Plans, title: "Planlar" },
   { key: "schedules", label: "Planlı Aramalar", icon: "calendar", comp: Schedules, title: "Planlı aramalar" },
+  { key: "approvals", label: "Onay Bekleyenler", icon: "clipboardCheck", comp: Approvals, title: "Onay bekleyen işlemler" },
   { key: "usage", label: "Kullanım", icon: "chart", comp: Usage, title: "Kullanım", section: "Operasyon" },
   { key: "logs", label: "İstek Logları", icon: "list", comp: Logs, title: "İstek logları" },
-  { key: "hotels", label: "Oteller", icon: "building", comp: Hotels, title: "Oteller", section: "Otel" },
+  { key: "loginlogs", label: "Giriş Logları", icon: "logIn", comp: LoginLogs, title: "Giriş logları" },
+  { key: "sites", label: "Site Yönetimi", icon: "globe", comp: Sites, title: "Site yönetimi", section: "Otel" },
+  { key: "hotels", label: "Oteller", icon: "building", comp: Hotels, title: "Oteller" },
   { key: "import", label: "Toplu Otel Ekle", icon: "upload", comp: Import, title: "Toplu otel ekle" },
   { key: "changes", label: "Detay Değişiklikleri", icon: "diff", comp: DetailChanges, title: "Otel detay değişiklikleri" },
   { key: "notifications", label: "Bildirimler", icon: "bell", comp: Notifications, title: "Bildirimler", section: "Sistem" },
@@ -65,6 +71,7 @@ export default function App() {
   const [checked, setChecked] = useState(false);
   const [route, setRoute] = useState(parseHash);
   const [unread, setUnread] = useState(0);
+  const [pending, setPending] = useState(0);
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash());
@@ -73,13 +80,20 @@ export default function App() {
     return () => { window.removeEventListener("hashchange", onHash); window.removeEventListener("pricebot:logout", onLogout); };
   }, []);
   useEffect(() => { if (!getToken()) { setChecked(true); return; } api("/api/admin/auth/me").then(setMe).catch(() => setMe(null)).finally(() => setChecked(true)); }, []);
-  useEffect(() => { if (!me) return; const f = () => api("/api/admin/notifications?unread=true&limit=1").then((d) => setUnread(d.unread || 0)).catch(() => {}); f(); const t = setInterval(f, 60000); return () => clearInterval(t); }, [me, route.key]);
+  useEffect(() => {
+    if (!me) return;
+    const f = () => {
+      api("/api/admin/notifications?unread=true&limit=1").then((d) => setUnread(d.unread || 0)).catch(() => {});
+      api("/api/admin/approvals?status=pending&limit=1").then((d) => setPending(d.pending || 0)).catch(() => {});
+    };
+    f(); const t = setInterval(f, 60000); return () => clearInterval(t);
+  }, [me, route.key]);
 
   if (!checked) return null;
   if (!me) return <Login onLogin={setMe} />;
   const current = PAGES.find((p) => p.key === route.key) || PAGES[0];
   const Page = current.comp;
-  const nav = PAGES.filter((p) => p.label).map((p) => ({ key: p.key, label: p.label, icon: p.icon, section: p.section, badge: p.key === "notifications" ? unread : 0 }));
+  const nav = PAGES.filter((p) => p.label).map((p) => ({ key: p.key, label: p.label, icon: p.icon, section: p.section, badge: p.key === "notifications" ? unread : p.key === "approvals" ? pending : 0 }));
   return (
     <AppShell product="Admin" nav={nav} current={current.parent || current.key} onNavigate={(k) => navigate(k)} title={current.title}
       user={{ name: me.name || "Admin", sub: me.email }} onLogout={() => { setToken(""); setMe(null); }}
