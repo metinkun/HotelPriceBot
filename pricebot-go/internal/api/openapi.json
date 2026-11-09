@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Hotel Price Bot API",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "Birlesik cok-saglayicili otel fiyat botu (13 site: etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, tatilsitesi, prontotour, tatilcikus, tatildukkani).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
   },
   "servers": [
@@ -388,6 +388,46 @@
           },
           "isActive": {
             "type": "boolean"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "acente",
+              "otel",
+              "both"
+            ]
+          },
+          "maxSites": {
+            "type": "integer"
+          },
+          "maxHotels": {
+            "type": "integer"
+          },
+          "maxUsers": {
+            "type": "integer"
+          },
+          "dailySearches": {
+            "type": "integer",
+            "description": "Gunluk anlik arama (kac siteye giderse gitsin 1)"
+          },
+          "dailyScheduledRuns": {
+            "type": "integer",
+            "description": "Gunde calisabilecek planli arama"
+          },
+          "allowApi": {
+            "type": "boolean"
+          },
+          "isDemo": {
+            "type": "boolean"
+          },
+          "demoDays": {
+            "type": "integer"
+          },
+          "maxDevicesPc": {
+            "type": "integer"
+          },
+          "maxDevicesMobile": {
+            "type": "integer"
           }
         }
       },
@@ -690,6 +730,51 @@
               "type": "string"
             },
             "description": "bos = hepsi"
+          }
+        }
+      },
+      "Limits": {
+        "type": "object",
+        "description": "0 = sinirsiz",
+        "properties": {
+          "maxSites": {
+            "type": "integer"
+          },
+          "maxHotels": {
+            "type": "integer"
+          },
+          "maxUsers": {
+            "type": "integer"
+          },
+          "dailySearches": {
+            "type": "integer"
+          },
+          "dailyScheduledRuns": {
+            "type": "integer"
+          },
+          "dailyQuota": {
+            "type": "integer"
+          },
+          "ratePerMinute": {
+            "type": "integer"
+          },
+          "maxConcurrency": {
+            "type": "integer"
+          },
+          "maxDevicesPc": {
+            "type": "integer"
+          },
+          "maxDevicesMobile": {
+            "type": "integer"
+          },
+          "allowApi": {
+            "type": "boolean"
+          },
+          "allowPackages": {
+            "type": "boolean"
+          },
+          "allowFresh": {
+            "type": "boolean"
           }
         }
       }
@@ -2963,7 +3048,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Cihaz dogrulamasi acik musterilerde yanit step alanini tasir: done (token) | register (ilk cihaz: WebAuthn kayit secenekleri) | verify (kayitli cihaz: dogrulama secenekleri). 403 code=demo_expired, 409 code=device_limit."
       }
     },
     "/api/portal/me": {
@@ -4365,6 +4451,825 @@
           }
         ]
       }
+    },
+    "/api/admin/clients/{id}/limits": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Musterinin gecerli limitleri, paket degerleri, bugunku kullanim",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{limits, planLimits, customized, plan, usage{today, hotels, users}, demoExpiresAt, planAssignedAt}"
+          }
+        },
+        "description": "Limitler pakete atamada kopyalanir; admin degistirirse customized=true olur ve paket degisse de korunur.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Musteri limitlerini ozellestir (tam nesne)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Limits"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/limits/reset": {
+      "post": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Limitleri paket degerlerine sifirla",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/clients/{id}/hotels": {
+      "post": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Sistem otelini musteriye bagla (otel limiti kontrol edilir)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "internalHotelId"
+                ],
+                "properties": {
+                  "internalHotelId": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/hotels/{hotelId}": {
+      "delete": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Otel baglantisini kaldir",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hotelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/login-logs": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Portal giris loglari (IP, cihaz, sonuc)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "result: ok | bad_password | inactive | expired | device_required | device_limit | webauthn_failed | removed_device"
+          }
+        },
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 200
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/approvals": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Onay bekleyen islemler (cihaz kaldirma/degistirme)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{pending, items[]}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "all"
+              ],
+              "default": "pending"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/approvals/{id}/approve": {
+      "post": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Talebi onayla (cihaz kaldirilir, kullanici yeni cihaz kaydedebilir)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/approvals/{id}/reject": {
+      "post": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Talebi reddet",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/portal-users/{id}/devices": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Kullanicinin kayitli cihazlari (kaldirilanlar dahil)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/devices/{id}": {
+      "delete": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Cihazi kaldir (admin tarafinda sinirsiz)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/usage/daily": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Musteri bazinda gunluk arama / planli calisma / API isi / site cagrisi",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/sites": {
+      "get": {
+        "tags": [
+          "Admin - Site Yonetimi"
+        ],
+        "summary": "Siteler: genel durum, gorunen ad, sira, yetenekler, saglik, kanarya, kullanan musteri sayisi",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/sites/{name}": {
+      "put": {
+        "tags": [
+          "Admin - Site Yonetimi"
+        ],
+        "summary": "Siteyi genel olarak ac/kapa, gorunen ad, sira, not",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Kapali site tum musteriler icin 'bakimda' sayilir; sorgulanmaz, portalda devre disi gorunur.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "sortOrder": {
+                    "type": "integer"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/{id}/meta": {
+      "put": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Otel kunyesi (ad, sehir, bolge, ulke, yildiz, zincir, dis kimlik, aktif, not)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Pasif otel aramalarda atlanir.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "stars": {
+                    "type": "integer"
+                  },
+                  "chain": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/{id}/clients": {
+      "get": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Otele bagli musteriler",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/portal/auth/webauthn/register/begin": {
+      "post": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Bu cihazi kaydet: WebAuthn kayit secenekleri (setupToken ile)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Cihaz siniri doluysa 409 device_limit + cihaz listesi.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "setupToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/auth/webauthn/register/finish": {
+      "post": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Cihaz kaydini tamamla -> token (dev claim)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "setupToken",
+                  "credential"
+                ],
+                "properties": {
+                  "setupToken": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "credential": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/auth/webauthn/verify/finish": {
+      "post": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Biyometrik dogrulamayi tamamla -> token",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "setupToken",
+                  "credential"
+                ],
+                "properties": {
+                  "setupToken": {
+                    "type": "string"
+                  },
+                  "credential": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/auth/devices/replace-request": {
+      "post": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Cihaz siniri doluyken yoneticiden degistirme onayi iste",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "setupToken",
+                  "removeDeviceId"
+                ],
+                "properties": {
+                  "setupToken": {
+                    "type": "string"
+                  },
+                  "removeDeviceId": {
+                    "type": "integer"
+                  },
+                  "newDeviceName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/devices": {
+      "get": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Cihazlarim, sinirlar, gunluk kaldirma hakki, bekleyen talepler",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/portal/devices/{id}": {
+      "delete": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Cihazi kaldir (gunde 1; fazlasi admin onayina duser -> 202)",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/portal/approvals": {
+      "get": {
+        "tags": [
+          "Portal - Cihaz Dogrulama"
+        ],
+        "summary": "Kullanicinin onay talepleri",
+        "security": [
+          {
+            "PortalBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -4412,6 +5317,18 @@
     {
       "name": "Admin - Toplu Otel Ekle",
       "description": "Isim listesinden acentelerde arama ile toplu otel ekleme (asenkron, importId ile takip)."
+    },
+    {
+      "name": "Admin - Hesap Limitleri & Onaylar",
+      "description": "Paket limitleri, musteri bazli ozellestirme, giris loglari, onay bekleyen islemler, cihazlar."
+    },
+    {
+      "name": "Admin - Site Yonetimi",
+      "description": "Sitelerin genel acik/kapali durumu, gorunen ad, sira."
+    },
+    {
+      "name": "Portal - Cihaz Dogrulama",
+      "description": "Sifre + WebAuthn (Face ID / parmak izi) giris akisi, cihazlarim, onay talepleri."
     }
   ]
 }

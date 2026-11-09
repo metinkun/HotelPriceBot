@@ -51,3 +51,26 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
 `clients.client_type`, `clients.enabled_providers`, `portal_users`, `client_hotels`, `searches`, `schedules`;
 `hotel_details` (acente basina son snapshot + surum), `hotel_detail_changes` (diff + ozet), `hotel_detail_views`
 (goruntuleyen bazli goruldu surumu), `notifications` (`client_id` NULL = admin).
+
+## Paketler, limitler ve hesap kurallari (0005_accounts.sql)
+
+- **Paket (plan)** alanlari: tur (ACENTE / OTEL / her ikisi), site sayisi, otel sayisi, kullanici sayisi, gunluk anlik arama,
+  gunluk planli gorev, API kullanicisi, demo paketi (+ gun), cihaz basina sinir (bilgisayar/mobil), site cagrisi/gun (ic gosterim).
+- **Kota birimi = arama sayisi**: bir arama kac siteye giderse gitsin 1 sayilir; musteri portalda bunu gorur. Site cagrisi
+  (eski kredi) yalnizca admin panelde (Kullanim > Site cagrilari) izlenir. Sayaclar `client_daily` tablosunda.
+- **Musteri limitleri**: paket atanirken paket degerleri musteriye kopyalanir (`clients.limits`). Admin tek tek
+  degistirebilir (`limits_customized=true`). Paket degistiginde ozellestirilmis degerler KORUNUR (yazili anlasma olabilir);
+  portalda "Paketinizde size ozel duzenlemeler var" uyarisi gosterilir. "Pakete sifirla" ile paket degerlerine donulur.
+- **ACENTE / OTEL**: musteri turu. OTEL turunde "kendi oteli" secilir; portalda bu otel sabitlenir, rakip otellerin her
+  sitedeki fiyat farki gosterilir. Paket turu 'both' degilse yalnizca ayni turdeki musteriye atanabilir.
+- **Demo**: demo paketi atanan musteriye `demo_expires_at` yazilir; suresi dolunca portal ve API girisi reddedilir.
+- **Cihaz dogrulama (WebAuthn)**: musteri ayari `require_device_auth` (varsayilan acik). Giris: sifre -> ilk cihazda
+  kayit (Face ID / Touch ID / Windows Hello) -> sonraki girislerde biyometrik dogrulama. Kullanici basina sinir
+  2 bilgisayar + 2 mobil (paketten). Kullanici gunde 1 cihaz kaldirabilir; fazlasi veya sinir doluyken yeni cihaz
+  talebi "Onay Bekleyenler"e duser; admin onaylayinca eski cihaz kaldirilir. Admin tarafinda kaldirma sinirsiz.
+  Test/sunum hesaplarinda ayar kapatilabilir (demo musterisinde kapali).
+- **Giris loglari**: her portal giris denemesi (IP, tarayici, cihaz, sonuc) `login_logs`; admin > Giris Loglari ve musteri detayi.
+- **Site yonetimi**: admin bir siteyi genel olarak kapatabilir (bakim); kapali site hicbir musteri icin sorgulanmaz,
+  portalda "bakimda" gorunur. Gorunen ad ve sira degistirilebilir. Yeni site eklemek kod gelistirmesi gerektirir.
+- **Otel kunyesi**: `hotels` tablosu (sehir, bolge, ulke, yildiz, zincir, dis kimlik, aktif). Pasif otel aramalarda
+  atlanir. Admin bir sistem otelini dogrudan musteriye baglayabilir (otel limiti kontrol edilir).
