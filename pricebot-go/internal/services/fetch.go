@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -19,7 +20,15 @@ type Fetcher struct {
 	cache *cache.Cache
 	lim   *limiter.Limiter
 	usage UsageHook
+	gate  func(name string) bool // site genel olarak acik mi (nil = hepsi acik)
 }
+
+// SetSiteGate admin'in kapattigi siteleri (bakimda) atlamak icin kanca.
+func (f *Fetcher) SetSiteGate(g func(name string) bool) { f.gate = g }
+
+var ErrSiteDisabled = errors.New("Site gecici olarak kapali (bakimda)")
+
+func (f *Fetcher) siteOpen(name string) bool { return f.gate == nil || f.gate(name) }
 
 func NewFetcher(c *cache.Cache, l *limiter.Limiter) *Fetcher {
 	return &Fetcher{cache: c, lim: l}
@@ -35,6 +44,9 @@ func upstreamCtx(ctx context.Context) (context.Context, context.CancelFunc) {
 
 // Price tek provider icin fiyat: cache -> tek ucus -> limiter/devre kesici -> provider.
 func (f *Fetcher) Price(ctx context.Context, name string, p provider.Provider, m *provider.Mapping, q types.PriceQuery, fresh bool) (*provider.PriceResult, error) {
+	if !f.siteOpen(name) {
+		return nil, ErrSiteDisabled
+	}
 	key := cache.PriceKey(name, m.ProviderHotelID, q)
 	if !fresh {
 		var cached provider.PriceResult
@@ -78,6 +90,9 @@ func (f *Fetcher) Price(ctx context.Context, name string, p provider.Provider, m
 
 // Package tek provider icin paket fiyatlari (ayni akis).
 func (f *Fetcher) Package(ctx context.Context, name string, pp provider.PackageProvider, m *provider.Mapping, q types.PackageQuery, fresh bool) (*provider.PackageResult, error) {
+	if !f.siteOpen(name) {
+		return nil, ErrSiteDisabled
+	}
 	key := cache.PackageKey(name, m.ProviderHotelID, q)
 	if !fresh {
 		var cached provider.PackageResult

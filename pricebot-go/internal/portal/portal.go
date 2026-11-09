@@ -77,6 +77,7 @@ type Service struct {
 	jobs   *jobs.Manager
 	reg    *providers.Registry
 	hotels *services.HotelService
+	sites  *services.Sites
 
 	mu       sync.Mutex
 	watching map[int64]bool
@@ -84,9 +85,11 @@ type Service struct {
 	wg       sync.WaitGroup
 }
 
-func New(d *db.DB, jm *jobs.Manager, reg *providers.Registry, hs *services.HotelService) *Service {
-	return &Service{db: d, jobs: jm, reg: reg, hotels: hs, watching: map[int64]bool{}, stop: make(chan struct{})}
+func New(d *db.DB, jm *jobs.Manager, reg *providers.Registry, hs *services.HotelService, sites *services.Sites) *Service {
+	return &Service{db: d, jobs: jm, reg: reg, hotels: hs, sites: sites, watching: map[int64]bool{}, stop: make(chan struct{})}
 }
+
+func (p *Service) siteOpen(name string) bool { return p.sites == nil || p.sites.Enabled(name) }
 
 // EffectiveProviders musterinin kullanabilecegi provider'lar: plan izinleri ∩ etkin siteler.
 func (p *Service) EffectiveProviders(ctx context.Context, clientID int, planAllowed []string) ([]string, error) {
@@ -118,7 +121,7 @@ func (p *Service) EffectiveProviders(ctx context.Context, clientID int, planAllo
 	}
 	out := []string{}
 	for _, n := range all { // kayit sirasini koru
-		if allowed[n] {
+		if allowed[n] && p.siteOpen(n) {
 			out = append(out, n)
 		}
 	}
@@ -172,6 +175,7 @@ func (p *Service) RunSearch(ctx context.Context, id *auth.Identity, userID, sche
 		}
 	}
 	ci, co := req.Resolve(time.Now())
+	inactive, _ := p.db.InactiveHotels(ctx, req.HotelIDs)
 	s, err := p.db.CreateSearch(ctx, id.ClientID, userID, scheduleID, req.Kind, req)
 	if err != nil {
 		return nil, err
@@ -184,6 +188,12 @@ func (p *Service) RunSearch(ctx context.Context, id *auth.Identity, userID, sche
 		hr := HotelResult{HotelID: h, Status: "queued"}
 		if hv, err := p.hotels.Get(ctx, h); err == nil && hv.HotelName != nil {
 			hr.HotelName = *hv.HotelName
+		}
+		if inactive[h] {
+			hr.Status, hr.Error = "failed", "Otel pasif durumda; arama yapilmadi"
+			res.Done++
+			res.Hotels = append(res.Hotels, hr)
+			continue
 		}
 		j, err := p.jobs.Submit(jctx, fmt.Sprint(id.ClientID), jr)
 		if err != nil {
@@ -373,24 +383,43 @@ func (p *Service) runDue() {
 			continue
 		}
 		req.Kind = s.Kind
-		// Musteri plani ve etkin siteler
+		// Musteri plani, limitler ve etkin siteler
 		id := &auth.Identity{ClientID: s.ClientID, PlanCode: "portal"}
+		c, err := p.db.GetClient(ctx, s.ClientID)
+		if err != nil || !c.IsActive {
+			continue
+		}
+		if c.DemoExpiresAt != nil && now.After(*c.DemoExpiresAt) {
+			continue // deneme suresi dolmus
+		}
+		var plan *db.Plan
 		var planAllowed []string
-		if c, err := p.db.GetClient(ctx, s.ClientID); err == nil && c.PlanID != nil {
+		if c.PlanID != nil {
 			if pl, err := p.db.GetPlan(ctx, *c.PlanID); err == nil {
+				plan = pl
 				planAllowed = pl.AllowedProviders
 				id.PlanCode = pl.Code
 			}
+		}
+		lim := db.EffectiveLimits(c, plan)
+		sid := s.ID
+		if lim.DailyScheduledRuns > 0 && p.db.ClientDailyToday(ctx, s.ClientID).ScheduledRuns >= lim.DailyScheduledRuns {
+			msg := fmt.Sprintf("Gunluk planli gorev limiti doldu (%d); bu calisma atlandi", lim.DailyScheduledRuns)
+			if sr, err := p.db.CreateSearch(ctx, s.ClientID, s.UserID, &sid, s.Kind, req); err == nil {
+				_ = p.db.UpdateSearch(ctx, sr.ID, "failed", nil, &msg, true)
+			}
+			slog.Info("planli arama limit nedeniyle atlandi", "schedule", s.ID, "client", s.ClientID)
+			continue
 		}
 		eff, err := p.EffectiveProviders(ctx, s.ClientID, planAllowed)
 		if err != nil {
 			continue
 		}
-		sid := s.ID
 		if _, err := p.RunSearch(ctx, id, s.UserID, &sid, req, eff); err != nil {
 			slog.Warn("planli arama calistirilamadi", "schedule", s.ID, "err", err)
 			continue
 		}
+		_ = p.db.IncClientDaily(ctx, s.ClientID, "scheduled_runs", 1)
 		slog.Info("planli arama calistirildi", "schedule", s.ID, "name", s.Name, "next", next)
 	}
 }
@@ -403,6 +432,7 @@ type ProviderInfo struct {
 	Enabled          bool   `json:"enabled"`
 	SupportsPackages bool   `json:"supportsPackages"`
 	RequiresBrowser  bool   `json:"requiresBrowser"`
+	Maintenance      bool   `json:"maintenance"` // admin tarafindan genel olarak kapatilmis
 }
 
 var providerMeta = map[string][2]string{
@@ -427,7 +457,10 @@ func (p *Service) ProviderList(effective []string) []ProviderInfo {
 			label, domain = meta[0], meta[1]
 		}
 		caps := pr.Capabilities()
-		out = append(out, ProviderInfo{Name: pr.Name(), Label: label, Domain: domain, Enabled: eff[pr.Name()], SupportsPackages: caps.SupportsPackages, RequiresBrowser: caps.RequiresBrowser})
+		if p.sites != nil {
+			label = p.sites.Label(pr.Name(), label)
+		}
+		out = append(out, ProviderInfo{Name: pr.Name(), Label: label, Domain: domain, Enabled: eff[pr.Name()] && p.siteOpen(pr.Name()), SupportsPackages: caps.SupportsPackages, RequiresBrowser: caps.RequiresBrowser, Maintenance: !p.siteOpen(pr.Name())})
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Enabled && !out[j].Enabled })
 	return out

@@ -9,8 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"pricebot/internal/apperr"
 	"pricebot/internal/auth"
 	"pricebot/internal/db"
@@ -27,40 +25,6 @@ func portalUserFrom(ctx context.Context) *db.PortalUser {
 		return v
 	}
 	return nil
-}
-
-// POST /api/portal/auth/login {email, password}
-func (s *Server) portalLogin(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	if err := decodeBody(r, &body); err != nil || body.Email == "" || body.Password == "" {
-		badRequest(w, "email ve password zorunlu")
-		return
-	}
-	if !s.usage.RateAllow(r.Context(), -2*int(hash32(clientIP(r))), 10) {
-		writeError(w, r, apperr.New(apperr.TooMany, "Cok fazla giris denemesi; 1 dk bekleyin"))
-		return
-	}
-	u, err := s.db.GetPortalUserByEmail(r.Context(), body.Email)
-	if err != nil || !u.IsActive || bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(body.Password)) != nil {
-		writeJSON(w, 401, map[string]any{"error": "E-posta veya sifre hatali"})
-		return
-	}
-	c, err := s.db.GetClient(r.Context(), u.ClientID)
-	if err != nil || !c.IsActive {
-		writeJSON(w, 403, map[string]any{"error": "Hesap pasif"})
-		return
-	}
-	exp := time.Now().Add(24 * time.Hour)
-	tok, err := auth.SignToken(s.jwtSecret(), auth.Claims{Sub: fmt.Sprint(u.ID), Email: u.Email, Role: "portal", Exp: exp.Unix(), Iat: time.Now().Unix()})
-	if err != nil {
-		writeError(w, r, err)
-		return
-	}
-	go s.db.TouchPortalLogin(context.Background(), u.ID)
-	writeJSON(w, 200, map[string]any{"token": tok, "expiresAt": exp, "user": map[string]any{"id": u.ID, "email": u.Email, "name": u.Name}, "client": map[string]any{"id": c.ID, "name": c.Name}})
 }
 
 // portal: Bearer JWT (role=portal) -> kullanici + musteri + plan + etkin siteler.
@@ -87,6 +51,23 @@ func (s *Server) portal(h http.HandlerFunc) http.Handler {
 			writeJSON(w, 403, map[string]any{"error": "Hesap pasif"})
 			return
 		}
+		if demoExpired(c) {
+			writeJSON(w, 403, map[string]any{"error": "Deneme sureniz doldu; devam etmek icin yetkilinizle iletisime gecin", "code": "demo_expired"})
+			return
+		}
+		var dev *db.Device
+		if claims.Dev > 0 {
+			d, err := s.db.GetDevice(r.Context(), claims.Dev)
+			if err != nil || d.RemovedAt != nil || d.UserID != u.ID {
+				writeJSON(w, 401, map[string]any{"error": "Bu cihazin kaydi kaldirilmis; lutfen yeniden giris yapin", "code": "device_removed"})
+				return
+			}
+			dev = d
+		} else if c.RequireDeviceAuth {
+			// Cihaz dogrulamasi acikken cihazsiz (eski) oturum kabul edilmez
+			writeJSON(w, 401, map[string]any{"error": "Oturumunuz cihaz dogrulamasi gerektiriyor; lutfen yeniden giris yapin", "code": "device_required"})
+			return
+		}
 		id := &auth.Identity{ClientID: c.ID, ClientName: c.Name, PlanCode: "portal"}
 		var plan *db.Plan
 		if c.PlanID != nil {
@@ -95,22 +76,27 @@ func (s *Server) portal(h http.HandlerFunc) http.Handler {
 				id.PlanCode = pl.Code
 			}
 		}
-		pl := planLimitsOf(plan)
+		pl := limitsOf(c, plan)
 		eff, err := s.portalSvc.EffectiveProviders(r.Context(), c.ID, pl.AllowedProviders)
 		if err != nil {
 			writeError(w, r, err)
 			return
 		}
-		pl.AllowedProviders = eff // portalda etkin siteler = plan ∩ musteri ayari
-		if pl.DailyQuota > 0 {
-			used := s.usage.UsedToday(r.Context(), c.ID)
-			w.Header().Set("X-Quota-Limit", fmt.Sprint(pl.DailyQuota))
-			w.Header().Set("X-Quota-Used", fmt.Sprint(used))
+		if pl.MaxSites > 0 && len(eff) > pl.MaxSites {
+			eff = eff[:pl.MaxSites]
+		}
+		pl.AllowedProviders = eff // portalda etkin siteler = plan ∩ musteri ayari ∩ acik siteler
+		if pl.DailySearches > 0 {
+			w.Header().Set("X-Quota-Limit", fmt.Sprint(pl.DailySearches))
+			w.Header().Set("X-Quota-Used", fmt.Sprint(s.db.ClientDailyToday(r.Context(), c.ID).Searches))
 		}
 		ctx := auth.WithIdentity(r.Context(), id)
 		ctx = context.WithValue(ctx, planKey, pl)
 		ctx = context.WithValue(ctx, clientIDKey, fmt.Sprint(c.ID))
 		ctx = context.WithValue(ctx, portalUserKey, u)
+		if dev != nil {
+			ctx = context.WithValue(ctx, portalDeviceKey, dev)
+		}
 		h(w, r.WithContext(ctx))
 	})
 }
@@ -121,12 +107,24 @@ func (s *Server) portalMe(w http.ResponseWriter, r *http.Request) {
 	id := auth.From(r.Context())
 	pl := planFrom(r.Context())
 	c, _ := s.db.GetClient(r.Context(), id.ClientID)
+	daily := s.db.ClientDailyToday(r.Context(), id.ClientID)
+	var planName string
+	if c != nil && c.PlanID != nil {
+		if p, err := s.db.GetPlan(r.Context(), *c.PlanID); err == nil {
+			planName = p.Name
+		}
+	}
+	dev := portalDeviceFrom(r.Context())
 	out := map[string]any{
 		"user":      map[string]any{"id": u.ID, "email": u.Email, "name": u.Name},
 		"client":    c,
 		"providers": s.portalSvc.ProviderList(pl.AllowedProviders),
-		"plan":      map[string]any{"code": id.PlanCode, "dailyQuota": pl.DailyQuota, "allowPackages": pl.AllowPackages, "allowFresh": pl.AllowFresh},
-		"usedToday": s.usage.UsedToday(r.Context(), id.ClientID),
+		// dailyQuota = gunluk ARAMA sayisi (musteriye gosterilen birim); site cagrisi sadece admin panelde
+		"plan":      map[string]any{"code": id.PlanCode, "name": planName, "dailyQuota": pl.DailySearches, "allowPackages": pl.AllowPackages, "allowFresh": pl.AllowFresh, "kind": pl.Kind},
+		"limits":    pl.Limits,
+		"usage":     map[string]any{"searches": daily.Searches, "scheduledRuns": daily.ScheduledRuns, "hotels": s.db.CountClientHotels(r.Context(), id.ClientID), "users": s.db.CountPortalUsers(r.Context(), id.ClientID)},
+		"usedToday": daily.Searches,
+		"device":    dev,
 	}
 	writeJSON(w, 200, out)
 }
@@ -180,6 +178,10 @@ func (s *Server) portalAddHotel(w http.ResponseWriter, r *http.Request) {
 			writeError(w, r, apperr.New(apperr.Forbidden, "'%s' sitesi bu hesap icin etkin degil", k))
 			return
 		}
+	}
+	if pl.MaxHotels > 0 && s.db.CountClientHotels(r.Context(), id.ClientID) >= pl.MaxHotels {
+		writeError(w, r, apperr.New(apperr.Forbidden, "Paketinizdeki otel siniri doldu (%d). Daha fazla otel icin yetkilinizle iletisime gecin.", pl.MaxHotels))
+		return
 	}
 	body.InternalHotelID = "" // her musteri icin yeni otel kaydi
 	res, err := s.hotels.AddFromURLs(r.Context(), body)
@@ -291,8 +293,8 @@ func (s *Server) portalRunSearch(w http.ResponseWriter, r *http.Request) {
 	id := auth.From(r.Context())
 	u := portalUserFrom(r.Context())
 	pl := planFrom(r.Context())
-	if pl.DailyQuota > 0 && s.usage.UsedToday(r.Context(), id.ClientID) >= pl.DailyQuota {
-		writeError(w, r, apperr.New(apperr.TooMany, "Gunluk kredi kotasi doldu (%d)", pl.DailyQuota))
+	if pl.DailySearches > 0 && s.db.ClientDailyToday(r.Context(), id.ClientID).Searches >= pl.DailySearches {
+		writeError(w, r, apperr.New(apperr.TooMany, "Gunluk arama hakkiniz doldu (%d). Hak her gun 00:00'da yenilenir.", pl.DailySearches))
 		return
 	}
 	uid := u.ID
@@ -301,6 +303,7 @@ func (s *Server) portalRunSearch(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	_ = s.db.IncClientDaily(r.Context(), id.ClientID, "searches", 1)
 	writeJSON(w, 202, res)
 }
 

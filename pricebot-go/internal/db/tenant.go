@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -13,52 +14,84 @@ import (
 // ---- Modeller ----
 
 type Plan struct {
-	ID               int       `json:"id"`
-	Code             string    `json:"code"`
-	Name             string    `json:"name"`
-	DailyQuota       int       `json:"dailyQuota"`
-	AllowedProviders []string  `json:"allowedProviders"`
-	AllowPackages    bool      `json:"allowPackages"`
-	AllowFresh       bool      `json:"allowFresh"`
-	MaxConcurrency   int       `json:"maxConcurrency"`
-	RatePerMinute    int       `json:"ratePerMinute"`
-	IsActive         bool      `json:"isActive"`
-	CreatedAt        time.Time `json:"createdAt"`
-	UpdatedAt        time.Time `json:"updatedAt"`
+	ID                 int       `json:"id"`
+	Code               string    `json:"code"`
+	Name               string    `json:"name"`
+	DailyQuota         int       `json:"dailyQuota"`
+	AllowedProviders   []string  `json:"allowedProviders"`
+	AllowPackages      bool      `json:"allowPackages"`
+	AllowFresh         bool      `json:"allowFresh"`
+	MaxConcurrency     int       `json:"maxConcurrency"`
+	RatePerMinute      int       `json:"ratePerMinute"`
+	IsActive           bool      `json:"isActive"`
+	Kind               string    `json:"kind"` // acente | otel | both
+	MaxSites           int       `json:"maxSites"`
+	MaxHotels          int       `json:"maxHotels"`
+	MaxUsers           int       `json:"maxUsers"`
+	DailySearches      int       `json:"dailySearches"`
+	DailyScheduledRuns int       `json:"dailyScheduledRuns"`
+	AllowAPI           bool      `json:"allowApi"`
+	IsDemo             bool      `json:"isDemo"`
+	DemoDays           int       `json:"demoDays"`
+	MaxDevicesPC       int       `json:"maxDevicesPc"`
+	MaxDevicesMobile   int       `json:"maxDevicesMobile"`
+	CreatedAt          time.Time `json:"createdAt"`
+	UpdatedAt          time.Time `json:"updatedAt"`
 }
 
 type PlanInput struct {
-	Code             string   `json:"code"`
-	Name             string   `json:"name"`
-	DailyQuota       int      `json:"dailyQuota"`
-	AllowedProviders []string `json:"allowedProviders"`
-	AllowPackages    bool     `json:"allowPackages"`
-	AllowFresh       bool     `json:"allowFresh"`
-	MaxConcurrency   int      `json:"maxConcurrency"`
-	RatePerMinute    int      `json:"ratePerMinute"`
-	IsActive         bool     `json:"isActive"`
+	Code               string   `json:"code"`
+	Name               string   `json:"name"`
+	DailyQuota         int      `json:"dailyQuota"`
+	AllowedProviders   []string `json:"allowedProviders"`
+	AllowPackages      bool     `json:"allowPackages"`
+	AllowFresh         bool     `json:"allowFresh"`
+	MaxConcurrency     int      `json:"maxConcurrency"`
+	RatePerMinute      int      `json:"ratePerMinute"`
+	IsActive           bool     `json:"isActive"`
+	Kind               string   `json:"kind"`
+	MaxSites           int      `json:"maxSites"`
+	MaxHotels          int      `json:"maxHotels"`
+	MaxUsers           int      `json:"maxUsers"`
+	DailySearches      int      `json:"dailySearches"`
+	DailyScheduledRuns int      `json:"dailyScheduledRuns"`
+	AllowAPI           *bool    `json:"allowApi"`
+	IsDemo             bool     `json:"isDemo"`
+	DemoDays           int      `json:"demoDays"`
+	MaxDevicesPC       *int     `json:"maxDevicesPc"`
+	MaxDevicesMobile   *int     `json:"maxDevicesMobile"`
 }
 
 type Client struct {
-	ID         int       `json:"id"`
-	Name       string    `json:"name"`
-	Email      *string   `json:"email"`
-	Notes      *string   `json:"notes"`
-	PlanID     *int      `json:"planId"`
-	PlanCode   *string   `json:"planCode"`
-	IsActive   bool      `json:"isActive"`
-	KeyCount   int       `json:"keyCount"`
-	ClientType string    `json:"clientType"` // api | portal | both
-	CreatedAt  time.Time `json:"createdAt"`
-	UpdatedAt  time.Time `json:"updatedAt"`
+	ID                int        `json:"id"`
+	Name              string     `json:"name"`
+	Email             *string    `json:"email"`
+	Notes             *string    `json:"notes"`
+	PlanID            *int       `json:"planId"`
+	PlanCode          *string    `json:"planCode"`
+	IsActive          bool       `json:"isActive"`
+	KeyCount          int        `json:"keyCount"`
+	ClientType        string     `json:"clientType"` // api | portal | both
+	Kind              string     `json:"kind"`       // acente | otel
+	Limits            *Limits    `json:"limits"`
+	LimitsCustomized  bool       `json:"limitsCustomized"`
+	OwnHotelID        *string    `json:"ownHotelId"`
+	DemoExpiresAt     *time.Time `json:"demoExpiresAt"`
+	RequireDeviceAuth bool       `json:"requireDeviceAuth"`
+	PlanAssignedAt    *time.Time `json:"planAssignedAt"`
+	CreatedAt         time.Time  `json:"createdAt"`
+	UpdatedAt         time.Time  `json:"updatedAt"`
 }
 
 type ClientInput struct {
-	Name     string  `json:"name"`
-	Email    *string `json:"email"`
-	Notes    *string `json:"notes"`
-	PlanID   *int    `json:"planId"`
-	IsActive *bool   `json:"isActive"`
+	Name              string  `json:"name"`
+	Email             *string `json:"email"`
+	Notes             *string `json:"notes"`
+	PlanID            *int    `json:"planId"`
+	IsActive          *bool   `json:"isActive"`
+	Kind              *string `json:"kind"`
+	OwnHotelID        *string `json:"ownHotelId"` // "" = temizle
+	RequireDeviceAuth *bool   `json:"requireDeviceAuth"`
 }
 
 type APIKey struct {
@@ -98,11 +131,11 @@ var (
 
 // ---- Planlar ----
 
-const planCols = `id, code, name, daily_quota, allowed_providers, allow_packages, allow_fresh, max_concurrency, rate_per_minute, is_active, created_at, updated_at`
+const planCols = `id, code, name, daily_quota, allowed_providers, allow_packages, allow_fresh, max_concurrency, rate_per_minute, is_active, kind, max_sites, max_hotels, max_users, daily_searches, daily_scheduled_runs, allow_api, is_demo, demo_days, max_devices_pc, max_devices_mobile, created_at, updated_at`
 
 func scanPlan(row pgx.Row) (*Plan, error) {
 	var p Plan
-	if err := row.Scan(&p.ID, &p.Code, &p.Name, &p.DailyQuota, &p.AllowedProviders, &p.AllowPackages, &p.AllowFresh, &p.MaxConcurrency, &p.RatePerMinute, &p.IsActive, &p.CreatedAt, &p.UpdatedAt); err != nil {
+	if err := row.Scan(&p.ID, &p.Code, &p.Name, &p.DailyQuota, &p.AllowedProviders, &p.AllowPackages, &p.AllowFresh, &p.MaxConcurrency, &p.RatePerMinute, &p.IsActive, &p.Kind, &p.MaxSites, &p.MaxHotels, &p.MaxUsers, &p.DailySearches, &p.DailyScheduledRuns, &p.AllowAPI, &p.IsDemo, &p.DemoDays, &p.MaxDevicesPC, &p.MaxDevicesMobile, &p.CreatedAt, &p.UpdatedAt); err != nil {
 		return nil, err
 	}
 	if p.AllowedProviders == nil {
@@ -146,20 +179,44 @@ func normPlan(in *PlanInput) {
 	if in.RatePerMinute <= 0 {
 		in.RatePerMinute = 60
 	}
+	k := strings.ToLower(strings.TrimSpace(in.Kind))
+	if k != "acente" && k != "otel" {
+		k = "both"
+	}
+	in.Kind = k
+	if in.DemoDays <= 0 {
+		in.DemoDays = 14
+	}
+	if in.AllowAPI == nil {
+		t := true
+		in.AllowAPI = &t
+	}
+	if in.MaxDevicesPC == nil {
+		v := 2
+		in.MaxDevicesPC = &v
+	}
+	if in.MaxDevicesMobile == nil {
+		v := 2
+		in.MaxDevicesMobile = &v
+	}
 }
 
 func (d *DB) CreatePlan(ctx context.Context, in PlanInput) (*Plan, error) {
 	normPlan(&in)
-	return scanPlan(d.Pool.QueryRow(ctx, `INSERT INTO plans (code, name, daily_quota, allowed_providers, allow_packages, allow_fresh, max_concurrency, rate_per_minute, is_active)
-VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING `+planCols,
-		strings.ToLower(strings.TrimSpace(in.Code)), in.Name, in.DailyQuota, in.AllowedProviders, in.AllowPackages, in.AllowFresh, in.MaxConcurrency, in.RatePerMinute, in.IsActive))
+	return scanPlan(d.Pool.QueryRow(ctx, `INSERT INTO plans (code, name, daily_quota, allowed_providers, allow_packages, allow_fresh, max_concurrency, rate_per_minute, is_active,
+ kind, max_sites, max_hotels, max_users, daily_searches, daily_scheduled_runs, allow_api, is_demo, demo_days, max_devices_pc, max_devices_mobile)
+VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20) RETURNING `+planCols,
+		strings.ToLower(strings.TrimSpace(in.Code)), in.Name, in.DailyQuota, in.AllowedProviders, in.AllowPackages, in.AllowFresh, in.MaxConcurrency, in.RatePerMinute, in.IsActive,
+		in.Kind, in.MaxSites, in.MaxHotels, in.MaxUsers, in.DailySearches, in.DailyScheduledRuns, *in.AllowAPI, in.IsDemo, in.DemoDays, *in.MaxDevicesPC, *in.MaxDevicesMobile))
 }
 
 func (d *DB) UpdatePlan(ctx context.Context, id int, in PlanInput) (*Plan, error) {
 	normPlan(&in)
-	p, err := scanPlan(d.Pool.QueryRow(ctx, `UPDATE plans SET code=$1, name=$2, daily_quota=$3, allowed_providers=$4, allow_packages=$5, allow_fresh=$6, max_concurrency=$7, rate_per_minute=$8, is_active=$9, updated_at=now()
-WHERE id=$10 RETURNING `+planCols,
-		strings.ToLower(strings.TrimSpace(in.Code)), in.Name, in.DailyQuota, in.AllowedProviders, in.AllowPackages, in.AllowFresh, in.MaxConcurrency, in.RatePerMinute, in.IsActive, id))
+	p, err := scanPlan(d.Pool.QueryRow(ctx, `UPDATE plans SET code=$1, name=$2, daily_quota=$3, allowed_providers=$4, allow_packages=$5, allow_fresh=$6, max_concurrency=$7, rate_per_minute=$8, is_active=$9,
+ kind=$10, max_sites=$11, max_hotels=$12, max_users=$13, daily_searches=$14, daily_scheduled_runs=$15, allow_api=$16, is_demo=$17, demo_days=$18, max_devices_pc=$19, max_devices_mobile=$20, updated_at=now()
+WHERE id=$21 RETURNING `+planCols,
+		strings.ToLower(strings.TrimSpace(in.Code)), in.Name, in.DailyQuota, in.AllowedProviders, in.AllowPackages, in.AllowFresh, in.MaxConcurrency, in.RatePerMinute, in.IsActive,
+		in.Kind, in.MaxSites, in.MaxHotels, in.MaxUsers, in.DailySearches, in.DailyScheduledRuns, *in.AllowAPI, in.IsDemo, in.DemoDays, *in.MaxDevicesPC, *in.MaxDevicesMobile, id))
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, ErrNotFound
 	}
@@ -169,13 +226,22 @@ WHERE id=$10 RETURNING `+planCols,
 // ---- Musteriler ----
 
 const clientCols = `c.id, c.name, c.email, c.notes, c.plan_id, p.code, c.is_active,
- (SELECT count(*) FROM api_keys k WHERE k.client_id=c.id AND k.is_active AND k.revoked_at IS NULL), c.client_type, c.created_at, c.updated_at`
+ (SELECT count(*) FROM api_keys k WHERE k.client_id=c.id AND k.is_active AND k.revoked_at IS NULL), c.client_type,
+ c.kind, c.limits, c.limits_customized, c.own_hotel_id, c.demo_expires_at, c.require_device_auth, c.plan_assigned_at, c.created_at, c.updated_at`
 const clientFrom = ` FROM clients c LEFT JOIN plans p ON p.id=c.plan_id `
 
 func scanClient(row pgx.Row) (*Client, error) {
 	var c Client
-	if err := row.Scan(&c.ID, &c.Name, &c.Email, &c.Notes, &c.PlanID, &c.PlanCode, &c.IsActive, &c.KeyCount, &c.ClientType, &c.CreatedAt, &c.UpdatedAt); err != nil {
+	var limits []byte
+	if err := row.Scan(&c.ID, &c.Name, &c.Email, &c.Notes, &c.PlanID, &c.PlanCode, &c.IsActive, &c.KeyCount, &c.ClientType,
+		&c.Kind, &limits, &c.LimitsCustomized, &c.OwnHotelID, &c.DemoExpiresAt, &c.RequireDeviceAuth, &c.PlanAssignedAt, &c.CreatedAt, &c.UpdatedAt); err != nil {
 		return nil, err
+	}
+	if len(limits) > 0 {
+		var l Limits
+		if json.Unmarshal(limits, &l) == nil {
+			c.Limits = &l
+		}
 	}
 	return &c, nil
 }
@@ -214,10 +280,19 @@ func (d *DB) GetClient(ctx context.Context, id int) (*Client, error) {
 
 func (d *DB) CreateClient(ctx context.Context, in ClientInput) (*Client, error) {
 	active := in.IsActive == nil || *in.IsActive
+	kind := "acente"
+	if in.Kind != nil && strings.ToLower(*in.Kind) == "otel" {
+		kind = "otel"
+	}
 	var id int
-	if err := d.Pool.QueryRow(ctx, `INSERT INTO clients (name, email, notes, plan_id, is_active) VALUES ($1,$2,$3,$4,$5) RETURNING id`,
-		strings.TrimSpace(in.Name), in.Email, in.Notes, in.PlanID, active).Scan(&id); err != nil {
+	if err := d.Pool.QueryRow(ctx, `INSERT INTO clients (name, email, notes, plan_id, is_active, kind) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+		strings.TrimSpace(in.Name), in.Email, in.Notes, in.PlanID, active, kind).Scan(&id); err != nil {
 		return nil, err
+	}
+	if in.PlanID != nil {
+		if err := d.applyPlanToClient(ctx, id, *in.PlanID, false); err != nil {
+			return nil, err
+		}
 	}
 	return d.GetClient(ctx, id)
 }
@@ -238,11 +313,25 @@ func (d *DB) UpdateClient(ctx context.Context, id int, in ClientInput) (*Client,
 	if in.Notes != nil {
 		add("notes", in.Notes)
 	}
-	if in.PlanID != nil {
-		add("plan_id", *in.PlanID)
-	}
 	if in.IsActive != nil {
 		add("is_active", *in.IsActive)
+	}
+	if in.Kind != nil {
+		k := "acente"
+		if strings.ToLower(*in.Kind) == "otel" {
+			k = "otel"
+		}
+		add("kind", k)
+	}
+	if in.OwnHotelID != nil {
+		if strings.TrimSpace(*in.OwnHotelID) == "" {
+			add("own_hotel_id", nil)
+		} else {
+			add("own_hotel_id", strings.TrimSpace(*in.OwnHotelID))
+		}
+	}
+	if in.RequireDeviceAuth != nil {
+		add("require_device_auth", *in.RequireDeviceAuth)
 	}
 	args = append(args, id)
 	tag, err := d.Pool.Exec(ctx, fmt.Sprintf(`UPDATE clients SET %s WHERE id=$%d`, strings.Join(sets, ", "), len(args)), args...)
@@ -252,7 +341,52 @@ func (d *DB) UpdateClient(ctx context.Context, id int, in ClientInput) (*Client,
 	if tag.RowsAffected() == 0 {
 		return nil, ErrNotFound
 	}
+	if in.PlanID != nil {
+		cur, err := d.GetClient(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		if cur.PlanID == nil || *cur.PlanID != *in.PlanID {
+			// Paket degisimi: ozellestirilmis limitler korunur (yazili anlasma olabilir), degilse paket degerleri kopyalanir.
+			if err := d.applyPlanToClient(ctx, id, *in.PlanID, cur.LimitsCustomized); err != nil {
+				return nil, err
+			}
+		}
+	}
 	return d.GetClient(ctx, id)
+}
+
+// applyPlanToClient paketi musteriye baglar; keepLimits=false ise limitleri paketten kopyalar; demo suresi hesaplanir.
+func (d *DB) applyPlanToClient(ctx context.Context, clientID, planID int, keepLimits bool) error {
+	p, err := d.GetPlan(ctx, planID)
+	if err != nil {
+		return err
+	}
+	var demo *time.Time
+	if p.IsDemo {
+		t := time.Now().Add(time.Duration(p.DemoDays) * 24 * time.Hour)
+		demo = &t
+	}
+	if keepLimits {
+		_, err = d.Pool.Exec(ctx, `UPDATE clients SET plan_id=$1, plan_assigned_at=now(), demo_expires_at=$2, updated_at=now() WHERE id=$3`, planID, demo, clientID)
+		return err
+	}
+	b, _ := json.Marshal(LimitsFromPlan(p))
+	_, err = d.Pool.Exec(ctx, `UPDATE clients SET plan_id=$1, plan_assigned_at=now(), demo_expires_at=$2, limits=$3, limits_customized=false, updated_at=now() WHERE id=$4`, planID, demo, b, clientID)
+	return err
+}
+
+// ResetClientLimits limitleri mevcut paketten yeniden kopyalar.
+func (d *DB) ResetClientLimits(ctx context.Context, clientID int) error {
+	c, err := d.GetClient(ctx, clientID)
+	if err != nil {
+		return err
+	}
+	if c.PlanID == nil {
+		_, err = d.Pool.Exec(ctx, `UPDATE clients SET limits=NULL, limits_customized=false, updated_at=now() WHERE id=$1`, clientID)
+		return err
+	}
+	return d.applyPlanToClient(ctx, clientID, *c.PlanID, false)
 }
 
 func (d *DB) DeleteClient(ctx context.Context, id int) error {

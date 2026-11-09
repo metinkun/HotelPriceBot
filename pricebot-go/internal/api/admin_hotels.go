@@ -43,7 +43,21 @@ func (s *Server) listHotels(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
-	writeJSON(w, 200, res)
+	metas, _ := s.db.ListHotelMeta(r.Context())
+	out := make([]map[string]any, 0, len(res))
+	for _, h := range res {
+		item := map[string]any{"internalHotelId": h.InternalHotelID, "hotelName": h.HotelName, "providers": h.Providers}
+		if m, ok := metas[h.InternalHotelID]; ok {
+			item["meta"] = m
+			if m.Name != nil && *m.Name != "" {
+				item["hotelName"] = m.Name
+			}
+		} else {
+			item["meta"] = map[string]any{"isActive": true}
+		}
+		out = append(out, item)
+	}
+	writeJSON(w, 200, out)
 }
 
 // GET /api/admin/hotels/{id}

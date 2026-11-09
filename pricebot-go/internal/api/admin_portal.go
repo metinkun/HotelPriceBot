@@ -30,7 +30,18 @@ func (s *Server) adminClientSettings(w http.ResponseWriter, r *http.Request) {
 	users, _ := s.db.ListPortalUsers(r.Context(), id)
 	hotels, _ := s.db.ListClientHotels(r.Context(), id)
 	schedules, _ := s.db.ListSchedules(r.Context(), id)
-	writeJSON(w, 200, map[string]any{"settings": st, "providers": s.reg.Names(), "portalUsers": users, "hotels": hotels, "schedules": schedules})
+	c, p, _ := s.clientWithPlan(r.Context(), id)
+	devices := map[int]any{}
+	for _, u := range users {
+		if d, err := s.db.ListDevices(r.Context(), u.ID, false); err == nil {
+			devices[u.ID] = d
+		}
+	}
+	var lim any
+	if c != nil {
+		lim = db.EffectiveLimits(c, p)
+	}
+	writeJSON(w, 200, map[string]any{"settings": st, "providers": s.reg.Names(), "portalUsers": users, "hotels": hotels, "schedules": schedules, "client": c, "limits": lim, "devices": devices, "sitesOpen": s.sites.FilterEnabled(s.reg.Names())})
 }
 
 // PUT /api/admin/clients/{id}/settings {clientType?, enabledProviders?}
@@ -61,6 +72,15 @@ func (s *Server) adminUpdateClientSettings(w http.ResponseWriter, r *http.Reques
 			writeError(w, r, err)
 			return
 		}
+		c, p, err := s.clientWithPlan(r.Context(), id)
+		if err != nil {
+			notFoundOr(w, r, err, "Musteri bulunamadi")
+			return
+		}
+		if lim := db.EffectiveLimits(c, p); lim.MaxSites > 0 && len(body.EnabledProviders) > lim.MaxSites {
+			writeError(w, r, apperr.New(apperr.Forbidden, "Secilen site sayisi (%d) musterinin site limitini (%d) asiyor", len(body.EnabledProviders), lim.MaxSites))
+			return
+		}
 	}
 	if err := s.db.UpdateClientSettings(r.Context(), id, body.ClientType, body.EnabledProviders); err != nil {
 		notFoundOr(w, r, err, "Musteri bulunamadi")
@@ -89,8 +109,13 @@ func (s *Server) adminCreatePortalUser(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, "gecerli email ve en az 8 karakter password zorunlu")
 		return
 	}
-	if _, err := s.db.GetClient(r.Context(), id); err != nil {
+	c, p, err := s.clientWithPlan(r.Context(), id)
+	if err != nil {
 		notFoundOr(w, r, err, "Musteri bulunamadi")
+		return
+	}
+	if lim := db.EffectiveLimits(c, p); lim.MaxUsers > 0 && s.db.CountPortalUsers(r.Context(), id) >= lim.MaxUsers {
+		writeError(w, r, apperr.New(apperr.Forbidden, "Musterinin kullanici siniri dolu (%d). Limiti ozellestirin veya paketi degistirin.", lim.MaxUsers))
 		return
 	}
 	hash, _ := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)

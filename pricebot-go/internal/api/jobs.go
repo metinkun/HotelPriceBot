@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"pricebot/internal/auth"
 	"strings"
 	"time"
 
@@ -64,10 +66,25 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 	req.Providers = provs
 	req.Fresh = s.freshAllowed(r, req.Fresh)
 
+	idn := auth.From(r.Context())
+	pl := planFrom(r.Context())
+	if idn != nil && !idn.IsAdmin && idn.ClientID > 0 && pl != nil && pl.DailySearches > 0 {
+		used := s.db.ClientDailyToday(r.Context(), idn.ClientID).Searches
+		w.Header().Set("X-Quota-Limit", fmt.Sprint(pl.DailySearches))
+		w.Header().Set("X-Quota-Used", fmt.Sprint(used))
+		if used >= pl.DailySearches {
+			writeError(w, r, apperr.New(apperr.TooMany, "Gunluk arama hakki doldu (%d/%d). Hak her gun 00:00'da yenilenir.", used, pl.DailySearches))
+			return
+		}
+	}
 	job, err := s.deps.Jobs.Submit(r.Context(), clientIDFrom(r.Context()), req)
 	if err != nil {
 		writeError(w, r, err)
 		return
+	}
+	if idn != nil && !idn.IsAdmin && idn.ClientID > 0 && !job.Deduplicated {
+		_ = s.db.IncClientDaily(r.Context(), idn.ClientID, "searches", 1)
+		_ = s.db.IncClientDaily(r.Context(), idn.ClientID, "api_jobs", 1)
 	}
 	status := 202
 	if job.Deduplicated {

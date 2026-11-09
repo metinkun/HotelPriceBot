@@ -30,14 +30,11 @@ var (
 	idCache   = map[string]cachedIdentity{}
 )
 
-func planLimitsOf(p *db.Plan) *PlanLimits {
-	if p == nil {
-		return &PlanLimits{AllowPackages: true}
-	}
-	return &PlanLimits{
-		AllowedProviders: p.AllowedProviders, AllowFresh: p.AllowFresh, AllowPackages: p.AllowPackages,
-		DailyQuota: p.DailyQuota, RatePerMinute: p.RatePerMinute, PlanCode: p.Code,
-	}
+func planLimitsOf(p *db.Plan) *PlanLimits { return limitsOf(nil, p) }
+
+// demoExpired deneme suresi dolmus musteri.
+func demoExpired(c *db.Client) bool {
+	return c != nil && c.DemoExpiresAt != nil && time.Now().After(*c.DemoExpiresAt)
 }
 
 // resolveKey anahtari cozer (60 sn bellek cache). Admin super-anahtar da kabul edilir.
@@ -46,7 +43,7 @@ func (s *Server) resolveKey(ctx context.Context, key string) (*auth.Identity, *P
 		return nil, nil, apperr.New(apperr.Unauthorized, "API anahtari gerekli (X-API-Key)")
 	}
 	if s.cfg.AdminAPIKey != "" && key == s.cfg.AdminAPIKey {
-		return &auth.Identity{IsAdmin: true, PlanCode: "admin"}, &PlanLimits{AllowFresh: true, AllowPackages: true, PlanCode: "admin"}, nil
+		return &auth.Identity{IsAdmin: true, PlanCode: "admin"}, &PlanLimits{PlanCode: "admin", Limits: db.Limits{AllowFresh: true, AllowPackages: true, AllowAPI: true}}, nil
 	}
 	hash := auth.HashKey(key)
 	idCacheMu.Lock()
@@ -65,11 +62,17 @@ func (s *Server) resolveKey(ctx context.Context, key string) (*auth.Identity, *P
 			return nil, nil, err
 		}
 	}
+	if demoExpired(&ki.Client) {
+		return nil, nil, apperr.New(apperr.Unauthorized, "Deneme suresi doldu; devam etmek icin yetkilinizle iletisime gecin")
+	}
 	id := &auth.Identity{ClientID: ki.Client.ID, ClientName: ki.Client.Name, APIKeyID: ki.Key.ID}
 	if ki.Plan != nil {
 		id.PlanCode = ki.Plan.Code
 	}
-	pl := planLimitsOf(ki.Plan)
+	pl := limitsOf(&ki.Client, ki.Plan)
+	if !pl.AllowAPI {
+		return nil, nil, apperr.New(apperr.Forbidden, "Bu paket API erisimi icermiyor")
+	}
 	idCacheMu.Lock()
 	idCache[hash] = cachedIdentity{id: id, plan: pl, exp: time.Now().Add(60 * time.Second)}
 	idCacheMu.Unlock()
@@ -153,7 +156,15 @@ func (s *Server) logRequest(r *http.Request, id *auth.Identity, status int, dur 
 // providersForPlan istenen provider listesini plana gore daraltir; izinsiz istek varsa 403.
 func (s *Server) providersForPlan(r *http.Request, requested []string) ([]string, error) {
 	pl := planFrom(r.Context())
+	for _, n := range requested {
+		if s.sites != nil && !s.sites.Enabled(n) {
+			return nil, apperr.New(apperr.Unavailable, "'%s' sitesi gecici olarak kapali (bakimda)", n)
+		}
+	}
 	if pl == nil || len(pl.AllowedProviders) == 0 {
+		if len(requested) == 0 && s.sites != nil {
+			return s.sites.FilterEnabled(s.reg.Names()), nil
+		}
 		return requested, nil
 	}
 	allowed := map[string]bool{}
@@ -166,7 +177,11 @@ func (s *Server) providersForPlan(r *http.Request, requested []string) ([]string
 		}
 	}
 	if len(requested) == 0 {
-		return append([]string{}, pl.AllowedProviders...), nil
+		out := append([]string{}, pl.AllowedProviders...)
+		if s.sites != nil {
+			out = s.sites.FilterEnabled(out)
+		}
+		return out, nil
 	}
 	return requested, nil
 }

@@ -53,6 +53,7 @@ func (u *Usage) Hook(ctx context.Context, providerName string, credits int) {
 		if err := u.db.RecordUsage(c, now, id.ClientID, id.APIKeyID, providerName, credits, 0, 0); err != nil {
 			slog.Warn("kullanim kaydi yazilamadi", "err", err)
 		}
+		_ = u.db.IncClientDaily(c, id.ClientID, "site_calls", credits)
 	}()
 }
 

@@ -172,6 +172,7 @@ func (s *HotelService) AddFromURLs(ctx context.Context, in AddHotelInput) (*AddH
 	if err != nil {
 		return nil, err
 	}
+	s.db.EnsureHotelMeta(ctx, internalID, hotel.HotelName)
 	return &AddHotelResult{HotelView: *hotel, Errors: errs}, nil
 }
 

@@ -40,8 +40,14 @@ func (s *Server) validatePlan(in *db.PlanInput) error {
 	if strings.TrimSpace(in.Code) == "" || strings.TrimSpace(in.Name) == "" {
 		return apperr.BadRequestf("code ve name zorunlu")
 	}
-	if in.DailyQuota < 0 {
-		return apperr.BadRequestf("dailyQuota negatif olamaz (0 = sinirsiz)")
+	if in.DailyQuota < 0 || in.MaxSites < 0 || in.MaxHotels < 0 || in.MaxUsers < 0 || in.DailySearches < 0 || in.DailyScheduledRuns < 0 {
+		return apperr.BadRequestf("Limitler negatif olamaz (0 = sinirsiz)")
+	}
+	if k := strings.ToLower(strings.TrimSpace(in.Kind)); k != "" && k != "acente" && k != "otel" && k != "both" {
+		return apperr.BadRequestf("kind acente | otel | both olmali")
+	}
+	if in.MaxSites > 0 && len(in.AllowedProviders) > in.MaxSites {
+		return apperr.BadRequestf("Izinli site listesi (%d) site sayisi limitini (%d) asiyor", len(in.AllowedProviders), in.MaxSites)
 	}
 	return s.providerNamesValid(in.AllowedProviders)
 }
@@ -156,6 +162,34 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, "Gecersiz JSON govde")
 		return
 	}
+	if in.Kind != nil {
+		k := strings.ToLower(strings.TrimSpace(*in.Kind))
+		if k != "acente" && k != "otel" {
+			badRequest(w, "kind acente | otel olmali")
+			return
+		}
+		in.Kind = &k
+	}
+	if in.OwnHotelID != nil && strings.TrimSpace(*in.OwnHotelID) != "" {
+		// Kendi oteli musterinin otel listesinde olmali (yoksa baglanir)
+		hid := strings.TrimSpace(*in.OwnHotelID)
+		if _, err := s.hotels.Get(r.Context(), hid); err != nil {
+			writeError(w, r, err)
+			return
+		}
+		if owns, _ := s.db.ClientOwnsHotel(r.Context(), id, hid); !owns {
+			_ = s.db.LinkClientHotel(r.Context(), id, hid, nil)
+		}
+	}
+	if in.PlanID != nil {
+		if p, err := s.db.GetPlan(r.Context(), *in.PlanID); err == nil {
+			cur, _ := s.db.GetClient(r.Context(), id)
+			if cur != nil && p.Kind != "both" && p.Kind != cur.Kind && (in.Kind == nil || *in.Kind != p.Kind) {
+				writeError(w, r, apperr.BadRequestf("'%s' paketi yalnizca %s turu musterilere atanabilir", p.Name, strings.ToUpper(p.Kind)))
+				return
+			}
+		}
+	}
 	c, err := s.db.UpdateClient(r.Context(), id, in)
 	if err != nil {
 		notFoundOr(w, r, err, "Musteri bulunamadi")
@@ -194,8 +228,13 @@ func (s *Server) createKey(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, "Gecersiz id")
 		return
 	}
-	if _, err := s.db.GetClient(r.Context(), id); err != nil {
+	c, p, err := s.clientWithPlan(r.Context(), id)
+	if err != nil {
 		notFoundOr(w, r, err, "Musteri bulunamadi")
+		return
+	}
+	if !db.EffectiveLimits(c, p).AllowAPI {
+		writeError(w, r, apperr.New(apperr.Forbidden, "Bu musterinin paketi API erisimi icermiyor (limitlerden 'API kullanicisi' acilabilir)"))
 		return
 	}
 	var in struct {

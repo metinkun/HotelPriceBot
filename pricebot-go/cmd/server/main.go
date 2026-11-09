@@ -58,6 +58,10 @@ func main() {
 	fetcher := services.NewFetcher(rc, lim)
 	usage := services.NewUsage(database, rc)
 	fetcher.SetUsageHook(usage.Hook)
+	sites := services.NewSites(database) // admin site yonetimi: genel ac/kapa, gorunen ad
+	sites.Start()
+	defer sites.Stop()
+	fetcher.SetSiteGate(sites.Enabled)
 	api.BootstrapAdmin(ctx, database, cfg.AdminEmail, cfg.AdminPassword)
 	api.StartLogRetention(ctx, database, cfg.LogRetentionDays)
 
@@ -83,7 +87,7 @@ func main() {
 	det.Start()
 	defer det.Stop()
 
-	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage, Details: det})
+	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage, Details: det, Sites: sites})
 	apiSrv.Portal().Start() // yarim aramalari kapat + planli arama zamanlayicisi
 	defer apiSrv.Portal().Stop()
 

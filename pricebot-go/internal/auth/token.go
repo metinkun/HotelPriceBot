@@ -18,6 +18,7 @@ type Claims struct {
 	Role  string `json:"role"`
 	Exp   int64  `json:"exp"`
 	Iat   int64  `json:"iat"`
+	Dev   int    `json:"dev,omitempty"` // portal: kayitli cihaz id (cihaz dogrulamasi)
 }
 
 var ErrTokenInvalid = errors.New("gecersiz veya suresi dolmus oturum")

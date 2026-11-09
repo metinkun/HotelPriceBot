@@ -1,15 +1,30 @@
 package api
 
-import "context"
+import (
+	"context"
 
-// PlanLimits bir API anahtarinin plan kisitlari (Faz 2'de DB'den yuklenir).
+	"pricebot/internal/db"
+)
+
+// PlanLimits bir musterinin gecerli kisitlari: paket ∩ musteri ozellestirmesi (db.Limits) + izinli siteler.
 type PlanLimits struct {
 	PlanCode         string
 	AllowedProviders []string // bos = hepsi
-	AllowFresh       bool
-	AllowPackages    bool
-	DailyQuota       int // 0 = sinirsiz
-	RatePerMinute    int // 0 = sinirsiz
+	Kind             string   // acente | otel
+	db.Limits
+}
+
+// limitsOf musteri + paketten gecerli limitleri uretir (musteri limits alani varsa o kazanir).
+func limitsOf(c *db.Client, p *db.Plan) *PlanLimits {
+	pl := &PlanLimits{Limits: db.EffectiveLimits(c, p)}
+	if p != nil {
+		pl.PlanCode = p.Code
+		pl.AllowedProviders = p.AllowedProviders
+	}
+	if c != nil {
+		pl.Kind = c.Kind
+	}
+	return pl
 }
 
 const planKey ctxKey = "plan"

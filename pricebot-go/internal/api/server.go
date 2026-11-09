@@ -31,6 +31,7 @@ type Deps struct {
 	Jobs    *jobs.Manager
 	Usage   *services.Usage
 	Details *details.Service
+	Sites   *services.Sites
 }
 
 type Server struct {
@@ -43,6 +44,7 @@ type Server struct {
 	packages   *services.PackageService
 	usage      *services.Usage
 	portalSvc  *portal.Service
+	sites      *services.Sites
 	detailsSvc *details.Service
 	importer   *services.Importer
 	started    time.Time
@@ -56,7 +58,8 @@ func New(cfg *config.Config, d *db.DB, reg *providers.Registry, deps Deps) *Serv
 		prices:     services.NewPriceService(d, reg, deps.Fetcher),
 		packages:   services.NewPackageService(d, reg, deps.Fetcher),
 		usage:      deps.Usage,
-		portalSvc:  portal.New(d, deps.Jobs, reg, hotels),
+		portalSvc:  portal.New(d, deps.Jobs, reg, hotels, deps.Sites),
+		sites:      deps.Sites,
 		detailsSvc: deps.Details,
 		importer:   services.NewImporter(reg, hotels),
 		started:    time.Now(),
@@ -140,9 +143,33 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("DELETE /api/admin/portal-users/{id}", s.admin(s.adminDeletePortalUser))
 	mux.Handle("GET /api/admin/schedules", s.admin(s.adminSchedules))
 	mux.Handle("GET /api/admin/clients/{id}/searches", s.admin(s.adminClientSearches))
+	// Admin - limitler, giris loglari, onaylar, cihazlar, siteler, otel kunyesi (urun istekleri)
+	mux.Handle("GET /api/admin/clients/{id}/limits", s.admin(s.adminClientLimits))
+	mux.Handle("PUT /api/admin/clients/{id}/limits", s.admin(s.adminSetClientLimits))
+	mux.Handle("POST /api/admin/clients/{id}/limits/reset", s.admin(s.adminResetClientLimits))
+	mux.Handle("POST /api/admin/clients/{id}/hotels", s.admin(s.adminLinkClientHotel))
+	mux.Handle("DELETE /api/admin/clients/{id}/hotels/{hotelId}", s.admin(s.adminUnlinkClientHotel))
+	mux.Handle("GET /api/admin/login-logs", s.admin(s.adminLoginLogs))
+	mux.Handle("GET /api/admin/approvals", s.admin(s.adminApprovals))
+	mux.Handle("POST /api/admin/approvals/{id}/approve", s.admin(s.adminDecideApproval(true)))
+	mux.Handle("POST /api/admin/approvals/{id}/reject", s.admin(s.adminDecideApproval(false)))
+	mux.Handle("GET /api/admin/portal-users/{id}/devices", s.admin(s.adminUserDevices))
+	mux.Handle("DELETE /api/admin/devices/{id}", s.admin(s.adminRemoveDevice))
+	mux.Handle("GET /api/admin/sites", s.admin(s.adminSites))
+	mux.Handle("PUT /api/admin/sites/{name}", s.admin(s.adminUpdateSite))
+	mux.Handle("PUT /api/admin/hotels/{id}/meta", s.admin(s.adminUpdateHotelMeta))
+	mux.Handle("GET /api/admin/hotels/{id}/clients", s.admin(s.adminHotelClients))
+	mux.Handle("GET /api/admin/usage/daily", s.admin(s.adminUsageDaily))
 
 	// Portal (musteri tipi 2): web uygulamasi API'si
 	mux.HandleFunc("POST /api/portal/auth/login", s.portalLogin)
+	mux.HandleFunc("POST /api/portal/auth/webauthn/register/begin", s.portalWebAuthnRegisterBegin)
+	mux.HandleFunc("POST /api/portal/auth/webauthn/register/finish", s.portalWebAuthnRegisterFinish)
+	mux.HandleFunc("POST /api/portal/auth/webauthn/verify/finish", s.portalWebAuthnVerifyFinish)
+	mux.HandleFunc("POST /api/portal/auth/devices/replace-request", s.portalDeviceReplaceRequest)
+	mux.Handle("GET /api/portal/devices", s.portal(s.portalDevices))
+	mux.Handle("DELETE /api/portal/devices/{id}", s.portal(s.portalRemoveDevice))
+	mux.Handle("GET /api/portal/approvals", s.portal(s.portalApprovals))
 	mux.Handle("GET /api/portal/me", s.portal(s.portalMe))
 	mux.Handle("GET /api/portal/hotels", s.portal(s.portalHotels))
 	mux.Handle("POST /api/portal/hotels", s.portal(s.portalAddHotel))

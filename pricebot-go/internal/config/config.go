@@ -56,6 +56,8 @@ type Config struct {
 	AdminEmail       string // ilk admin (bootstrap)
 	AdminPassword    string
 	LogRetentionDays int
+	WebAuthnRPID     string   // bos = istekteki host
+	WebAuthnOrigins  []string // bos = istekteki Origin
 }
 
 func env(key, def string) string {
@@ -154,6 +156,8 @@ func Load() *Config {
 		JobMaxQueued: envInt("JOB_MAX_QUEUED", 200),
 
 		DetailsRunHour:   envInt("DETAILS_RUN_HOUR", 4),
+		WebAuthnRPID:     env("WEBAUTHN_RPID", ""),
+		WebAuthnOrigins:  envList("WEBAUTHN_ORIGINS"),
 		RequireAPIKey:    envBool("REQUIRE_API_KEY", envName == "production"),
 		JWTSecret:        env("JWT_SECRET", ""),
 		AdminEmail:       env("ADMIN_EMAIL", ""),
