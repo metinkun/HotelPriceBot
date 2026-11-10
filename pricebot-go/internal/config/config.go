@@ -30,6 +30,13 @@ type Config struct {
 	ProxyPassword string
 
 	WebshareAPIKey    string
+	BrowserProxyURL   string // headless tarayici (Touristica) icin tek proxy: http://user:pass@host:port
+
+	// E-posta (sifre sifirlama linki). SMTP_HOST bos ise gonderim yapilmaz, link ekranda gosterilir.
+	SMTPHost, SMTPUser, SMTPPassword, SMTPFrom, SMTPTLS string
+	SMTPPort                                            int
+	PublicPortalURL                                     string        // orn. https://app.smartrate.com/portal/  (bos: istekten turetilir)
+	PasswordResetTTL                                    time.Duration // link gecerlilik suresi
 	ProxySyncInterval time.Duration
 
 	BrowserHeadless       bool
@@ -136,6 +143,12 @@ func Load() *Config {
 
 		WebshareAPIKey:    env("WEBSHARE_API_KEY", ""),
 		ProxySyncInterval: time.Duration(envInt("PROXY_SYNC_INTERVAL_MS", 300000)) * time.Millisecond,
+		BrowserProxyURL:   env("BROWSER_PROXY_URL", ""),
+
+		SMTPHost: env("SMTP_HOST", ""), SMTPPort: envInt("SMTP_PORT", 587), SMTPUser: env("SMTP_USER", ""), SMTPPassword: env("SMTP_PASSWORD", ""),
+		SMTPFrom: env("SMTP_FROM", ""), SMTPTLS: env("SMTP_TLS", ""),
+		PublicPortalURL:  env("PUBLIC_PORTAL_URL", ""),
+		PasswordResetTTL: time.Duration(envInt("PASSWORD_RESET_TTL_MINUTES", 60)) * time.Minute,
 
 		BrowserHeadless:       env("PUPPETEER_HEADLESS", "true") != "false",
 		BrowserExecutablePath: exe,

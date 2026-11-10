@@ -10,6 +10,8 @@ import Schedules from "./pages/Schedules.jsx";
 import Sites from "./pages/Sites.jsx";
 import Devices from "./pages/Devices.jsx";
 import HotelDetail from "./pages/HotelDetail.jsx";
+import HotelStatic from "./pages/HotelStatic.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import Notifications from "./pages/Notifications.jsx";
 
 // key, menu etiketi, ikon, bilesen, ust cubuk basligi, (menu grubu). Etiketi bos olanlar menude gorunmez.
@@ -22,7 +24,8 @@ const PAGES = [
   { key: "sites", label: "Siteler", icon: "globe", comp: Sites, title: "Siteler", section: "Hesap" },
   { key: "devices", label: "Cihazlarım", icon: "smartphone", comp: Devices, title: "Cihazlarım" },
   { key: "notifications", label: "Bildirimler", icon: "bell", comp: Notifications, title: "Bildirimler" },
-  { key: "hoteldetail", label: "", icon: "building", comp: HotelDetail, title: "Otel detayı", parent: "hotels" },
+  { key: "hoteldetail", label: "", icon: "building", comp: HotelDetail, title: "Otel özeti", parent: "hotels" },
+  { key: "hotelstatic", label: "", icon: "building", comp: HotelStatic, title: "Otel statik bilgileri", parent: "hotels" },
 ];
 
 export const navigate = (key, param) => { location.hash = param != null ? `${key}/${param}` : key; };
@@ -188,6 +191,7 @@ export default function App() {
   useEffect(() => { if (!getToken()) { setChecked(true); return; } loadMe(); }, []);
   useEffect(() => { if (!me) return; const f = () => api("/api/portal/notifications?unread=true&limit=1").then((d) => setUnread(d.unread || 0)).catch(() => {}); f(); const t = setInterval(f, 60000); return () => clearInterval(t); }, [me, route.key]);
 
+  if (route.key === "reset") return <ResetPassword token={route.param} onDone={() => { location.hash = "dashboard"; }} />;
   if (!checked) return null;
   if (!me) return <Login onLogin={loadMe} />;
   const current = PAGES.find((p) => p.key === route.key) || PAGES[0];
@@ -200,7 +204,7 @@ export default function App() {
     <AppShell product="Portal" nav={nav} current={current.parent || current.key} onNavigate={(k) => navigate(k)} title={current.title}
       user={{ name: me.client.name, sub: me.user.email }} onLogout={() => { setToken(""); setMe(null); }}
       mobileNavKeys={["dashboard", "search", "hotels", "notifications"]}
-      topbarExtra={<span className="hide-mobile"><Badge tone={quotaTone} dot={false} title={`Plan: ${me.plan?.name || me.plan?.code || "—"} · bugünkü arama hakkı`}>Bugün {used}/{lim ? lim : "∞"} arama</Badge></span>}>
+      topbarExtra={<span className="hide-mobile"><Badge tone={quotaTone} dot={false} title={`Paket: ${me.plan?.name || me.plan?.code || "—"} · bugünkü arama hakkı`}>Bugün {used}/{lim ? lim : "∞"} arama</Badge></span>}>
       <Page key={route.key + "/" + route.param} me={me} refreshMe={loadMe} param={route.param} extra={route.extra} navigate={navigate} />
     </AppShell>
   );

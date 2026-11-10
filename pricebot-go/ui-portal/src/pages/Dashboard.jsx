@@ -35,7 +35,7 @@ export default function Dashboard({ me, navigate }) {
           {L.dailySearches > 0 && <Progress value={U.searches || 0} max={L.dailySearches} />}
         </div>
         <Stat icon="building" label={isOtel ? "Takip edilen otel (otelim + rakipler)" : "Takip edilen otel"} value={hotels.length} unit={`/ ${lim(L.maxHotels)}`} onClick={() => navigate("hotels")} soft />
-        <Stat icon="calendar" label="Planlı görev bugün" value={U.scheduledRuns ?? 0} unit={`/ ${lim(L.dailyScheduledRuns)}`} sub={`${schedules.filter((s) => s.isActive).length} aktif plan`} soft onClick={() => navigate("schedules")} />
+        <Stat icon="calendar" label="Planlı arama bugün" value={U.scheduledRuns ?? 0} unit={`/ ${lim(L.dailyScheduledRuns)}`} sub={`${schedules.filter((s) => s.isActive).length} aktif planlı arama`} soft onClick={() => navigate("schedules")} />
         <Stat icon="globe" label="Etkin site" value={enabled.length} unit={`/ ${me.providers.length}`} soft onClick={() => navigate("sites")} />
         <Stat icon="clock" label="Sonraki planlı arama" value={<span style={{ fontSize: 15 }}>{next ? fmtDate(next.nextRunAt) : "—"}</span>} sub={next ? next.name : "planlı arama yok"} soft />
       </div>

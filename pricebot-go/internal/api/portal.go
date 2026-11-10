@@ -13,7 +13,6 @@ import (
 	"pricebot/internal/auth"
 	"pricebot/internal/db"
 	"pricebot/internal/portal"
-	"pricebot/internal/services"
 )
 
 // ---- Portal oturumu (musteri tipi 2) ----
@@ -160,41 +159,6 @@ func (s *Server) portalHotels(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, out)
 }
 
-// POST /api/portal/hotels {hotelName, urls:{provider:url}}
-func (s *Server) portalAddHotel(w http.ResponseWriter, r *http.Request) {
-	id := auth.From(r.Context())
-	pl := planFrom(r.Context())
-	var body services.AddHotelInput
-	if err := decodeBody(r, &body); err != nil || len(body.URLs) == 0 || strings.TrimSpace(body.HotelName) == "" {
-		badRequest(w, "hotelName ve en az bir site URL'i zorunlu")
-		return
-	}
-	eff := map[string]bool{}
-	for _, n := range pl.AllowedProviders {
-		eff[n] = true
-	}
-	for k := range body.URLs {
-		if !eff[k] {
-			writeError(w, r, apperr.New(apperr.Forbidden, "'%s' sitesi bu hesap icin etkin degil", k))
-			return
-		}
-	}
-	if pl.MaxHotels > 0 && s.db.CountClientHotels(r.Context(), id.ClientID) >= pl.MaxHotels {
-		writeError(w, r, apperr.New(apperr.Forbidden, "Paketinizdeki otel siniri doldu (%d). Daha fazla otel icin yetkilinizle iletisime gecin.", pl.MaxHotels))
-		return
-	}
-	body.InternalHotelID = "" // her musteri icin yeni otel kaydi
-	res, err := s.hotels.AddFromURLs(r.Context(), body)
-	if err != nil {
-		writeError(w, r, err)
-		return
-	}
-	if err := s.db.LinkClientHotel(r.Context(), id.ClientID, res.InternalHotelID, nil); err != nil {
-		writeError(w, r, err)
-		return
-	}
-	writeJSON(w, 201, res)
-}
 
 // PUT /api/portal/hotels/{id} {urls?, hotelName?}  (ek site URL'i / ad)
 func (s *Server) portalUpdateHotel(w http.ResponseWriter, r *http.Request) {
@@ -231,22 +195,6 @@ func (s *Server) portalUpdateHotel(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, res)
 }
 
-// DELETE /api/portal/hotels/{id}
-func (s *Server) portalRemoveHotel(w http.ResponseWriter, r *http.Request) {
-	id := auth.From(r.Context())
-	hid := r.PathValue("id")
-	if err := s.db.UnlinkClientHotel(r.Context(), id.ClientID, hid); err != nil {
-		notFoundOr(w, r, err, "Otel bulunamadi")
-		return
-	}
-	// Baska musteri kullanmiyorsa mapping'leri de sil
-	var n int
-	_ = s.db.Pool.QueryRow(r.Context(), `SELECT count(*) FROM client_hotels WHERE internal_hotel_id=$1`, hid).Scan(&n)
-	if n == 0 {
-		_, _ = s.hotels.Delete(r.Context(), hid)
-	}
-	writeJSON(w, 200, map[string]any{"message": "Otel kaldirildi.", "internalHotelId": hid})
-}
 
 // ---- Aramalar ----
 
@@ -274,7 +222,7 @@ func (s *Server) parseSearchRequest(r *http.Request) (portal.SearchRequest, erro
 			return req, apperr.BadRequestf("Paket aramasi icin airportCode (IATA) gerekli")
 		}
 		if pl := planFrom(r.Context()); pl != nil && !pl.AllowPackages {
-			return req, apperr.New(apperr.Forbidden, "Planiniz paket sorgusunu kapsamiyor")
+			return req, apperr.New(apperr.Forbidden, "Paketiniz otel + ucak paket sorgusunu kapsamiyor")
 		}
 	}
 	if err := s.providerNamesValid(req.Providers); err != nil {
@@ -348,6 +296,8 @@ type scheduleBody struct {
 	RunTime  string               `json:"runTime"`
 	Timezone string               `json:"timezone"`
 	IsActive *bool                `json:"isActive"`
+	StartsOn string               `json:"startsOn"` // YYYY-MM-DD (bos = hemen)
+	EndsOn   string               `json:"endsOn"`   // YYYY-MM-DD (bos = suresiz)
 }
 
 func (s *Server) scheduleInput(r *http.Request, b scheduleBody) (db.ScheduleInput, error) {
@@ -389,10 +339,29 @@ func (s *Server) scheduleInput(r *http.Request, b scheduleBody) (db.ScheduleInpu
 			return db.ScheduleInput{}, apperr.New(apperr.Forbidden, "Otel bu hesaba ait degil: %s", h)
 		}
 	}
+	var startsOn, endsOn *string
+	for _, x := range []struct {
+		v   string
+		dst **string
+		lbl string
+	}{{b.StartsOn, &startsOn, "startsOn"}, {b.EndsOn, &endsOn, "endsOn"}} {
+		v := strings.TrimSpace(x.v)
+		if v == "" {
+			continue
+		}
+		if _, err := time.Parse("2006-01-02", v); err != nil {
+			return db.ScheduleInput{}, apperr.BadRequestf("%s YYYY-MM-DD bicimnde olmali", x.lbl)
+		}
+		vv := v
+		*x.dst = &vv
+	}
+	if startsOn != nil && endsOn != nil && *endsOn < *startsOn {
+		return db.ScheduleInput{}, apperr.BadRequestf("Bitis tarihi baslangictan once olamaz")
+	}
 	active := b.IsActive == nil || *b.IsActive
 	var next *time.Time
 	if active {
-		n, err := portal.NextRun(b.Weekdays, b.RunTime, b.Timezone, time.Now())
+		n, err := nextRunFrom(b.Weekdays, b.RunTime, b.Timezone, startsOn)
 		if err != nil {
 			return db.ScheduleInput{}, err
 		}
@@ -401,7 +370,7 @@ func (s *Server) scheduleInput(r *http.Request, b scheduleBody) (db.ScheduleInpu
 	if b.Weekdays == nil {
 		b.Weekdays = []int16{}
 	}
-	return db.ScheduleInput{Name: b.Name, Kind: b.Kind, Request: req, Weekdays: b.Weekdays, RunTime: b.RunTime, Timezone: b.Timezone, IsActive: active, NextRun: next}, nil
+	return db.ScheduleInput{Name: b.Name, Kind: b.Kind, Request: req, Weekdays: b.Weekdays, RunTime: b.RunTime, Timezone: b.Timezone, IsActive: active, NextRun: next, StartsOn: startsOn, EndsOn: endsOn}, nil
 }
 
 func (s *Server) portalSchedules(w http.ResponseWriter, r *http.Request) {
@@ -460,19 +429,6 @@ func (s *Server) portalUpdateSchedule(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, sc)
 }
 
-func (s *Server) portalDeleteSchedule(w http.ResponseWriter, r *http.Request) {
-	sid, ok := pathID(r)
-	if !ok {
-		badRequest(w, "Gecersiz id")
-		return
-	}
-	id := auth.From(r.Context())
-	if err := s.db.DeleteSchedule(r.Context(), id.ClientID, sid); err != nil {
-		notFoundOr(w, r, err, "Plan bulunamadi")
-		return
-	}
-	writeJSON(w, 200, map[string]any{"message": "Plan silindi.", "id": sid})
-}
 
 // POST /api/portal/schedules/{id}/run — plani simdi calistir
 func (s *Server) portalRunSchedule(w http.ResponseWriter, r *http.Request) {

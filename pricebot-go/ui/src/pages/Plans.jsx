@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api.js";
-import { PageHeader, DataTable, Button, FormModal, Field, Input, Select, FormGrid, FormSection, Checkbox, ChipSelect, Badge, Alert, useToast } from "@kit";
+import { PageHeader, DataTable, Button, FormModal, Field, Input, Select, FormGrid, FormSection, Checkbox, SitePicker, Badge, Alert, useToast } from "@kit";
 
 const empty = {
   code: "", name: "", kind: "both", dailyQuota: 0, allowedProviders: [], allowPackages: true, allowFresh: false, maxConcurrency: 5, ratePerMinute: 60, isActive: true,
@@ -12,11 +12,13 @@ const inf = (v) => (v ? v : "∞");
 export default function Plans() {
   const [plans, setPlans] = useState([]);
   const [providers, setProviders] = useState([]);
+  const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(null);
   const [err, setErr] = useState("");
   const toast = useToast();
-  const load = async () => { try { const [p, h] = await Promise.all([api("/api/admin/plans"), fetch("/health").then((r) => r.json())]); setPlans(p); setProviders(h.providers || []); } catch (e) { setErr(e.message); } finally { setLoading(false); } };
+  const load = async () => { try { const [p, h] = await Promise.all([api("/api/admin/plans"), fetch("/health").then((r) => r.json())]); setPlans(p); setProviders(h.providers || []); api("/api/admin/sites").then(setSites).catch(() => {}); } catch (e) { setErr(e.message); } finally { setLoading(false); } };
+  const siteOptions = (sites.length ? sites.map((x) => ({ value: x.name, label: x.label, hint: x.domain, badge: !x.enabled ? <Badge tone="warn" dot={false}>bakımda</Badge> : null })) : providers.map((n) => ({ value: n, label: n })));
   useEffect(() => { load(); }, []);
 
   const num = (v, d = 0) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
@@ -42,17 +44,17 @@ export default function Plans() {
       <DataTable rows={plans} loading={loading} onRowDoubleClick={openEdit}
         columns={[
           { key: "name", title: "Paket", primary: true, sortable: true, sub: (p) => <code>{p.code}</code> },
-          { key: "kind", title: "Tür", render: (p) => <Badge tone={p.kind === "otel" ? "info" : p.kind === "acente" ? "brand" : "neutral"} dot={false}>{KIND[p.kind] || "Her ikisi"}</Badge> },
-          { key: "cap", title: "Kapasite", render: (p) => <span title="Site · Otel · Kullanıcı">{inf(p.maxSites)} site · {inf(p.maxHotels)} otel · {inf(p.maxUsers)} kullanıcı</span>, hideOnMobile: true },
+          { key: "kind", title: "Tür", render: (p) => <Badge tone={p.kind === "otel" ? "info" : p.kind === "acente" ? "brand" : "neutral"} dot={false}>{KIND[p.kind] || "Her ikisi"}</Badge>, filterValue: (p) => KIND[p.kind] || "Her ikisi" },
+          { key: "cap", title: "Limitler", render: (p) => <span title="Site · Otel · Kullanıcı">{inf(p.maxSites)} site · {inf(p.maxHotels)} otel · {inf(p.maxUsers)} kullanıcı</span>, hideOnMobile: true },
           { key: "dailySearches", title: "Günlük arama", align: "num", sortable: true, render: (p) => inf(p.dailySearches) },
           { key: "dailyScheduledRuns", title: "Planlı görev", align: "num", sortable: true, render: (p) => inf(p.dailyScheduledRuns), hideOnMobile: true },
           { key: "allowApi", title: "API", align: "center", render: (p) => (p.allowApi ? <Badge tone="ok" dot={false}>açık</Badge> : <Badge tone="neutral" dot={false}>kapalı</Badge>), hideOnMobile: true },
           { key: "isDemo", title: "Demo", align: "center", render: (p) => (p.isDemo ? <Badge tone="warn" dot={false}>demo {p.demoDays}g</Badge> : <span className="muted">—</span>), hideOnMobile: true },
-          { key: "isActive", title: "Durum", render: (p) => (p.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>) },
+          { key: "isActive", title: "Durum", render: (p) => (p.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>), filterValue: (p) => (p.isActive ? "aktif" : "pasif") },
         ]}
         actions={(p) => [{ icon: "pencil", title: "Düzenle", onClick: openEdit }]} />
 
-      <FormModal open={!!edit} onClose={() => setEdit(null)} title={edit?.id ? "Paketi düzenle" : "Yeni paket"} size="md" onSubmit={save}>
+      <FormModal open={!!edit} onClose={() => setEdit(null)} title={edit?.id ? "Paketi düzenle" : "Yeni paket"} size="lg" onSubmit={save}>
         {edit && (<>
           <FormSection>Genel</FormSection>
           <FormGrid>
@@ -61,7 +63,7 @@ export default function Plans() {
             <Field label="Tür" hint="Paket hangi müşteri türüne satılır"><Select value={edit.kind || "both"} onChange={f("kind")}><option value="both">Her ikisi</option><option value="acente">ACENTE</option><option value="otel">OTEL</option></Select></Field>
             <Field label="Durum" inline style={{ paddingTop: 26 }}><Checkbox label="Aktif" checked={!!edit.isActive} onChange={f("isActive")} /></Field>
           </FormGrid>
-          <FormSection>Kapasite</FormSection>
+          <FormSection>Limitler</FormSection>
           <FormGrid>
             <Field label="Site sayısı" hint="0 = sınırsız"><Input type="number" min="0" value={edit.maxSites} onChange={f("maxSites")} /></Field>
             <Field label="Otel sayısı" hint="0 = sınırsız"><Input type="number" min="0" value={edit.maxHotels} onChange={f("maxHotels")} /></Field>
@@ -91,7 +93,8 @@ export default function Plans() {
             <Field label="İstek / dakika"><Input type="number" min="1" value={edit.ratePerMinute} onChange={f("ratePerMinute")} /></Field>
             <Field label="Eşzamanlı sorgu"><Input type="number" min="1" value={edit.maxConcurrency} onChange={f("maxConcurrency")} /></Field>
           </FormGrid>
-          <Field label="İzinli siteler" hint="Boş bırakılırsa tüm siteler" error={providerErr}><ChipSelect value={edit.allowedProviders} onChange={(v) => setEdit({ ...edit, allowedProviders: v })} options={providers.map((n) => ({ value: n, label: n }))} /></Field>
+          <FormSection>İzinli siteler</FormSection>
+          <Field hint="Boş bırakılırsa tüm siteler. Arama kutusuyla filtreleyin; site limiti varsa en fazla o kadar seçilebilir." error={providerErr}><SitePicker compact value={edit.allowedProviders} onChange={(v) => setEdit({ ...edit, allowedProviders: v })} options={siteOptions} max={Number(edit.maxSites) || 0} emptyMeansAll /></Field>
         </>)}
       </FormModal>
     </div>

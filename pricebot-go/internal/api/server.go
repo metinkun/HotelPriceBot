@@ -17,6 +17,7 @@ import (
 	"pricebot/internal/details"
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
+	"pricebot/internal/mail"
 	"pricebot/internal/portal"
 	"pricebot/internal/providers"
 	"pricebot/internal/services"
@@ -32,7 +33,12 @@ type Deps struct {
 	Usage   *services.Usage
 	Details *details.Service
 	Sites   *services.Sites
+	Proxy   ProxyStatus  // IP rotasyonu durumu (nil olabilir)
+	Mailer  *mail.Mailer // e-posta (nil = ayarlanmamis)
 }
+
+// ProxyStatus proxy servisinin admin panele acilan durumu.
+type ProxyStatus interface{ Status() map[string]any }
 
 type Server struct {
 	cfg        *config.Config
@@ -47,6 +53,7 @@ type Server struct {
 	sites      *services.Sites
 	detailsSvc *details.Service
 	importer   *services.Importer
+	mailer     *mail.Mailer
 	started    time.Time
 }
 
@@ -62,6 +69,7 @@ func New(cfg *config.Config, d *db.DB, reg *providers.Registry, deps Deps) *Serv
 		sites:      deps.Sites,
 		detailsSvc: deps.Details,
 		importer:   services.NewImporter(reg, hotels),
+		mailer:     deps.Mailer,
 		started:    time.Now(),
 	}
 }
@@ -105,7 +113,6 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("GET /api/admin/hotels", s.admin(s.listHotels))
 	mux.Handle("GET /api/admin/hotels/{id}", s.admin(s.getHotel))
 	mux.Handle("PUT /api/admin/hotels/{id}", s.admin(s.updateHotel))
-	mux.Handle("DELETE /api/admin/hotels/{id}", s.admin(s.deleteHotel))
 
 	// Admin - mapping
 	mux.Handle("GET /api/admin/mappings", s.admin(s.listMappings))
@@ -122,7 +129,6 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /api/admin/clients", s.admin(s.createClient))
 	mux.Handle("GET /api/admin/clients/{id}", s.admin(s.getClient))
 	mux.Handle("PUT /api/admin/clients/{id}", s.admin(s.updateClient))
-	mux.Handle("DELETE /api/admin/clients/{id}", s.admin(s.deleteClient))
 	mux.Handle("GET /api/admin/clients/{id}/keys", s.admin(s.listKeys))
 	mux.Handle("POST /api/admin/clients/{id}/keys", s.admin(s.createKey))
 	mux.Handle("DELETE /api/admin/keys/{id}", s.admin(s.revokeKey))
@@ -140,7 +146,6 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("PUT /api/admin/clients/{id}/settings", s.admin(s.adminUpdateClientSettings))
 	mux.Handle("POST /api/admin/clients/{id}/portal-users", s.admin(s.adminCreatePortalUser))
 	mux.Handle("PUT /api/admin/portal-users/{id}", s.admin(s.adminUpdatePortalUser))
-	mux.Handle("DELETE /api/admin/portal-users/{id}", s.admin(s.adminDeletePortalUser))
 	mux.Handle("GET /api/admin/schedules", s.admin(s.adminSchedules))
 	mux.Handle("GET /api/admin/clients/{id}/searches", s.admin(s.adminClientSearches))
 	// Admin - limitler, giris loglari, onaylar, cihazlar, siteler, otel kunyesi (urun istekleri)
@@ -160,6 +165,13 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("PUT /api/admin/hotels/{id}/meta", s.admin(s.adminUpdateHotelMeta))
 	mux.Handle("GET /api/admin/hotels/{id}/clients", s.admin(s.adminHotelClients))
 	mux.Handle("GET /api/admin/usage/daily", s.admin(s.adminUsageDaily))
+	// Urun istekleri 2: otel ozet ekrani, site detayi, arama detayi, planli arama gecmisi, sifre linki, proxy durumu
+	mux.Handle("GET /api/admin/hotels/{id}/overview", s.admin(s.adminHotelOverview))
+	mux.Handle("GET /api/admin/sites/{name}", s.admin(s.adminSiteDetail))
+	mux.Handle("GET /api/admin/searches/{id}", s.admin(s.adminSearchDetail))
+	mux.Handle("GET /api/admin/schedules/{id}/searches", s.admin(s.adminScheduleSearches))
+	mux.Handle("POST /api/admin/portal-users/{id}/reset-link", s.admin(s.adminUserResetLink))
+	mux.Handle("GET /api/admin/proxies/status", s.admin(s.adminProxyStatus))
 
 	// Portal (musteri tipi 2): web uygulamasi API'si
 	mux.HandleFunc("POST /api/portal/auth/login", s.portalLogin)
@@ -167,21 +179,22 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/portal/auth/webauthn/register/finish", s.portalWebAuthnRegisterFinish)
 	mux.HandleFunc("POST /api/portal/auth/webauthn/verify/finish", s.portalWebAuthnVerifyFinish)
 	mux.HandleFunc("POST /api/portal/auth/devices/replace-request", s.portalDeviceReplaceRequest)
+	mux.HandleFunc("POST /api/portal/auth/reset/check", s.portalResetCheck)
+	mux.HandleFunc("POST /api/portal/auth/reset/complete", s.portalResetComplete)
+	mux.Handle("GET /api/portal/hotels/{id}/overview", s.portal(s.portalHotelOverview))
+	mux.Handle("POST /api/portal/schedules/{id}/active", s.portal(s.portalSetScheduleActive))
 	mux.Handle("GET /api/portal/devices", s.portal(s.portalDevices))
 	mux.Handle("DELETE /api/portal/devices/{id}", s.portal(s.portalRemoveDevice))
 	mux.Handle("GET /api/portal/approvals", s.portal(s.portalApprovals))
 	mux.Handle("GET /api/portal/me", s.portal(s.portalMe))
 	mux.Handle("GET /api/portal/hotels", s.portal(s.portalHotels))
-	mux.Handle("POST /api/portal/hotels", s.portal(s.portalAddHotel))
 	mux.Handle("PUT /api/portal/hotels/{id}", s.portal(s.portalUpdateHotel))
-	mux.Handle("DELETE /api/portal/hotels/{id}", s.portal(s.portalRemoveHotel))
 	mux.Handle("POST /api/portal/searches", s.portal(s.portalRunSearch))
 	mux.Handle("GET /api/portal/searches", s.portal(s.portalSearches))
 	mux.Handle("GET /api/portal/searches/{id}", s.portal(s.portalSearch))
 	mux.Handle("GET /api/portal/schedules", s.portal(s.portalSchedules))
 	mux.Handle("POST /api/portal/schedules", s.portal(s.portalCreateSchedule))
 	mux.Handle("PUT /api/portal/schedules/{id}", s.portal(s.portalUpdateSchedule))
-	mux.Handle("DELETE /api/portal/schedules/{id}", s.portal(s.portalDeleteSchedule))
 	mux.Handle("POST /api/portal/schedules/{id}/run", s.portal(s.portalRunSchedule))
 	// Portal - otel statik detayi ve bildirimler
 	mux.Handle("GET /api/portal/hotels/{id}/details", s.portal(s.portalHotelDetails))

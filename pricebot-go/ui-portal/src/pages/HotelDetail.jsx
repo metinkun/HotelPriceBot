@@ -1,7 +1,9 @@
 import React from "react";
 import { api } from "../api.js";
-import { HotelDetailView } from "@kit/features/HotelDetail.jsx";
+import { HotelOverviewView } from "@kit";
 
-export default function HotelDetail({ me, param, extra, navigate }) {
-  return <HotelDetailView api={api} apiBase="/api/portal" hotelId={param} initialProvider={extra} labelOf={(n) => (me.providers.find((p) => p.name === n) || {}).label || n} onBack={() => navigate("hotels")} />;
+// Otel ozeti (bizim detay ekrani); "Statik bilgiler" ile acente bazli ekrana gecilir.
+export default function HotelDetail({ me, param, navigate }) {
+  return <HotelOverviewView api={api} apiBase="/api/portal" hotelId={param} onBack={() => navigate("hotels")} onRunSearch={() => navigate("search", param)}
+    onOpenStatic={(prov) => { location.hash = `hotelstatic/${param}/${prov || ""}`; }} />;
 }

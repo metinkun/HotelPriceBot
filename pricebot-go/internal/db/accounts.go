@@ -459,6 +459,24 @@ func (d *DB) ClientsUsingProvider(ctx context.Context, name string) int {
 	return n
 }
 
+// ClientsUsingProviderList bir siteyi etkin kullanan musteriler (site detay ekrani).
+func (d *DB) ClientsUsingProviderList(ctx context.Context, name string) ([]Client, error) {
+	rows, err := d.Pool.Query(ctx, `SELECT `+clientCols+clientFrom+` WHERE c.is_active AND (cardinality(c.enabled_providers)=0 OR $1 = ANY(c.enabled_providers)) ORDER BY c.name`, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []Client{}
+	for rows.Next() {
+		c, err := scanClient(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, *c)
+	}
+	return out, rows.Err()
+}
+
 // ---- Otel kunyesi ----
 
 type HotelMeta struct {

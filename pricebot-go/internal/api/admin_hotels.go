@@ -88,12 +88,3 @@ func (s *Server) updateHotel(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, res)
 }
 
-// DELETE /api/admin/hotels/{id}
-func (s *Server) deleteHotel(w http.ResponseWriter, r *http.Request) {
-	res, err := s.hotels.Delete(r.Context(), r.PathValue("id"))
-	if err != nil {
-		writeError(w, r, err)
-		return
-	}
-	writeJSON(w, 200, map[string]any{"message": "Otel silindi.", "internalHotelId": res.InternalHotelID, "deletedMappings": res.DeletedMappings})
-}

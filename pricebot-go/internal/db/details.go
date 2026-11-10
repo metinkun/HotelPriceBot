@@ -63,6 +63,42 @@ func (d *DB) ListDetailsForHotel(ctx context.Context, hotelID string) ([]HotelDe
 	return out, rows.Err()
 }
 
+// ListDetailSnapshots bir otelin tum acente snapshot'lari (govde dahil; otel ozet ekrani icin).
+func (d *DB) ListDetailSnapshots(ctx context.Context, hotelID string) ([]HotelDetailRow, error) {
+	rows, err := d.Pool.Query(ctx, `SELECT `+detailCols+` FROM hotel_details WHERE internal_hotel_id=$1 AND version>0 ORDER BY provider`, hotelID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []HotelDetailRow{}
+	for rows.Next() {
+		r, err := scanDetail(rows)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, *r)
+	}
+	return out, rows.Err()
+}
+
+// ListDetailsForProvider bir acentenin tum otel detay durumlari (govde haric; site detay ekrani icin).
+func (d *DB) ListDetailsForProvider(ctx context.Context, provider string) (map[string]HotelDetailRow, error) {
+	rows, err := d.Pool.Query(ctx, `SELECT id, internal_hotel_id, provider, version, content_hash, '{}'::jsonb, fetched_at, changed_at, error FROM hotel_details WHERE provider=$1`, provider)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[string]HotelDetailRow{}
+	for rows.Next() {
+		r, err := scanDetail(rows)
+		if err != nil {
+			return nil, err
+		}
+		out[r.InternalHotelID] = *r
+	}
+	return out, rows.Err()
+}
+
 // SaveDetail yeni/degisen snapshot yazar. changed true ise version artar ve changed_at guncellenir.
 func (d *DB) SaveDetail(ctx context.Context, hotelID, provider, hash string, snapshot any, changed bool) (*HotelDetailRow, error) {
 	b, err := json.Marshal(snapshot)
@@ -116,6 +152,19 @@ func (d *DB) LatestDetailChange(ctx context.Context, hotelID, provider string) (
 	var c DetailChange
 	var raw []byte
 	err := d.Pool.QueryRow(ctx, `SELECT id, internal_hotel_id, provider, version, changed_at, diff, summary FROM hotel_detail_changes WHERE internal_hotel_id=$1 AND provider=$2 ORDER BY version DESC LIMIT 1`, hotelID, provider).
+		Scan(&c.ID, &c.InternalHotelID, &c.Provider, &c.Version, &c.ChangedAt, &raw, &c.Summary)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	c.Diff = json.RawMessage(raw)
+	return &c, err
+}
+
+// GetDetailChange id ile tek degisiklik kaydi.
+func (d *DB) GetDetailChange(ctx context.Context, id int64) (*DetailChange, error) {
+	var c DetailChange
+	var raw []byte
+	err := d.Pool.QueryRow(ctx, `SELECT id, internal_hotel_id, provider, version, changed_at, diff, summary FROM hotel_detail_changes WHERE id=$1`, id).
 		Scan(&c.ID, &c.InternalHotelID, &c.Provider, &c.Version, &c.ChangedAt, &raw, &c.Summary)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, ErrNotFound

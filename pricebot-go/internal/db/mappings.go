@@ -269,3 +269,21 @@ func (d *DB) DeleteMappingsForHotel(ctx context.Context, internalHotelID string)
 	}
 	return tag.RowsAffected(), nil
 }
+
+// CountMappingsByProvider site basina eslestirme sayisi (site yonetimi listesi).
+func (d *DB) CountMappingsByProvider(ctx context.Context) map[string]int {
+	out := map[string]int{}
+	rows, err := d.Pool.Query(ctx, `SELECT provider, count(*) FROM hotel_mappings GROUP BY provider`)
+	if err != nil {
+		return out
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var p string
+		var n int
+		if rows.Scan(&p, &n) == nil {
+			out[p] = n
+		}
+	}
+	return out
+}

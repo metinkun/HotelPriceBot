@@ -123,7 +123,8 @@ ve gunluk kanarya (`CANARY_HOTEL_ID`) uyarir.
 
 Bkz. [.env.example](.env.example). Onemliler: `DATABASE_URL`, `REDIS_URL`, `ADMIN_API_KEY`, `ADMIN_EMAIL/PASSWORD`, `JWT_SECRET`,
 `REQUIRE_API_KEY`, `CACHE_TTL_SECONDS`, `PROVIDER_CONCURRENCY`, `BROWSER_MAX_TABS`, `CANARY_HOTEL_ID`, `WEBSHARE_API_KEY`,
-`DETAILS_RUN_HOUR` (statik detay gunluk kontrol saati, Europe/Istanbul).
+`DETAILS_RUN_HOUR` (statik detay gunluk kontrol saati, Europe/Istanbul), `BROWSER_PROXY_URL` (headless tarayici proxy'si),
+`SMTP_HOST/PORT/USER/PASSWORD/FROM`, `PUBLIC_PORTAL_URL`, `PASSWORD_RESET_TTL_MINUTES` (sifre sifirlama linki e-postasi).
 
 ## Bilinen durumlar
 

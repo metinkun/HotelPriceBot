@@ -199,19 +199,6 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, c)
 }
 
-func (s *Server) deleteClient(w http.ResponseWriter, r *http.Request) {
-	id, ok := pathID(r)
-	if !ok {
-		badRequest(w, "Gecersiz id")
-		return
-	}
-	if err := s.db.DeleteClient(r.Context(), id); err != nil {
-		notFoundOr(w, r, err, "Musteri bulunamadi")
-		return
-	}
-	InvalidateKeyCache()
-	writeJSON(w, 200, map[string]any{"message": "Musteri ve anahtarlari silindi.", "id": id})
-}
 
 // ---- API anahtarlari ----
 

@@ -74,3 +74,27 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   portalda "bakimda" gorunur. Gorunen ad ve sira degistirilebilir. Yeni site eklemek kod gelistirmesi gerektirir.
 - **Otel kunyesi**: `hotels` tablosu (sehir, bolge, ulke, yildiz, zincir, dis kimlik, aktif). Pasif otel aramalarda
   atlanir. Admin bir sistem otelini dogrudan musteriye baglayabilir (otel limiti kontrol edilir).
+
+## Kasım 2026 ikinci istek listesi (uygulanan kurallar)
+
+- **Silme yok**: müşteri, portal kullanıcısı, otel ve planlı arama silinmez; pasife alınır (admin ve portalda silme düğmeleri kaldırıldı,
+  `DELETE` uçları kapatıldı). API anahtarı iptali ve cihaz kaldırma (günlük hak + admin onayı) korunur.
+- **Portaldan otel ekleme/çıkarma yok**: otel listesi admin > Müşteri > Oteller'den yönetilir ("Sistem otelinden ekle" / "Listeden çıkar").
+- **Otel detayı iki katmanlı**: önce **Otel özeti** (künye, siteler, puanlar, yorumlar, etkinlikler, kampanyalar, değişiklikler; admin'de müşteriler),
+  "Statik bilgiler" düğmesiyle acente bazlı statik ekran (sekme içerikleri kendi içinde kayar). Sarı vurgulu alana tıklanınca
+  eski/yeni karşılaştırma modalı açılır (kelime bazlı renklendirme). Detay değişiklikleri sayfasında çift tıklama aynı modalı açar.
+- **Yorum / puan / etkinlik / kampanya**: snapshot'taki acente bölümlerinden otomatik türetilir (`details.Enrich`), diff'te ayrı etiketlerle
+  raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
+- **Fiyat + müsaitlik**: sonuç tablosunda her hücrede fiyat ve yeşil "müsait" / kırmızı "müsait değil" etiketi; Tatilbudur'da düğmesiz
+  (satılmış) yanıttaki fiyat da gösterilir (`price.note`). Müsait olmayan fiyat "en ucuz" vurgusuna girmez.
+- **Şifre sıfırlama linki**: admin > Müşteri > Portal kullanıcıları > "Şifre sıfırlama linki" → tek kullanımlık, süreli link
+  (`PASSWORD_RESET_TTL_MINUTES`, varsayılan 60). SMTP ayarlıysa (`SMTP_HOST/PORT/USER/PASSWORD/FROM`, `PUBLIC_PORTAL_URL`) e-posta gider;
+  değilse link ekranda gösterilir. Kullanıcı `/portal/#reset/<token>` sayfasında yeni şifre belirler; giriş loguna `password_reset` düşer.
+- **Kullanıcı bazında cihaz limiti**: portal kullanıcısında bilgisayar/mobil limiti paket/müşteri değerini ezer (boş = varsayılan).
+- **Planlı arama tarih aralığı**: başlangıç/bitiş tarihi (boş = hemen / süresiz); zamanlayıcı aralık dışında çalıştırmaz.
+- **Admin ekranları**: Site detayı (oteller, müşteriler, değişiklikler, sağlık), proxy/IP rotasyonu durumu (Site Yönetimi),
+  planlı arama geçmişi (çalışmalar → sonuç matrisi), arama detayı modalı (Müşteri > Son aramalar), portal kullanıcısında "Giriş logları"
+  düğmesi ve giriş loglarında kullanıcı filtresi, tüm tablolarda genel arama + sütun filtreleri, 50-100 siteye uygun site seçici.
+- **IP rotasyonu**: `WEBSHARE_API_KEY` ile dönüşümlü havuz (5 dk'da bir senkron), yoksa `PROXY_HOST/PORT/USERNAME/PASSWORD` tek proxy;
+  headless tarayıcı için `BROWSER_PROXY_URL` (http://user:pass@host:port, kimlik doğrulama CDP ile). Durum: `GET /api/admin/proxies/status`.
+- Terminoloji: "plan" → **paket** (menü, formlar, mesajlar); "planlı arama" zamanlanmış arama anlamında kalır.

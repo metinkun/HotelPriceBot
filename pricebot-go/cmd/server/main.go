@@ -23,6 +23,7 @@ import (
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
 	"pricebot/internal/providers"
+	"pricebot/internal/mail"
 	"pricebot/internal/proxy"
 	"pricebot/internal/services"
 )
@@ -87,7 +88,8 @@ func main() {
 	det.Start()
 	defer det.Stop()
 
-	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage, Details: det, Sites: sites})
+	mailer := mail.New(mail.Config{Host: cfg.SMTPHost, Port: cfg.SMTPPort, Username: cfg.SMTPUser, Password: cfg.SMTPPassword, From: cfg.SMTPFrom, TLSMode: cfg.SMTPTLS})
+	apiSrv := api.New(cfg, database, reg, api.Deps{Cache: rc, Limiter: lim, Fetcher: fetcher, Canary: kn, Jobs: jm, Usage: usage, Details: det, Sites: sites, Proxy: proxySvc, Mailer: mailer})
 	apiSrv.Portal().Start() // yarim aramalari kapat + planli arama zamanlayicisi
 	defer apiSrv.Portal().Stop()
 

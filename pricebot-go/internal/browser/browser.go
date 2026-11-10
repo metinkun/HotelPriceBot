@@ -10,7 +10,10 @@ import (
 	"sync"
 	"time"
 
+	"net/url"
+
 	"github.com/chromedp/cdproto/emulation"
+	"github.com/chromedp/cdproto/fetch"
 	"github.com/chromedp/chromedp"
 
 	"pricebot/internal/config"
@@ -100,6 +103,11 @@ func (m *Manager) browser() (context.Context, error) {
 	} else {
 		opts = append(opts, chromedp.Flag("headless", false))
 	}
+	// Tarayici proxy'si (BROWSER_PROXY_URL): Chrome istek basina proxy degistiremez; tek adres (Webshare
+	// "rotating endpoint" gibi) verilir, kimlik dogrulama CDP Fetch.authRequired ile saglanir.
+	if pu := m.proxyURL(); pu != nil {
+		opts = append(opts, chromedp.ProxyServer(pu.Scheme+"://"+pu.Host))
+	}
 
 	m.allocCtx, m.allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
 	m.browserCtx, m.browserStop = chromedp.NewContext(m.allocCtx)
@@ -111,6 +119,42 @@ func (m *Manager) browser() (context.Context, error) {
 		return nil, fmt.Errorf("tarayici baslatilamadi: %w", err)
 	}
 	return m.browserCtx, nil
+}
+
+func (m *Manager) proxyURL() *url.URL {
+	raw := strings.TrimSpace(m.cfg.BrowserProxyURL)
+	if raw == "" {
+		return nil
+	}
+	if !strings.Contains(raw, "://") {
+		raw = "http://" + raw
+	}
+	u, err := url.Parse(raw)
+	if err != nil || u.Host == "" {
+		return nil
+	}
+	return u
+}
+
+// attachProxyAuth sekmede proxy kimlik dogrulamasini (407) otomatik yanitlar.
+func (m *Manager) attachProxyAuth(ctx context.Context) error {
+	pu := m.proxyURL()
+	if pu == nil || pu.User == nil {
+		return nil
+	}
+	user := pu.User.Username()
+	pass, _ := pu.User.Password()
+	chromedp.ListenTarget(ctx, func(ev any) {
+		switch e := ev.(type) {
+		case *fetch.EventAuthRequired:
+			go func() {
+				_ = chromedp.Run(ctx, fetch.ContinueWithAuth(e.RequestID, &fetch.AuthChallengeResponse{Response: fetch.AuthChallengeResponseResponseProvideCredentials, Username: user, Password: pass}))
+			}()
+		case *fetch.EventRequestPaused:
+			go func() { _ = chromedp.Run(ctx, fetch.ContinueRequest(e.RequestID)) }()
+		}
+	})
+	return chromedp.Run(ctx, fetch.Enable().WithHandleAuthRequests(true))
 }
 
 func (m *Manager) closeLocked() {
@@ -202,6 +246,10 @@ func (m *Manager) newPage(parent context.Context, timeout time.Duration) (contex
 	); err != nil {
 		cancel()
 		return nil, nil, fmt.Errorf("sekme acilamadi: %w", err)
+	}
+	if err := m.attachProxyAuth(ctx); err != nil {
+		cancel()
+		return nil, nil, fmt.Errorf("proxy kimlik dogrulamasi baglanamadi: %w", err)
 	}
 	return ctx, cancel, nil
 }

@@ -17,12 +17,14 @@ import DetailChanges from "./pages/DetailChanges.jsx";
 import Approvals from "./pages/Approvals.jsx";
 import LoginLogs from "./pages/LoginLogs.jsx";
 import Sites from "./pages/Sites.jsx";
+import SiteDetail from "./pages/SiteDetail.jsx";
+import HotelStatic from "./pages/HotelStatic.jsx";
 
 // key, menu etiketi, ikon, bilesen, ust cubuk basligi, (menu grubu). Etiketi bos olanlar menude gorunmez.
 const PAGES = [
   { key: "dashboard", label: "Özet", icon: "home", comp: Dashboard, title: "Özet", section: "Genel" },
   { key: "clients", label: "Müşteriler", icon: "users", comp: Clients, title: "Müşteriler", section: "Müşteri" },
-  { key: "plans", label: "Planlar", icon: "layers", comp: Plans, title: "Planlar" },
+  { key: "plans", label: "Paketler", icon: "layers", comp: Plans, title: "Paketler" },
   { key: "schedules", label: "Planlı Aramalar", icon: "calendar", comp: Schedules, title: "Planlı aramalar" },
   { key: "approvals", label: "Onay Bekleyenler", icon: "clipboardCheck", comp: Approvals, title: "Onay bekleyen işlemler" },
   { key: "usage", label: "Kullanım", icon: "chart", comp: Usage, title: "Kullanım", section: "Operasyon" },
@@ -35,6 +37,8 @@ const PAGES = [
   { key: "notifications", label: "Bildirimler", icon: "bell", comp: Notifications, title: "Bildirimler", section: "Sistem" },
   { key: "admins", label: "Adminler", icon: "shield", comp: Admins, title: "Adminler" },
   { key: "hoteldetail", label: "", icon: "building", comp: HotelDetail, title: "Otel detayı", parent: "hotels" },
+  { key: "hotelstatic", label: "", icon: "building", comp: HotelStatic, title: "Otel statik bilgileri", parent: "hotels" },
+  { key: "sitedetail", label: "", icon: "globe", comp: SiteDetail, title: "Site detayı", parent: "sites" },
   { key: "clientdetail", label: "", icon: "users", comp: ClientDetail, title: "Müşteri detayı", parent: "clients" },
 ];
 
@@ -52,7 +56,7 @@ function Login({ onLogin }) {
     catch (ex) { setErr(ex.message); } finally { setBusy(false); }
   };
   return (
-    <AuthLayout product="Admin" headline="Tüm acenteler, tek yönetim paneli." text="Müşteriler, planlar, oteller ve 13 sitenin sağlığı tek ekranda. Kanarya testi her gün sizin yerinize kontrol eder."
+    <AuthLayout product="Admin" headline="Tüm acenteler, tek yönetim paneli." text="Müşteriler, paketler, oteller ve 13 sitenin sağlığı tek ekranda. Kanarya testi her gün sizin yerinize kontrol eder."
       points={["Müşteri ve API anahtarı yönetimi", "Site sağlığı, devre kesici, kanarya", "Otel detaylarında günlük değişiklik takibi"]} visual={<AuthVisual />}>
       <form onSubmit={submit} className="sr-stack">
         <div><h2>Yönetici girişi</h2><div className="sub">Yalnızca yetkili hesaplar.</div></div>

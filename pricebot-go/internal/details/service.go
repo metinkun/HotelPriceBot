@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 
@@ -101,6 +102,7 @@ func (s *Service) Refresh(ctx context.Context, m *model.HotelMapping) (*db.Hotel
 		d.SourceURL = m.MetaString("sourceUrl")
 	}
 	d.FetchedAt = time.Now().UTC()
+	Enrich(d) // yorum / puan / etkinlik / kampanya gorunumleri (hash'e dahil degil)
 	hash := Hash(d)
 
 	prev, perr := s.db.GetDetail(ctx, m.InternalHotelID, m.Provider)
@@ -125,22 +127,75 @@ func (s *Service) Refresh(ctx context.Context, m *model.HotelMapping) (*db.Hotel
 	if _, err := s.db.AddDetailChange(ctx, m.InternalHotelID, m.Provider, row.Version, changes, summary); err != nil {
 		slog.Warn("detay degisikligi yazilamadi", "err", err)
 	}
-	s.notify(ctx, m, d.Name, summary, len(changes))
+	s.notify(ctx, m, d.Name, row.Version, changes)
 	return row, true, nil
 }
 
-// notify admin'e ve oteli listesinde tutan musterilere acente bazli bildirim yazar.
-func (s *Service) notify(ctx context.Context, m *model.HotelMapping, hotelName, summary string, n int) {
+// Bildirim kategorileri: yorum / puan / etkinlik / kampanya ayri bildirim; kalan "detail_change".
+var notifyCats = []struct{ prefix, kind, label string }{
+	{"reviews", "review", "yorum"}, {"scores", "score", "puan"}, {"events", "event", "etkinlik"}, {"campaigns", "campaign", "kampanya"},
+}
+
+// notify admin'e ve oteli listesinde tutan musterilere acente bazli bildirim(ler) yazar.
+func (s *Service) notify(ctx context.Context, m *model.HotelMapping, hotelName string, version int, changes []Change) {
 	if hotelName == "" && m.HotelName != nil {
 		hotelName = *m.HotelName
 	}
-	title := fmt.Sprintf("%s: %s otel bilgileri degisti", m.Provider, hotelName)
-	payload := map[string]any{"changes": n}
-	_ = s.db.AddNotification(ctx, nil, "detail_change", m.Provider, m.InternalHotelID, title, summary, payload)
 	clients, _ := s.db.ClientsForHotel(ctx, m.InternalHotelID)
-	for _, cid := range clients {
-		c := cid
-		_ = s.db.AddNotification(ctx, &c, "detail_change", m.Provider, m.InternalHotelID, title, summary, payload)
+	emit := func(kind, title, body string, payload map[string]any) {
+		_ = s.db.AddNotification(ctx, nil, kind, m.Provider, m.InternalHotelID, title, body, payload)
+		for _, cid := range clients {
+			c := cid
+			_ = s.db.AddNotification(ctx, &c, kind, m.Provider, m.InternalHotelID, title, body, payload)
+		}
+	}
+	rest := []Change{}
+	byCat := map[string][]Change{}
+	for _, c := range changes {
+		matched := false
+		for _, cat := range notifyCats {
+			if c.Path == cat.prefix || strings.HasPrefix(c.Path, cat.prefix+".") || strings.HasPrefix(c.Path, cat.prefix+"[") {
+				byCat[cat.kind] = append(byCat[cat.kind], c)
+				matched = true
+				break
+			}
+		}
+		if !matched {
+			rest = append(rest, c)
+		}
+	}
+	for _, cat := range notifyCats {
+		list := byCat[cat.kind]
+		if len(list) == 0 {
+			continue
+		}
+		added, removed, changed := 0, 0, 0
+		for _, c := range list {
+			switch c.Kind {
+			case "added":
+				added++
+			case "removed":
+				removed++
+			default:
+				changed++
+			}
+		}
+		parts := []string{}
+		if added > 0 {
+			parts = append(parts, fmt.Sprintf("%d yeni %s", added, cat.label))
+		}
+		if changed > 0 {
+			parts = append(parts, fmt.Sprintf("%d %s degisti", changed, cat.label))
+		}
+		if removed > 0 {
+			parts = append(parts, fmt.Sprintf("%d %s kaldirildi", removed, cat.label))
+		}
+		title := fmt.Sprintf("%s: %s — %s", m.Provider, hotelName, strings.Join(parts, ", "))
+		emit(cat.kind, title, Summary(list), map[string]any{"changes": len(list), "version": version, "category": cat.kind})
+	}
+	if len(rest) > 0 {
+		title := fmt.Sprintf("%s: %s otel bilgileri degisti", m.Provider, hotelName)
+		emit("detail_change", title, Summary(rest), map[string]any{"changes": len(rest), "version": version})
 	}
 }
 

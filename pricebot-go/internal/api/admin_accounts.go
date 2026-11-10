@@ -218,6 +218,11 @@ func (s *Server) adminRemoveDevice(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/admin/sites
 func (s *Server) adminSites(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, 200, s.siteRows(r.Context()))
+}
+
+// siteRows site listesi: ayar + saglik + kanarya + yetenek + kullanan musteri sayisi (sirali).
+func (s *Server) siteRows(ctx context.Context) []map[string]any {
 	stats := map[string]any{}
 	if s.deps.Limiter != nil {
 		for _, st := range s.deps.Limiter.Snapshot(s.reg.Names()) {
@@ -245,6 +250,7 @@ func (s *Server) adminSites(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	hotelCounts := s.db.CountMappingsByProvider(ctx)
 	out := []map[string]any{}
 	for _, p := range s.reg.All() {
 		name := p.Name()
@@ -262,7 +268,7 @@ func (s *Server) adminSites(w http.ResponseWriter, r *http.Request) {
 		out = append(out, map[string]any{
 			"name": name, "label": label, "domain": domain, "enabled": set.Enabled, "displayName": set.DisplayName, "sortOrder": set.SortOrder, "note": set.Note, "updatedAt": set.UpdatedAt,
 			"capabilities": p.Capabilities(), "supportsDetails": hasDetails || s.detailsSvc.Supports(name), "health": stats[name], "canary": canary[name],
-			"clientsUsing": s.db.ClientsUsingProvider(r.Context(), name),
+			"clientsUsing": s.db.ClientsUsingProvider(ctx, name), "hotelCount": hotelCounts[name],
 		})
 	}
 	sort.SliceStable(out, func(i, j int) bool {
@@ -272,7 +278,7 @@ func (s *Server) adminSites(w http.ResponseWriter, r *http.Request) {
 		}
 		return out[i]["name"].(string) < out[j]["name"].(string)
 	})
-	writeJSON(w, 200, out)
+	return out
 }
 
 // PUT /api/admin/sites/{name} {enabled?, displayName?, sortOrder?, note?}

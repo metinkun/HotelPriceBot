@@ -26,6 +26,10 @@ func normalizeForHash(d *provider.HotelDetails) map[string]any {
 	var m map[string]any
 	_ = json.Unmarshal(b, &m)
 	delete(m, "fetchedAt")
+	// Turetilmis gorunumler bolumlerden hesaplanir; hash'e dahil edilmez (eski snapshot'larla uyum)
+	for _, k := range []string{"reviews", "scores", "events", "campaigns"} {
+		delete(m, k)
+	}
 	return m
 }
 
@@ -40,6 +44,12 @@ func Hash(d *provider.HotelDetails) string {
 // Diff iki snapshot arasindaki alan bazli farklari uretir (insan okunur path'lerle).
 func Diff(oldD, newD *provider.HotelDetails) []Change {
 	var out []Change
+	Enrich(oldD)
+	Enrich(newD)
+	skip := classifiedTitles(oldD)
+	for k, v := range classifiedTitles(newD) {
+		skip[k] = v
+	}
 	cmpStr := func(path, a, b string) {
 		if a != b {
 			switch {
@@ -140,13 +150,54 @@ func Diff(oldD, newD *provider.HotelDetails) []Change {
 			out = append(out, Change{Path: "faq." + k, Kind: "changed", Old: o, New: n})
 		}
 	}
-	// Bolumler: basliga gore icerik
+	// Yorumlar / etkinlikler: kume farki; puanlar / kampanyalar: anahtara gore
+	or_, nr_ := []string{}, []string{}
+	for _, x := range oldD.Reviews {
+		or_ = append(or_, x.Text)
+	}
+	for _, x := range newD.Reviews {
+		nr_ = append(nr_, x.Text)
+	}
+	out = append(out, diffSet("reviews", or_, nr_)...)
+	oe, ne := []string{}, []string{}
+	for _, x := range oldD.Events {
+		oe = append(oe, strings.TrimSpace(x.Title+" "+x.Text))
+	}
+	for _, x := range newD.Events {
+		ne = append(ne, strings.TrimSpace(x.Title+" "+x.Text))
+	}
+	out = append(out, diffSet("events", oe, ne)...)
+	osc, nsc := map[string]string{}, map[string]string{}
+	for _, x := range oldD.Scores {
+		osc[x.Key] = x.Value
+	}
+	for _, x := range newD.Scores {
+		nsc[x.Key] = x.Value
+	}
+	for _, k := range unionKeysStr(osc, nsc) {
+		cmpStr("scores."+k, osc[k], nsc[k])
+	}
+	oc_, nc_ := map[string]string{}, map[string]string{}
+	for _, x := range oldD.Campaigns {
+		oc_[x.Title] = x.Text
+	}
+	for _, x := range newD.Campaigns {
+		nc_[x.Title] = x.Text
+	}
+	for _, k := range unionKeysStr(oc_, nc_) {
+		cmpStr("campaigns."+k, oc_[k], nc_[k])
+	}
+	// Bolumler: basliga gore icerik (siniflandirilanlar yukarida raporlandi)
 	os_, ns_ := map[string]string{}, map[string]string{}
 	for _, s := range oldD.Sections {
-		os_[s.Title] = sectionText(s)
+		if !skip[s.Title] {
+			os_[s.Title] = sectionText(s)
+		}
 	}
 	for _, s := range newD.Sections {
-		ns_[s.Title] = sectionText(s)
+		if !skip[s.Title] {
+			ns_[s.Title] = sectionText(s)
+		}
 	}
 	for _, k := range unionKeysStr(os_, ns_) {
 		o, ok1 := os_[k]
@@ -174,7 +225,7 @@ func Summary(ch []Change) string {
 		top = strings.SplitN(top, "[", 2)[0]
 		cnt[top+":"+c.Kind]++
 	}
-	labels := map[string]string{"images": "gorsel", "facilities": "ozellik", "rooms": "oda", "faq": "soru-cevap", "sections": "bolum", "policies": "politika", "boards": "pansiyon", "description": "aciklama", "name": "ad", "rating": "puan", "ratingCount": "yorum sayisi", "stars": "yildiz", "address": "adres", "contact": "iletisim", "city": "sehir", "region": "bolge"}
+	labels := map[string]string{"images": "gorsel", "facilities": "ozellik", "rooms": "oda", "faq": "soru-cevap", "sections": "bolum", "policies": "politika", "boards": "pansiyon", "description": "aciklama", "name": "ad", "rating": "puan", "ratingCount": "yorum sayisi", "stars": "yildiz", "address": "adres", "contact": "iletisim", "city": "sehir", "region": "bolge", "reviews": "yorum", "scores": "puan", "events": "etkinlik", "campaigns": "kampanya"}
 	kinds := map[string]string{"added": "eklendi", "removed": "kaldirildi", "changed": "degisti"}
 	keys := make([]string, 0, len(cnt))
 	for k := range cnt {
@@ -234,9 +285,10 @@ func sectionText(s provider.Section) string {
 	}
 }
 
+// trunc eski/yeni gosterimi icin uzun bolum metnini sinirlar (modalda tam karsilastirma icin 6000 karakter).
 func trunc(s string) string {
-	if len(s) > 400 {
-		return s[:400] + "…"
+	if len(s) > 6000 {
+		return s[:6000] + "…"
 	}
 	return s
 }

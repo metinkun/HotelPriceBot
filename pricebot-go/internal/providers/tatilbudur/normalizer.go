@@ -36,6 +36,41 @@ func trCurrency(c string) *string {
 	return types.StrOrNil(c)
 }
 
+var (
+	reAnyAmount  = regexp.MustCompile(`(?i)\bamount="(\d+(?:[.,]\d+)?)"`)
+	reTextPrice  = regexp.MustCompile(`(\d{1,3}(?:\.\d{3})+|\d{4,7})(?:,\d{2})?\s*(?:TL|₺)`)
+	reSoldOutTxt = regexp.MustCompile(`(?i)m[üu]sait\s*de[ğg]il|sat[ıi][şs]a\s*kapal[ıi]|t[üu]kendi|doludur|stok\s*yok|sold\s*out`)
+)
+
+// unavailableWithPrice rezervasyon dugmesi olmayan (satilmis / musait degil) yanitta sayfada yine de
+// gosterilen fiyati yakalar: once herhangi bir etiketin amount="..." niteligi, sonra "12.345 TL" metni.
+// Fiyat bulunursa Available=false ama Price dolu doner (UI "musait degil" etiketiyle fiyati gosterir).
+func unavailableWithPrice(view string) *types.NormalizedPrice {
+	out := types.Unavailable(nil, nil)
+	if view == "" {
+		return out
+	}
+	var price float64
+	for _, m := range reAnyAmount.FindAllStringSubmatch(view, -1) {
+		if v := num(strings.ReplaceAll(m[1], ",", ".")); v > 0 && (price == 0 || v < price) {
+			price = v
+		}
+	}
+	if price == 0 && reSoldOutTxt.MatchString(view) {
+		for _, m := range reTextPrice.FindAllStringSubmatch(view, -1) {
+			if v := num(strings.ReplaceAll(m[1], ".", "")); v > 0 && (price == 0 || v < price) {
+				price = v
+			}
+		}
+	}
+	if price > 0 {
+		out.Price = types.F64(price)
+		out.Currency = types.Str("TL")
+		out.Note = types.Str("Musait degil; sitede gosterilen fiyat")
+	}
+	return out
+}
+
 // normalizePrice fiyati ilk `v2-reservation-button` <a>'sinin temiz attribute'larindan alir.
 func normalizePrice(data *RoomPriceResponse) *types.NormalizedPrice {
 	view := ""
@@ -44,11 +79,11 @@ func normalizePrice(data *RoomPriceResponse) *types.NormalizedPrice {
 	}
 	i := strings.Index(view, "v2-reservation-button")
 	if i == -1 {
-		return types.Unavailable(nil, nil)
+		return unavailableWithPrice(view)
 	}
 	end := strings.Index(view[i:], ">")
 	if end == -1 {
-		return types.Unavailable(nil, nil)
+		return unavailableWithPrice(view)
 	}
 	block := view[i : i+end+1]
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api, fmtDate, parseReq } from "../api.js";
-import { PageHeader, Card, DataTable, Badge, Alert, EmptyState, statusTone, statusLabel } from "@kit";
+import { PageHeader, Card, DataTable, Badge, Alert, EmptyState, Button, SearchDetailModal, statusTone, statusLabel } from "@kit";
 import ResultTable from "./ResultTable.jsx";
 
 export default function History({ me, param }) {
@@ -8,9 +8,11 @@ export default function History({ me, param }) {
   const [loading, setLoading] = useState(true);
   const [sel, setSel] = useState(null);
   const [err, setErr] = useState("");
+  const [detail, setDetail] = useState(null);
+  const schedFilter = param && String(param).startsWith("s") ? Number(String(param).slice(1)) : null;
   const load = () => api("/api/portal/searches?limit=100").then(setList).catch((e) => setErr(e.message)).finally(() => setLoading(false));
   const open = async (id) => { try { setSel(await api("/api/portal/searches/" + id)); } catch (e) { setErr(e.message); } };
-  useEffect(() => { load(); if (param) open(param); }, []);
+  useEffect(() => { load(); if (param && !schedFilter) open(param); }, []);
   useEffect(() => {
     if (!sel || sel.status === "done" || sel.status === "failed") return;
     const t = setTimeout(() => open(sel.id), 2000); return () => clearTimeout(t);
@@ -20,15 +22,15 @@ export default function History({ me, param }) {
 
   return (
     <div>
-      <PageHeader title="Arama geçmişi" description="Anlık ve planlı aramaların sonuçları. Soldan bir arama seçin; süren aramalar kendiliğinden güncellenir." />
+      <PageHeader title="Arama geçmişi" description="Anlık ve planlı aramaların sonuçları. Soldan bir arama seçin; süren aramalar kendiliğinden güncellenir. Çift tıklayınca tüm detay ayrı pencerede açılır." actions={schedFilter ? <Button variant="secondary" icon="x" onClick={() => { location.hash = "history"; }}>Planlı arama #{schedFilter} filtresini kaldır</Button> : null} />
       {err && <Alert tone="bad">{err}</Alert>}
       <div className="sr-row start" style={{ gap: 16 }}>
         <div style={{ flex: "1 1 360px", maxWidth: 480, minWidth: 0 }}>
-          <DataTable dense rows={list} loading={loading} pageSize={30} selectedKey={sel?.id} onRowClick={(s) => open(s.id)}
+          <DataTable dense rows={schedFilter ? list.filter((s) => s.scheduleId === schedFilter) : list} loading={loading} pageSize={30} selectedKey={sel?.id} onRowClick={(s) => open(s.id)} onRowDoubleClick={async (s) => { try { setDetail({ search: await api("/api/portal/searches/" + s.id) }); } catch (e) { setErr(e.message); } }}
             columns={[
               { key: "createdAt", title: "Arama", primary: true, render: (s) => fmtDate(s.createdAt), sub: (s) => { const r = req(s); return `${s.kind === "packages" ? "Paket" : "Otel"} · ${(r.hotelIds || []).length} otel · ${when(r)}`; } },
-              { key: "status", title: "Durum", render: (s) => <Badge tone={statusTone(s.status)}>{statusLabel(s.status)}</Badge> },
-              { key: "scheduleId", title: "Kaynak", render: (s) => (s.scheduleId ? <Badge tone="info" dot={false}>planlı</Badge> : <Badge tone="neutral" dot={false}>anlık</Badge>), hideOnMobile: true },
+              { key: "status", title: "Durum", render: (s) => <Badge tone={statusTone(s.status)}>{statusLabel(s.status)}</Badge>, filterValue: (s) => statusLabel(s.status) },
+              { key: "scheduleId", title: "Kaynak", render: (s) => (s.scheduleId ? <Badge tone="info" dot={false}>planlı</Badge> : <Badge tone="neutral" dot={false}>anlık</Badge>), hideOnMobile: true, filterValue: (s) => (s.scheduleId ? "planlı" : "anlık") },
             ]}
             empty={{ icon: "history", title: "Kayıt yok", text: "Henüz arama yapılmadı." }} />
         </div>
@@ -41,6 +43,7 @@ export default function History({ me, param }) {
           )}
         </div>
       </div>
+      <SearchDetailModal data={detail} onClose={() => setDetail(null)} labelOf={(n) => (me.providers.find((p) => p.name === n) || {}).label || n} ownHotelId={me.client?.kind === "otel" ? me.client?.ownHotelId : null} />
     </div>
   );
 }

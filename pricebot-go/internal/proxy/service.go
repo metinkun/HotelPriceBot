@@ -27,9 +27,12 @@ type Service struct {
 	cfg *config.Config
 	db  *db.DB
 
-	mu      sync.Mutex
-	proxies []cached
-	index   int
+	mu       sync.Mutex
+	proxies  []cached
+	index    int
+	lastSync time.Time
+	lastErr  string
+	served   int64
 
 	stop chan struct{}
 	wg   sync.WaitGroup
@@ -114,8 +117,32 @@ func (s *Service) Sync(ctx context.Context) (int, error) {
 	if err := s.refreshCache(ctx); err != nil {
 		return 0, err
 	}
+	s.mu.Lock()
+	s.lastSync, s.lastErr = time.Now(), ""
+	s.mu.Unlock()
 	log.Printf("[ProxyService] %d proxy senkronize edildi", len(all))
 	return len(all), nil
+}
+
+// Status admin panel icin IP rotasyonu durumu.
+func (s *Service) Status() map[string]any {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	mode := "direct"
+	switch {
+	case len(s.proxies) > 0:
+		mode = "rotating"
+	case s.cfg.ProxyHost != "":
+		mode = "static"
+	}
+	out := map[string]any{"mode": mode, "poolSize": len(s.proxies), "served": s.served, "staticHost": s.cfg.ProxyHost}
+	if !s.lastSync.IsZero() {
+		out["lastSync"] = s.lastSync
+	}
+	if s.lastErr != "" {
+		out["lastError"] = s.lastErr
+	}
+	return out
 }
 
 func (s *Service) refreshCache(ctx context.Context) error {
@@ -139,6 +166,7 @@ func (s *Service) refreshCache(ctx context.Context) error {
 func (s *Service) Next() *url.URL {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.served++
 	if len(s.proxies) > 0 {
 		p := s.proxies[s.index%len(s.proxies)]
 		s.index = (s.index + 1) % len(s.proxies)
@@ -180,6 +208,9 @@ func (s *Service) Start(ctx context.Context) {
 			case <-t.C:
 				if _, err := s.Sync(context.Background()); err != nil {
 					log.Printf("[ProxyService] Proxy senkronizasyonu basarisiz: %v", err)
+					s.mu.Lock()
+					s.lastErr = err.Error()
+					s.mu.Unlock()
 				}
 			}
 		}

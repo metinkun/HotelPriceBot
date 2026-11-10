@@ -71,6 +71,28 @@ type Contact struct {
 	Website string `json:"website,omitempty"`
 }
 
+// Review bir misafir yorumu (acenteden gelen metin; yazar/tarih/puan varsa).
+type Review struct {
+	Author string   `json:"author,omitempty"`
+	Date   string   `json:"date,omitempty"`
+	Title  string   `json:"title,omitempty"`
+	Text   string   `json:"text"`
+	Score  *float64 `json:"score,omitempty"`
+}
+
+// Event otelin etkinlik / sanatci programi kaydi.
+type Event struct {
+	Title string `json:"title"`
+	Date  string `json:"date,omitempty"`
+	Text  string `json:"text,omitempty"`
+}
+
+// Campaign acentenin otel icin duyurdugu kampanya / firsat.
+type Campaign struct {
+	Title string `json:"title"`
+	Text  string `json:"text,omitempty"`
+}
+
 // HotelDetails bir acentedeki otel detay sayfasinin normalize edilmis hali.
 type HotelDetails struct {
 	Provider        string    `json:"provider"`
@@ -99,6 +121,13 @@ type HotelDetails struct {
 
 	// Acentenin kendi basliklariyla tum icerik (ham/orijinal gorunum icin)
 	Sections []Section `json:"sections"`
+
+	// Turetilmis gorunumler (Sections'tan siniflandirilir; provider dogrudan da doldurabilir).
+	// Hash'e dahil edilmez; diff ayri etiketlerle (yorum/puan/etkinlik/kampanya) raporlanir.
+	Reviews   []Review   `json:"reviews,omitempty"`
+	Scores    []KV       `json:"scores,omitempty"` // kategori puanlari (Temizlik: 8.6 ...)
+	Events    []Event    `json:"events,omitempty"`
+	Campaigns []Campaign `json:"campaigns,omitempty"`
 }
 
 // DetailProvider otel statik detayini cekebilen provider.

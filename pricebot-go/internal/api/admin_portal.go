@@ -142,10 +142,33 @@ func (s *Server) adminUpdatePortalUser(w http.ResponseWriter, r *http.Request) {
 		Password *string `json:"password"`
 		IsActive *bool   `json:"isActive"`
 		Name     *string `json:"name"`
+		// Kullanici bazinda cihaz limiti: deviceLimits:{pc, mobile} (null = paket/musteri degeri); clearDeviceLimits:true -> varsayilana don
+		DeviceLimits *struct {
+			PC     *int `json:"pc"`
+			Mobile *int `json:"mobile"`
+		} `json:"deviceLimits"`
+		ClearDeviceLimits bool `json:"clearDeviceLimits"`
 	}
 	if err := decodeBody(r, &in); err != nil {
 		badRequest(w, "Gecersiz JSON govde")
 		return
+	}
+	if in.ClearDeviceLimits {
+		if err := s.db.SetPortalUserDeviceLimits(r.Context(), id, nil, nil); err != nil {
+			notFoundOr(w, r, err, "Kullanici bulunamadi")
+			return
+		}
+	} else if in.DeviceLimits != nil {
+		for _, v := range []*int{in.DeviceLimits.PC, in.DeviceLimits.Mobile} {
+			if v != nil && (*v < 0 || *v > 50) {
+				badRequest(w, "cihaz limiti 0-50 arasinda olmali (0 = sinirsiz)")
+				return
+			}
+		}
+		if err := s.db.SetPortalUserDeviceLimits(r.Context(), id, in.DeviceLimits.PC, in.DeviceLimits.Mobile); err != nil {
+			notFoundOr(w, r, err, "Kullanici bulunamadi")
+			return
+		}
 	}
 	var hash *string
 	if in.Password != nil {
@@ -164,19 +187,6 @@ func (s *Server) adminUpdatePortalUser(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]any{"message": "Guncellendi.", "id": id})
 }
 
-// DELETE /api/admin/portal-users/{id}
-func (s *Server) adminDeletePortalUser(w http.ResponseWriter, r *http.Request) {
-	id, ok := pathID(r)
-	if !ok {
-		badRequest(w, "Gecersiz id")
-		return
-	}
-	if err := s.db.DeletePortalUser(r.Context(), id); err != nil {
-		notFoundOr(w, r, err, "Kullanici bulunamadi")
-		return
-	}
-	writeJSON(w, 200, map[string]any{"message": "Silindi.", "id": id})
-}
 
 // GET /api/admin/schedules — tum musterilerin planli aramalari
 func (s *Server) adminSchedules(w http.ResponseWriter, r *http.Request) {

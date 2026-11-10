@@ -49,7 +49,7 @@ export default function Devices({ me }) {
             { key: "createdAt", title: "Eklendi", render: (d) => fmtDate(d.createdAt), hideOnMobile: true },
             { key: "lastUsedAt", title: "Son kullanım", render: (d) => fmtRel(d.lastUsedAt) },
           ]}
-          actions={(d) => [{ icon: "trash", title: "Kaldır", tone: "danger", onClick: remove }]}
+          actions={(d) => [{ icon: "ban", title: "Kaldır (cihaz kaydı pasife alınır)", tone: "danger", onClick: remove }]}
           empty={{ icon: "fingerprint", title: "Kayıtlı cihaz yok", text: data.requireDeviceAuth === false ? "Cihaz doğrulaması kapalı olduğu için kayıt gerekmiyor." : "Giriş sırasında cihazınız kaydedilir." }} />
       </Card>
       <Card style={{ marginTop: 16 }} pad0 title="Bekleyen talepler" subtitle="Günlük hakkı aşan kaldırma/değiştirme talepleri yönetici onayına gider.">

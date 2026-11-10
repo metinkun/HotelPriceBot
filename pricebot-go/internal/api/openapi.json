@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Hotel Price Bot API",
-    "version": "2.3.0",
-    "description": "Birlesik cok-saglayicili otel fiyat botu (13 site: etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, tatilsitesi, prontotour, tatilcikus, tatildukkani).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir."
+    "version": "2.4",
+    "description": "Birlesik cok-saglayicili otel fiyat botu (13 site: etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, tatilsitesi, prontotour, tatilcikus, tatildukkani).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir.\n\n2.4: otel ozeti (/overview), site detayi, arama detayi, planli arama gecmisi ve tarih araligi, sifre sifirlama linki, kullanici bazinda cihaz limiti, proxy durumu; silme uclari kaldirildi (pasife alma), portaldan otel ekleme/cikarma kaldirildi. Fiyat yanitlarinda price.note (musait degil ama fiyat var)."
   },
   "servers": [
     {
@@ -1900,38 +1900,6 @@
             "description": "Bulunamadi"
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Otel (URL bazli)"
-        ],
-        "summary": "Oteli sil (tum provider eslestirmeleri)",
-        "security": [
-          {
-            "AdminBearer": []
-          },
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Silindi"
-          },
-          "404": {
-            "description": "Bulunamadi"
-          }
-        }
       }
     },
     "/ready": {
@@ -2638,45 +2606,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Musteri & Plan"
-        ],
-        "summary": "Musteriyi ve anahtarlarini sil",
-        "security": [
-          {
-            "AdminBearer": []
-          },
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Silindi"
-          },
-          "404": {
-            "description": "Bulunamadi",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/api/admin/clients/{id}/keys": {
@@ -3086,57 +3015,6 @@
             "description": "Liste"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Portal (musteri tipi 2)"
-        ],
-        "summary": "URL'lerden otel ekle (yalnizca etkin siteler)",
-        "security": [
-          {
-            "PortalBearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "hotelName",
-                  "urls"
-                ],
-                "properties": {
-                  "hotelName": {
-                    "type": "string"
-                  },
-                  "urls": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Eklendi"
-          },
-          "403": {
-            "description": "Site etkin degil",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/api/portal/hotels/{id}": {
@@ -3181,32 +3059,6 @@
         "responses": {
           "200": {
             "description": "Guncellendi"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Portal (musteri tipi 2)"
-        ],
-        "summary": "Oteli listeden kaldir",
-        "security": [
-          {
-            "PortalBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Kaldirildi"
           }
         }
       }
@@ -3386,7 +3238,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Schedule"
+                "$ref": "#/components/schemas/Schedule",
+                "properties": {
+                  "startsOn": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Baslangic (bos = hemen)"
+                  },
+                  "endsOn": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Bitis (bos = suresiz)"
+                  }
+                }
               },
               "example": {
                 "name": "Haftalik Acapulco",
@@ -3440,7 +3304,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Schedule"
+                "$ref": "#/components/schemas/Schedule",
+                "properties": {
+                  "startsOn": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Baslangic (bos = hemen)"
+                  },
+                  "endsOn": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Bitis (bos = suresiz)"
+                  }
+                }
               }
             }
           }
@@ -3448,32 +3324,6 @@
         "responses": {
           "200": {
             "description": "Guncellendi"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Portal (musteri tipi 2)"
-        ],
-        "summary": "Plan sil",
-        "security": [
-          {
-            "PortalBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Silindi"
           }
         }
       }
@@ -3682,6 +3532,23 @@
                   },
                   "name": {
                     "type": "string"
+                  },
+                  "deviceLimits": {
+                    "type": "object",
+                    "properties": {
+                      "pc": {
+                        "type": "integer",
+                        "nullable": true
+                      },
+                      "mobile": {
+                        "type": "integer",
+                        "nullable": true
+                      }
+                    },
+                    "description": "Kullanici bazinda cihaz limiti (null = paket/musteri degeri)"
+                  },
+                  "clearDeviceLimits": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -3691,35 +3558,6 @@
         "responses": {
           "200": {
             "description": "Guncellendi"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Musteri & Plan"
-        ],
-        "summary": "Portal kullanicisi sil",
-        "security": [
-          {
-            "AdminBearer": []
-          },
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Silindi"
           }
         }
       }
@@ -4965,6 +4803,27 @@
             }
           }
         }
+      },
+      "get": {
+        "summary": "Site detayi: ayar, saglik, bu sitedeki oteller, kullanan musteriler, son degisiklikler",
+        "tags": [
+          "Admin - Siteler"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       }
     },
     "/api/admin/hotels/{id}/meta": {
@@ -5267,6 +5126,265 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/{id}/overview": {
+      "get": {
+        "summary": "Otel ozeti: kunye, siteler, puanlar, yorumlar, etkinlikler, kampanyalar, degisiklikler, musteriler",
+        "tags": [
+          "Admin - Oteller"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/portal/hotels/{id}/overview": {
+      "get": {
+        "summary": "Otel ozeti (musterinin etkin siteleriyle)",
+        "tags": [
+          "Portal"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/searches/{id}": {
+      "get": {
+        "summary": "Arama detayi (istek + sonuc matrisi), musteri/kullanici/planli arama bilgisiyle",
+        "tags": [
+          "Admin - Musteriler"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/schedules/{id}/searches": {
+      "get": {
+        "summary": "Planli aramanin gecmis calismalari",
+        "tags": [
+          "Admin - Musteriler"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/api/admin/portal-users/{id}/reset-link": {
+      "post": {
+        "summary": "Sifre sifirlama linki uret (SMTP ayarliysa e-posta ile gonderir); {link, expiresAt, emailSent, emailError}",
+        "tags": [
+          "Admin - Musteriler"
+        ],
+        "responses": {
+          "200": {
+            "description": "201 link"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "send": {
+                    "type": "boolean",
+                    "description": "false: e-posta gonderme, yalnizca link uret"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/proxies/status": {
+      "get": {
+        "summary": "IP rotasyonu (proxy) durumu: mode rotating|static|direct, poolSize, lastSync, browserProxy",
+        "tags": [
+          "Admin - Siteler"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        }
+      }
+    },
+    "/api/portal/auth/reset/check": {
+      "post": {
+        "summary": "Sifre sifirlama linkini dogrula -> {email, expiresAt}",
+        "tags": [
+          "Portal - Giris"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/auth/reset/complete": {
+      "post": {
+        "summary": "Yeni sifre belirle (tek kullanimlik link)",
+        "tags": [
+          "Portal - Giris"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "password"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal/schedules/{id}/active": {
+      "post": {
+        "summary": "Planli aramayi pasife al / aktiflestir (silme yerine)",
+        "tags": [
+          "Portal"
+        ],
+        "responses": {
+          "200": {
+            "description": "Basarili"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "isActive"
+                ],
+                "properties": {
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
           }
         }
       }

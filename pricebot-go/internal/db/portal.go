@@ -22,13 +22,16 @@ type PortalUser struct {
 	IsActive     bool       `json:"isActive"`
 	CreatedAt    time.Time  `json:"createdAt"`
 	LastLoginAt  *time.Time `json:"lastLoginAt"`
+	// Kullanici bazinda cihaz limiti (nil = musteri/paket degeri)
+	MaxDevicesPC     *int `json:"maxDevicesPc"`
+	MaxDevicesMobile *int `json:"maxDevicesMobile"`
 }
 
-const portalUserCols = `id, client_id, email, password_hash, name, is_active, created_at, last_login_at`
+const portalUserCols = `id, client_id, email, password_hash, name, is_active, created_at, last_login_at, max_devices_pc, max_devices_mobile`
 
 func scanPortalUser(row pgx.Row) (*PortalUser, error) {
 	var u PortalUser
-	if err := row.Scan(&u.ID, &u.ClientID, &u.Email, &u.PasswordHash, &u.Name, &u.IsActive, &u.CreatedAt, &u.LastLoginAt); err != nil {
+	if err := row.Scan(&u.ID, &u.ClientID, &u.Email, &u.PasswordHash, &u.Name, &u.IsActive, &u.CreatedAt, &u.LastLoginAt, &u.MaxDevicesPC, &u.MaxDevicesMobile); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -100,6 +103,78 @@ func (d *DB) UpdatePortalUser(ctx context.Context, id int, passwordHash *string,
 		return ErrNotFound
 	}
 	return nil
+}
+
+// SetPortalUserDeviceLimits kullanici bazinda cihaz limiti (nil = varsayilana don).
+func (d *DB) SetPortalUserDeviceLimits(ctx context.Context, id int, pc, mobile *int) error {
+	tag, err := d.Pool.Exec(ctx, `UPDATE portal_users SET max_devices_pc=$1, max_devices_mobile=$2 WHERE id=$3`, pc, mobile, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+// ---- Sifre sifirlama ----
+
+type PasswordReset struct {
+	ID        int        `json:"id"`
+	UserID    int        `json:"userId"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	CreatedBy *string    `json:"createdBy"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UsedAt    *time.Time `json:"usedAt"`
+	SentTo    *string    `json:"sentTo"`
+	SentAt    *time.Time `json:"sentAt"`
+	SendError *string    `json:"sendError"`
+}
+
+const resetCols = `id, user_id, expires_at, created_by, created_at, used_at, sent_to, sent_at, send_error`
+
+func scanReset(row pgx.Row) (*PasswordReset, error) {
+	var x PasswordReset
+	if err := row.Scan(&x.ID, &x.UserID, &x.ExpiresAt, &x.CreatedBy, &x.CreatedAt, &x.UsedAt, &x.SentTo, &x.SentAt, &x.SendError); err != nil {
+		return nil, err
+	}
+	return &x, nil
+}
+
+// CreatePasswordReset ayni kullanicinin kullanilmamis eski linklerini gecersiz kilar ve yeni kayit acar.
+func (d *DB) CreatePasswordReset(ctx context.Context, userID int, tokenHash string, expires time.Time, createdBy string) (*PasswordReset, error) {
+	_, _ = d.Pool.Exec(ctx, `UPDATE password_resets SET used_at=now() WHERE user_id=$1 AND used_at IS NULL`, userID)
+	return scanReset(d.Pool.QueryRow(ctx, `INSERT INTO password_resets (user_id, token_hash, expires_at, created_by) VALUES ($1,$2,$3,$4) RETURNING `+resetCols, userID, tokenHash, expires, createdBy))
+}
+
+func (d *DB) GetPasswordReset(ctx context.Context, tokenHash string) (*PasswordReset, error) {
+	x, err := scanReset(d.Pool.QueryRow(ctx, `SELECT `+resetCols+` FROM password_resets WHERE token_hash=$1`, tokenHash))
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	return x, err
+}
+
+func (d *DB) UsePasswordReset(ctx context.Context, id int) error {
+	_, err := d.Pool.Exec(ctx, `UPDATE password_resets SET used_at=now() WHERE id=$1`, id)
+	return err
+}
+
+func (d *DB) MarkPasswordResetSent(ctx context.Context, id int, to string, sendErr *string) {
+	if sendErr == nil {
+		_, _ = d.Pool.Exec(ctx, `UPDATE password_resets SET sent_to=$1, sent_at=now(), send_error=NULL WHERE id=$2`, to, id)
+		return
+	}
+	_, _ = d.Pool.Exec(ctx, `UPDATE password_resets SET sent_to=$1, send_error=$2 WHERE id=$3`, to, *sendErr, id)
+}
+
+// LatestPasswordReset kullanicinin son linki (yoksa nil).
+func (d *DB) LatestPasswordReset(ctx context.Context, userID int) *PasswordReset {
+	x, err := scanReset(d.Pool.QueryRow(ctx, `SELECT `+resetCols+` FROM password_resets WHERE user_id=$1 ORDER BY created_at DESC LIMIT 1`, userID))
+	if err != nil {
+		return nil
+	}
+	return x
 }
 
 func (d *DB) DeletePortalUser(ctx context.Context, id int) error {
@@ -271,6 +346,15 @@ func (d *DB) GetSearch(ctx context.Context, clientID int, id int64) (*Search, er
 	return s, err
 }
 
+// GetSearchByID musteri kisiti olmadan (admin) tek arama, sonuc govdesiyle.
+func (d *DB) GetSearchByID(ctx context.Context, id int64) (*Search, error) {
+	s, err := scanSearch(d.Pool.QueryRow(ctx, `SELECT `+searchCols+` FROM searches WHERE id=$1`, id))
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	return s, err
+}
+
 // ListSearches musterinin aramalari (sonuc govdesi haric, hafif liste). scheduleID verilirse filtreler.
 func (d *DB) ListSearches(ctx context.Context, clientID int, scheduleID *int, limit int) ([]Search, error) {
 	if limit <= 0 || limit > 200 {
@@ -341,16 +425,18 @@ type Schedule struct {
 	IsActive  bool            `json:"isActive"`
 	LastRunAt *time.Time      `json:"lastRunAt"`
 	NextRunAt *time.Time      `json:"nextRunAt"`
+	StartsOn  *string         `json:"startsOn"` // YYYY-MM-DD (bos = hemen)
+	EndsOn    *string         `json:"endsOn"`   // YYYY-MM-DD (bos = suresiz)
 	CreatedAt time.Time       `json:"createdAt"`
 	UpdatedAt time.Time       `json:"updatedAt"`
 }
 
-const scheduleCols = `id, client_id, user_id, name, kind, request, weekdays, run_time, timezone, is_active, last_run_at, next_run_at, created_at, updated_at`
+const scheduleCols = `id, client_id, user_id, name, kind, request, weekdays, run_time, timezone, is_active, last_run_at, next_run_at, to_char(starts_on,'YYYY-MM-DD'), to_char(ends_on,'YYYY-MM-DD'), created_at, updated_at`
 
 func scanSchedule(row pgx.Row) (*Schedule, error) {
 	var s Schedule
 	var req []byte
-	if err := row.Scan(&s.ID, &s.ClientID, &s.UserID, &s.Name, &s.Kind, &req, &s.Weekdays, &s.RunTime, &s.Timezone, &s.IsActive, &s.LastRunAt, &s.NextRunAt, &s.CreatedAt, &s.UpdatedAt); err != nil {
+	if err := row.Scan(&s.ID, &s.ClientID, &s.UserID, &s.Name, &s.Kind, &req, &s.Weekdays, &s.RunTime, &s.Timezone, &s.IsActive, &s.LastRunAt, &s.NextRunAt, &s.StartsOn, &s.EndsOn, &s.CreatedAt, &s.UpdatedAt); err != nil {
 		return nil, err
 	}
 	s.Request = json.RawMessage(req)
@@ -369,6 +455,8 @@ type ScheduleInput struct {
 	Timezone string
 	IsActive bool
 	NextRun  *time.Time
+	StartsOn *string // YYYY-MM-DD
+	EndsOn   *string
 }
 
 func (d *DB) CreateSchedule(ctx context.Context, clientID int, userID *int, in ScheduleInput) (*Schedule, error) {
@@ -376,9 +464,9 @@ func (d *DB) CreateSchedule(ctx context.Context, clientID int, userID *int, in S
 	if err != nil {
 		return nil, err
 	}
-	return scanSchedule(d.Pool.QueryRow(ctx, `INSERT INTO schedules (client_id, user_id, name, kind, request, weekdays, run_time, timezone, is_active, next_run_at)
-VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING `+scheduleCols,
-		clientID, userID, in.Name, in.Kind, b, in.Weekdays, in.RunTime, in.Timezone, in.IsActive, in.NextRun))
+	return scanSchedule(d.Pool.QueryRow(ctx, `INSERT INTO schedules (client_id, user_id, name, kind, request, weekdays, run_time, timezone, is_active, next_run_at, starts_on, ends_on)
+VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::date,$12::date) RETURNING `+scheduleCols,
+		clientID, userID, in.Name, in.Kind, b, in.Weekdays, in.RunTime, in.Timezone, in.IsActive, in.NextRun, in.StartsOn, in.EndsOn))
 }
 
 func (d *DB) UpdateSchedule(ctx context.Context, clientID, id int, in ScheduleInput) (*Schedule, error) {
@@ -386,9 +474,9 @@ func (d *DB) UpdateSchedule(ctx context.Context, clientID, id int, in ScheduleIn
 	if err != nil {
 		return nil, err
 	}
-	s, err := scanSchedule(d.Pool.QueryRow(ctx, `UPDATE schedules SET name=$1, kind=$2, request=$3, weekdays=$4, run_time=$5, timezone=$6, is_active=$7, next_run_at=$8, updated_at=now()
+	s, err := scanSchedule(d.Pool.QueryRow(ctx, `UPDATE schedules SET name=$1, kind=$2, request=$3, weekdays=$4, run_time=$5, timezone=$6, is_active=$7, next_run_at=$8, starts_on=$11::date, ends_on=$12::date, updated_at=now()
 WHERE id=$9 AND client_id=$10 RETURNING `+scheduleCols,
-		in.Name, in.Kind, b, in.Weekdays, in.RunTime, in.Timezone, in.IsActive, in.NextRun, id, clientID))
+		in.Name, in.Kind, b, in.Weekdays, in.RunTime, in.Timezone, in.IsActive, in.NextRun, id, clientID, in.StartsOn, in.EndsOn))
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil, ErrNotFound
 	}
@@ -404,6 +492,27 @@ func (d *DB) DeleteSchedule(ctx context.Context, clientID, id int) error {
 		return ErrNotFound
 	}
 	return nil
+}
+
+// SetScheduleActive planli aramayi pasife alir / aktifler (silme yerine).
+func (d *DB) SetScheduleActive(ctx context.Context, clientID, id int, active bool, next *time.Time) error {
+	tag, err := d.Pool.Exec(ctx, `UPDATE schedules SET is_active=$1, next_run_at=COALESCE($2, next_run_at), updated_at=now() WHERE id=$3 AND client_id=$4`, active, next, id, clientID)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}
+
+// GetScheduleByID musteri kisiti olmadan (admin).
+func (d *DB) GetScheduleByID(ctx context.Context, id int) (*Schedule, error) {
+	s, err := scanSchedule(d.Pool.QueryRow(ctx, `SELECT `+scheduleCols+` FROM schedules WHERE id=$1`, id))
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	return s, err
 }
 
 func (d *DB) GetSchedule(ctx context.Context, clientID, id int) (*Schedule, error) {
@@ -441,7 +550,9 @@ func (d *DB) ListSchedules(ctx context.Context, clientID int) ([]Schedule, error
 
 // DueSchedules calisma zamani gelmis aktif planlar.
 func (d *DB) DueSchedules(ctx context.Context, now time.Time) ([]Schedule, error) {
-	rows, err := d.Pool.Query(ctx, `SELECT `+scheduleCols+` FROM schedules WHERE is_active AND next_run_at IS NOT NULL AND next_run_at <= $1 ORDER BY next_run_at`, now)
+	rows, err := d.Pool.Query(ctx, `SELECT `+scheduleCols+` FROM schedules WHERE is_active AND next_run_at IS NOT NULL AND next_run_at <= $1
+  AND (starts_on IS NULL OR starts_on <= ($1 AT TIME ZONE 'Europe/Istanbul')::date)
+  AND (ends_on IS NULL OR ends_on >= ($1 AT TIME ZONE 'Europe/Istanbul')::date) ORDER BY next_run_at`, now)
 	if err != nil {
 		return nil, err
 	}

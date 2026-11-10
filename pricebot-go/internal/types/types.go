@@ -52,6 +52,7 @@ type NormalizedPrice struct {
 	BankCampaignPrice *float64 `json:"bankCampaignPrice,omitempty"`
 	BankCampaignLabel *string  `json:"bankCampaignLabel,omitempty"`
 	MinStayNights     *int     `json:"minStayNights,omitempty"`
+	Note              *string  `json:"note,omitempty"` // orn. "musait degil; sitede gosterilen fiyat"
 }
 
 // Unavailable bos (musait degil) fiyat kaydi uretir.

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api, fmtDate, parseReq, WEEKDAYS_SHORT } from "../api.js";
-import { PageHeader, Card, Stat, DataTable, Button, Modal, FormModal, Field, Input, Select, FormGrid, Badge, Alert, Tabs, Chip, KeyBox, Switch, Checkbox, Skeleton, KV, useConfirm, usePrompt, useToast, statusTone, statusLabel } from "@kit";
+import { PageHeader, Card, Stat, DataTable, Button, Modal, FormModal, Field, Input, Select, FormGrid, Badge, Alert, Tabs, KeyBox, Switch, Skeleton, KV, SitePicker, SearchDetailModal, useConfirm, usePrompt, useToast, statusTone, statusLabel } from "@kit";
 import { loginLogColumns } from "./LoginLogs.jsx";
 
 const TYPE = { api: "API entegrasyonu", portal: "Web portal", both: "API + portal" };
@@ -37,6 +37,11 @@ export default function ClientDetail({ param: clientId, navigate }) {
   const [devUser, setDevUser] = useState(null); // {user, devices}
   const [hotelModal, setHotelModal] = useState(false);
   const [linkHotel, setLinkHotel] = useState({ internalHotelId: "", label: "" });
+  const [logUser, setLogUser] = useState(""); // giris loglari: kullanici filtresi (email)
+  const [resetInfo, setResetInfo] = useState(null); // sifre sifirlama linki sonucu
+  const [userEdit, setUserEdit] = useState(null); // {id, email, name, pc, mobile}
+  const [searchDetail, setSearchDetail] = useState(null);
+  const [sites, setSites] = useState([]);
   const confirm = useConfirm(); const prompt = usePrompt(); const toast = useToast();
 
   const load = async () => {
@@ -45,7 +50,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
       setSel(s); setData(d); setSearches(sr); setPlans(p); setLim(l); setLimEdit({ ...l.limits }); setAllHotels(hs); setErr("");
     } catch (e) { setErr(e.message); }
   };
-  useEffect(() => { load(); }, [clientId]);
+  useEffect(() => { load(); api("/api/admin/sites").then(setSites).catch(() => {}); }, [clientId]);
   useEffect(() => { if (tab === "logins" && logs === null) api(`/api/admin/login-logs?clientId=${clientId}&limit=100`).then(setLogs).catch((e) => toast.error(e.message)); }, [tab]);
 
   if (err) return <Alert tone="bad">{err}</Alert>;
@@ -61,10 +66,6 @@ export default function ClientDetail({ param: clientId, navigate }) {
   const update = async (patch, msg) => { try { await api("/api/admin/clients/" + c.id, { method: "PUT", body: patch }); await load(); if (msg) toast.success(msg); } catch (e) { toast.error(e.message); } };
   const saveSettings = async (patch) => { try { await api(`/api/admin/clients/${clientId}/settings`, { method: "PUT", body: patch }); await load(); } catch (e) { toast.error(e.message); } };
   const toggleProv = (n) => { let list = allOn ? [...data.providers] : [...st.enabledProviders]; list = list.includes(n) ? list.filter((x) => x !== n) : [...list, n]; saveSettings({ enabledProviders: list }); };
-  const remove = async () => {
-    if (!(await confirm({ title: "Müşteri silinsin mi?", message: `${c.name} ve tüm API anahtarları kalıcı olarak silinecek.`, confirmText: "Sil", danger: true }))) return;
-    try { await api("/api/admin/clients/" + c.id, { method: "DELETE" }); toast.success("Müşteri silindi."); navigate("clients"); } catch (e) { toast.error(e.message); }
-  };
   const createKey = async () => {
     const label = await prompt({ title: "Yeni API anahtarı", label: "Etiket (opsiyonel)", placeholder: "örn. üretim, test" });
     if (label === null) return;
@@ -73,8 +74,21 @@ export default function ClientDetail({ param: clientId, navigate }) {
   const revoke = async (k) => { if (!(await confirm({ title: "Anahtar iptal edilsin mi?", message: `${k.keyPrefix}… anahtarı bir daha kullanılamaz.`, confirmText: "İptal et", danger: true }))) return; try { await api("/api/admin/keys/" + k.id, { method: "DELETE" }); toast.success("Anahtar iptal edildi."); await load(); } catch (e) { toast.error(e.message); } };
   const createUser = async () => { await api(`/api/admin/clients/${clientId}/portal-users`, { method: "POST", body: { ...newUser, name: newUser.name || null } }); setUserModal(false); setNewUser({ email: "", password: "", name: "" }); toast.success("Portal kullanıcısı eklendi."); await load(); };
   const userAction = async (u, patch, msg) => { try { await api(`/api/admin/portal-users/${u.id}`, { method: "PUT", body: patch }); await load(); toast.success(msg); } catch (e) { toast.error(e.message); } };
-  const resetPw = async (u) => { const p = await prompt({ title: "Şifre sıfırla", label: `${u.email} için yeni şifre`, type: "password", minLength: 8, required: true }); if (p && p.length >= 8) userAction(u, { password: p }, "Şifre güncellendi."); else if (p) toast.error("Şifre en az 8 karakter olmalı."); };
-  const delUser = async (u) => { if (!(await confirm({ title: "Kullanıcı silinsin mi?", message: u.email, confirmText: "Sil", danger: true }))) return; try { await api(`/api/admin/portal-users/${u.id}`, { method: "DELETE" }); toast.success("Kullanıcı silindi."); await load(); } catch (e) { toast.error(e.message); } };
+  const resetPw = async (u) => { const p = await prompt({ title: "Şifre belirle", message: "Şifre yönetimi bizdedir; müşteriye iletilecek yeni şifreyi girin. Linkle yenileme için 'Şifre sıfırlama linki' kullanın.", label: `${u.email} için yeni şifre`, type: "password", minLength: 8, required: true }); if (p && p.length >= 8) userAction(u, { password: p }, "Şifre güncellendi."); else if (p) toast.error("Şifre en az 8 karakter olmalı."); };
+  const resetLink = async (u) => {
+    if (!(await confirm({ title: "Şifre sıfırlama linki oluşturulsun mu?", message: `${u.email} için tek kullanımlık, süreli bir link üretilir; e-posta ayarlıysa kullanıcıya gönderilir. Önceki linkler geçersiz olur.`, confirmText: "Oluştur" }))) return;
+    try { const r = await api(`/api/admin/portal-users/${u.id}/reset-link`, { method: "POST", body: {} }); setResetInfo({ ...r, user: u }); } catch (e) { toast.error(e.message); }
+  };
+  const openUserEdit = (u) => setUserEdit({ id: u.id, email: u.email, name: u.name || "", pc: u.maxDevicesPc ?? "", mobile: u.maxDevicesMobile ?? "" });
+  const saveUserEdit = async () => {
+    const body = { name: userEdit.name || null };
+    if (userEdit.pc === "" && userEdit.mobile === "") body.clearDeviceLimits = true;
+    else body.deviceLimits = { pc: userEdit.pc === "" ? null : Number(userEdit.pc), mobile: userEdit.mobile === "" ? null : Number(userEdit.mobile) };
+    await api(`/api/admin/portal-users/${userEdit.id}`, { method: "PUT", body }); setUserEdit(null); toast.success("Kullanıcı güncellendi."); await load();
+  };
+  const showLogs = (u) => { setLogUser(u.email); setTab("logins"); };
+  const openSearch = async (x) => { try { setSearchDetail(await api(`/api/admin/searches/${x.id}`)); } catch (e) { toast.error(e.message); } };
+  const devLimit = (u) => { const pc = u.maxDevicesPc ?? lim.limits.maxDevicesPc, mb = u.maxDevicesMobile ?? lim.limits.maxDevicesMobile; return `${inf(pc)} pc · ${inf(mb)} mobil${u.maxDevicesPc != null || u.maxDevicesMobile != null ? " (özel)" : ""}`; };
   const openDevices = async (u) => { try { setDevUser({ user: u, devices: await api(`/api/admin/portal-users/${u.id}/devices`) }); } catch (e) { toast.error(e.message); } };
   const removeDevice = async (d) => {
     if (!(await confirm({ title: "Cihaz kaldırılsın mı?", message: `${d.name} (${d.kind === "mobile" ? "mobil" : "pc"}) kaydı silinecek; kullanıcı bu cihazdan yeniden kayıt yapmak zorunda kalır.`, confirmText: "Kaldır", danger: true }))) return;
@@ -116,8 +130,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
     <div>
       <PageHeader title={c.name} description={c.email || "e-posta yok"} actions={<>
         <Button variant="secondary" icon="chevronLeft" onClick={() => navigate("clients")}>Müşteriler</Button>
-        <Button variant="secondary" icon="power" onClick={() => update({ isActive: !c.isActive }, c.isActive ? "Pasife alındı." : "Aktifleştirildi.")}>{c.isActive ? "Pasife al" : "Aktifleştir"}</Button>
-        <Button variant="danger" icon="trash" onClick={remove}>Sil</Button></>}>
+        <Button variant={c.isActive ? "danger" : "primary"} icon="power" onClick={async () => { if (c.isActive && !(await confirm({ title: "Müşteri pasife alınsın mı?", message: `${c.name}: portal girişi ve API anahtarları çalışmaz; veriler korunur, istendiğinde yeniden aktifleştirilir.`, confirmText: "Pasife al", danger: true }))) return; update({ isActive: !c.isActive }, c.isActive ? "Pasife alındı." : "Aktifleştirildi."); }}>{c.isActive ? "Pasife al" : "Aktifleştir"}</Button></>}>
         <div className="sr-row center" style={{ gap: 8, marginTop: 8 }}>
           {c.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>}
           <Badge tone="info" dot={false}>#{c.id}</Badge>
@@ -129,7 +142,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
       </PageHeader>
 
       <div className="sr-grid">
-        <Card title="Plan ve tip" flat>
+        <Card title="Paket ve tip" flat>
           <FormGrid>
             <Field label="Paket"><Select value={c.planId ?? ""} onChange={(e) => update({ planId: e.target.value ? Number(e.target.value) : null }, "Paket güncellendi.")}><option value="">(paketsiz = sınırsız)</option>{plans.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.code}){p.kind && p.kind !== "both" ? ` · ${KIND[p.kind]}` : ""}{p.isDemo ? " · demo" : ""}</option>)}</Select></Field>
             <Field label="Müşteri türü" hint={c.kind === "otel" ? "Otel: kendi otelini rakiplerle karşılaştırır" : "Acente: takip ettiği otelleri siteler arasında karşılaştırır"}><Select value={c.kind || "acente"} onChange={(e) => update({ kind: e.target.value }, "Müşteri türü güncellendi.")}><option value="acente">ACENTE</option><option value="otel">OTEL</option></Select></Field>
@@ -170,37 +183,42 @@ export default function ClientDetail({ param: clientId, navigate }) {
               <p className="muted">Kapalı siteler portalda görünmez, API'de 403 döner. Paket kısıtları ayrıca uygulanır.</p>
               <div className="sr-row center" style={{ gap: 8 }}>{allOn && <Badge tone="ok">tüm siteler açık</Badge>}<Badge tone={lim.limits.maxSites && selectedSites >= lim.limits.maxSites ? "warn" : "neutral"} dot={false}>{selectedSites} / {inf(lim.limits.maxSites)} site</Badge></div>
             </div>
-            <div className="sr-chips">{data.providers.map((n) => { const on = allOn || enabled.has(n); const closed = !sitesOpen.has(n); return <Chip key={n} on={on && !closed} off={closed} onClick={closed ? undefined : () => toggleProv(n)} title={closed ? "Site yönetiminden kapatılmış (bakımda)" : ""}>{on && !closed ? "✓ " : ""}{n}{closed ? " · bakımda" : ""}</Chip>; })}</div>
+            <SitePicker value={allOn ? data.providers.filter((n) => sitesOpen.has(n)) : st.enabledProviders} onChange={(list) => saveSettings({ enabledProviders: list })} max={lim.limits.maxSites || 0}
+              options={data.providers.map((n) => { const site = sites.find((x) => x.name === n); const closed = !sitesOpen.has(n); return { value: n, label: site?.label || n, hint: site?.domain, disabled: closed, title: closed ? "Site yönetiminden kapatılmış (bakımda)" : "", badge: closed ? <Badge tone="warn" dot={false}>bakımda</Badge> : null }; })} />
             {lim.limits.maxSites > 0 && selectedSites >= lim.limits.maxSites && <p className="muted small" style={{ marginTop: 10 }}>Site limiti dolu ({lim.limits.maxSites}); yeni bir site açmak için önce birini kapatın veya limiti artırın.</p>}
           </>)}
           {tab === "keys" && (<>
             {!lim.limits.allowApi && <Alert tone="warn">Bu müşterinin paketi API erişimi içermiyor; anahtar üretilemez. Limitler sekmesinden "API kullanıcısı" açılabilir.</Alert>}
             {newKey && <div style={{ marginBottom: 12 }}><KeyBox label="Yeni anahtar — yalnızca bir kez gösterilir, şimdi kopyalayın:" value={newKey} /><div className="sr-row" style={{ marginTop: 8 }}><Button size="sm" variant="secondary" icon="copy" onClick={() => { navigator.clipboard?.writeText(newKey); toast.success("Kopyalandı."); }}>Kopyala</Button><Button size="sm" variant="ghost" onClick={() => setNewKey(null)}>Gizle</Button></div></div>}
             <DataTable rows={sel.keys} dense toolbarRight={<Button size="sm" icon="plus" onClick={createKey} disabled={!lim.limits.allowApi}>Yeni anahtar</Button>}
-              columns={[{ key: "keyPrefix", title: "Anahtar", primary: true, render: (k) => <code>{k.keyPrefix}…</code> }, { key: "label", title: "Etiket", render: (k) => k.label || <span className="muted">—</span> }, { key: "lastUsedAt", title: "Son kullanım", render: (k) => fmtDate(k.lastUsedAt), hideOnMobile: true }, { key: "createdAt", title: "Oluşturma", render: (k) => fmtDate(k.createdAt), hideOnMobile: true }, { key: "revokedAt", title: "Durum", render: (k) => (k.revokedAt ? <Badge tone="bad">iptal</Badge> : <Badge tone="ok">aktif</Badge>) }]}
-              actions={(k) => [{ icon: "trash", title: "İptal et", tone: "danger", hidden: !!k.revokedAt, onClick: revoke }]} empty={{ icon: "key", title: "Anahtar yok" }} />
+              columns={[{ key: "keyPrefix", title: "Anahtar", primary: true, render: (k) => <code>{k.keyPrefix}…</code>, filterValue: (k) => k.keyPrefix }, { key: "label", title: "Etiket", render: (k) => k.label || <span className="muted">—</span> }, { key: "lastUsedAt", title: "Son kullanım", render: (k) => fmtDate(k.lastUsedAt), hideOnMobile: true }, { key: "createdAt", title: "Oluşturma", render: (k) => fmtDate(k.createdAt), hideOnMobile: true }, { key: "revokedAt", title: "Durum", render: (k) => (k.revokedAt ? <Badge tone="bad">iptal</Badge> : <Badge tone="ok">aktif</Badge>) }]}
+              actions={(k) => [{ icon: "ban", title: "İptal et", tone: "danger", hidden: !!k.revokedAt, onClick: revoke }]} empty={{ icon: "key", title: "Anahtar yok" }} />
           </>)}
           {tab === "users" && (
             <DataTable rows={data.portalUsers} dense toolbarRight={<Button size="sm" icon="plus" onClick={() => setUserModal(true)} disabled={lim.limits.maxUsers > 0 && data.portalUsers.length >= lim.limits.maxUsers} title={lim.limits.maxUsers > 0 && data.portalUsers.length >= lim.limits.maxUsers ? "Kullanıcı limiti dolu" : ""}>Kullanıcı ekle</Button>}
               toolbar={<span className="muted small">{data.portalUsers.length} / {inf(lim.limits.maxUsers)} kullanıcı</span>}
-              columns={[{ key: "email", title: "E-posta", primary: true, sub: (u) => u.name || "" }, { key: "devices", title: "Cihazlar", render: devCount }, { key: "lastLoginAt", title: "Son giriş", render: (u) => fmtDate(u.lastLoginAt), hideOnMobile: true }, { key: "isActive", title: "Durum", render: (u) => (u.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>) }]}
-              actions={(u) => [{ icon: "smartphone", title: "Cihazlar", onClick: openDevices }, { icon: "key", title: "Şifre sıfırla", onClick: resetPw }, { icon: "power", title: u.isActive ? "Pasife al" : "Aktifleştir", onClick: (x) => userAction(x, { isActive: !x.isActive }, x.isActive ? "Pasife alındı." : "Aktifleştirildi.") }, { icon: "trash", title: "Sil", tone: "danger", onClick: delUser }]}
+              columns={[{ key: "email", title: "E-posta", primary: true, sub: (u) => u.name || "" }, { key: "devices", title: "Cihazlar", render: devCount, sub: devLimit }, { key: "lastLoginAt", title: "Son giriş", render: (u) => fmtDate(u.lastLoginAt), hideOnMobile: true, filterValue: (u) => fmtDate(u.lastLoginAt) }, { key: "isActive", title: "Durum", render: (u) => (u.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>), filterValue: (u) => (u.isActive ? "aktif" : "pasif") }]}
+              actions={(u) => [{ icon: "logIn", title: "Giriş logları", onClick: showLogs }, { icon: "smartphone", title: "Cihazlar", onClick: openDevices }, { icon: "pencil", title: "Düzenle (ad, cihaz limiti)", onClick: openUserEdit }, { icon: "key", title: "Şifre belirle", onClick: resetPw }, { icon: "mail", title: "Şifre sıfırlama linki", onClick: resetLink }, { icon: "power", title: u.isActive ? "Pasife al" : "Aktifleştir", tone: u.isActive ? "danger" : "primary", onClick: (x) => userAction(x, { isActive: !x.isActive }, x.isActive ? "Pasife alındı." : "Aktifleştirildi.") }]}
               onRowDoubleClick={openDevices} empty={{ icon: "user", title: "Portal kullanıcısı yok", text: "Müşteri portala girecekse en az bir kullanıcı ekleyin." }} />
           )}
           {tab === "hotels" && (
             <DataTable rows={data.hotels} dense toolbar={<span className="muted small">{data.hotels.length} / {inf(lim.limits.maxHotels)} otel</span>}
               toolbarRight={<Button size="sm" icon="link" onClick={() => setHotelModal(true)} disabled={lim.limits.maxHotels > 0 && data.hotels.length >= lim.limits.maxHotels}>Sistem otelinden ekle</Button>}
               columns={[{ key: "internalHotelId", title: "Otel", primary: true, render: (h) => <>{hotelName(h.internalHotelId)}{c.ownHotelId === h.internalHotelId && <Badge tone="info" dot={false} className="" style={{ marginLeft: 8 }}>kendi oteli</Badge>}</>, sub: (h) => <code>{h.internalHotelId}</code> }, { key: "label", title: "Etiket", render: (h) => h.label || <span className="muted">—</span>, hideOnMobile: true }, { key: "createdAt", title: "Bağlanma", render: (h) => fmtDate(h.createdAt), hideOnMobile: true }]}
-              actions={(h) => [{ icon: "eye", title: "Detay", onClick: (x) => navigate("hoteldetail", x.internalHotelId) }, { icon: "trash", title: "Bağlantıyı kaldır", tone: "danger", onClick: unlinkHotel }]} onRowDoubleClick={(h) => navigate("hoteldetail", h.internalHotelId)} empty={{ icon: "building", title: "Müşteriye bağlı otel yok", text: "Portal kullanıcısı Otellerim sayfasından ekler ya da buradan sistem otelini bağlayın." }} />
+              actions={(h) => [{ icon: "eye", title: "Detay", onClick: (x) => navigate("hoteldetail", x.internalHotelId) }, { icon: "link", title: "Listeden çıkar (bağlantıyı kaldır)", tone: "danger", onClick: unlinkHotel }]} onRowDoubleClick={(h) => navigate("hoteldetail", h.internalHotelId)} empty={{ icon: "building", title: "Müşteriye bağlı otel yok", text: "Müşterinin otel listesini buradan yönetirsiniz (portaldan otel eklenemez); 'Sistem otelinden ekle' ile bağlayın." }} />
           )}
           {tab === "schedules" && (
-            <DataTable rows={data.schedules} dense columns={[{ key: "name", title: "Plan", primary: true }, { key: "time", title: "Zaman", render: (s) => `${s.weekdays.length ? s.weekdays.map((d) => WEEKDAYS_SHORT[d]).join(", ") : "Her gün"} ${s.runTime}` }, { key: "nextRunAt", title: "Sonraki", render: (s) => fmtDate(s.nextRunAt) }, { key: "isActive", title: "Durum", render: (s) => (s.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="neutral">pasif</Badge>) }]} empty={{ icon: "calendar", title: "Planlı arama yok" }} />
+            <DataTable rows={data.schedules} dense onRowDoubleClick={(s) => navigate("schedules")} columns={[{ key: "name", title: "Planlı arama", primary: true, sub: (s) => (s.startsOn || s.endsOn ? `${s.startsOn || "…"} → ${s.endsOn || "…"}` : "") }, { key: "time", title: "Zaman", render: (s) => `${s.weekdays.length ? s.weekdays.map((d) => WEEKDAYS_SHORT[d]).join(", ") : "Her gün"} ${s.runTime}` }, { key: "nextRunAt", title: "Sonraki", render: (s) => fmtDate(s.nextRunAt), filterValue: (s) => fmtDate(s.nextRunAt) }, { key: "lastRunAt", title: "Son", render: (s) => fmtDate(s.lastRunAt), hideOnMobile: true, filterValue: (s) => fmtDate(s.lastRunAt) }, { key: "isActive", title: "Durum", render: (s) => (s.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="neutral">pasif</Badge>), filterValue: (s) => (s.isActive ? "aktif" : "pasif") }]}
+              actions={(s) => [{ icon: "history", title: "Geçmiş çalışmalar (Planlı Aramalar sayfası)", onClick: () => navigate("schedules") }]} empty={{ icon: "calendar", title: "Planlı arama yok" }} />
           )}
           {tab === "searches" && (
-            <DataTable rows={searches} dense columns={[{ key: "createdAt", title: "Zaman", primary: true, render: (s) => fmtDate(s.createdAt) }, { key: "kind", title: "Tür", render: (s) => (s.kind === "packages" ? "Paket" : "Otel") + " · " + (parseReq(s.request).hotelIds || []).length + " otel" }, { key: "status", title: "Durum", render: (s) => <Badge tone={statusTone(s.status)}>{statusLabel(s.status)}</Badge> }, { key: "scheduleId", title: "Kaynak", render: (s) => (s.scheduleId ? <Badge tone="info" dot={false}>planlı</Badge> : <Badge tone="neutral" dot={false}>anlık</Badge>) }]} empty={{ icon: "history", title: "Arama kaydı yok" }} />
+            <DataTable rows={searches} dense onRowDoubleClick={openSearch} columns={[{ key: "createdAt", title: "Zaman", primary: true, render: (s) => fmtDate(s.createdAt), filterValue: (s) => fmtDate(s.createdAt) }, { key: "kind", title: "Tür", render: (s) => (s.kind === "packages" ? "Paket" : "Otel") + " · " + (parseReq(s.request).hotelIds || []).length + " otel" }, { key: "status", title: "Durum", render: (s) => <Badge tone={statusTone(s.status)}>{statusLabel(s.status)}</Badge>, filterValue: (s) => statusLabel(s.status) }, { key: "scheduleId", title: "Kaynak", render: (s) => (s.scheduleId ? <Badge tone="info" dot={false}>planlı</Badge> : <Badge tone="neutral" dot={false}>anlık</Badge>), filterValue: (s) => (s.scheduleId ? "planlı" : "anlık") }, { key: "finishedAt", title: "Bitiş", render: (s) => fmtDate(s.finishedAt), hideOnMobile: true, filterValue: (s) => fmtDate(s.finishedAt) }]}
+              actions={(s) => [{ icon: "eye", title: "Arama detayı", onClick: openSearch }]} empty={{ icon: "history", title: "Arama kaydı yok" }} />
           )}
           {tab === "logins" && (
-            <DataTable rows={logs || []} loading={logs === null} dense pageSize={50} columns={loginLogColumns()} toolbarRight={<Button size="sm" variant="ghost" icon="refresh" onClick={() => api(`/api/admin/login-logs?clientId=${clientId}&limit=100`).then(setLogs).catch((e) => toast.error(e.message))}>Yenile</Button>} empty={{ icon: "logIn", title: "Giriş kaydı yok" }} />
+            <DataTable rows={(logs || []).filter((l) => !logUser || l.email === logUser)} loading={logs === null} dense pageSize={50} columns={loginLogColumns()}
+              toolbar={<Select value={logUser} onChange={(e) => setLogUser(e.target.value)} style={{ width: 240 }}><option value="">Tüm kullanıcılar</option>{data.portalUsers.map((u) => <option key={u.id} value={u.email}>{u.email}</option>)}</Select>}
+              toolbarRight={<Button size="sm" variant="ghost" icon="refresh" onClick={() => api(`/api/admin/login-logs?clientId=${clientId}&limit=200`).then(setLogs).catch((e) => toast.error(e.message))}>Yenile</Button>} empty={{ icon: "logIn", title: "Giriş kaydı yok" }} />
           )}
         </div>
       </Card>
@@ -218,11 +236,29 @@ export default function ClientDetail({ param: clientId, navigate }) {
         <Field label="Etiket" hint="Opsiyonel; müşterinin kendi adlandırması"><Input value={linkHotel.label} onChange={(e) => setLinkHotel({ ...linkHotel, label: e.target.value })} /></Field>
       </FormModal>
 
+      <Modal open={!!resetInfo} onClose={() => setResetInfo(null)} title="Şifre sıfırlama linki" subtitle={resetInfo ? `${resetInfo.email} · ${fmtDate(resetInfo.expiresAt)} tarihine kadar geçerli, tek kullanımlık` : ""} size="md"
+        footer={<><Button variant="secondary" icon="copy" onClick={() => { navigator.clipboard?.writeText(resetInfo.link); toast.success("Link kopyalandı."); }}>Linki kopyala</Button><Button onClick={() => setResetInfo(null)}>Tamam</Button></>}>
+        {resetInfo && (<div className="sr-stack">
+          {resetInfo.emailSent ? <Alert tone="ok">E-posta gönderildi: {resetInfo.email}</Alert> : resetInfo.emailError ? <Alert tone="bad">E-posta gönderilemedi: {resetInfo.emailError}. Linki elle iletin.</Alert> : <Alert tone="warn">E-posta sunucusu (SMTP) henüz ayarlı değil; linki müşteriye elle iletin. SMTP bilgileri girildiğinde link otomatik e-postayla gider.</Alert>}
+          <div className="sr-link-box">{resetInfo.link}</div>
+          <p className="muted small">Kullanıcı linki açınca yeni şifresini belirler; süre dolunca veya kullanılınca link geçersiz olur.</p>
+        </div>)}
+      </Modal>
+      <FormModal open={!!userEdit} onClose={() => setUserEdit(null)} title="Kullanıcıyı düzenle" subtitle={userEdit?.email} onSubmit={saveUserEdit}>
+        {userEdit && (<>
+          <Field label="Ad"><Input value={userEdit.name} onChange={(e) => setUserEdit({ ...userEdit, name: e.target.value })} /></Field>
+          <FormGrid>
+            <Field label="Bilgisayar cihaz limiti" hint={`Boş = paket/müşteri değeri (${inf(lim.limits.maxDevicesPc)}); 0 = sınırsız`}><Input type="number" min="0" max="50" value={userEdit.pc} onChange={(e) => setUserEdit({ ...userEdit, pc: e.target.value })} /></Field>
+            <Field label="Mobil cihaz limiti" hint={`Boş = paket/müşteri değeri (${inf(lim.limits.maxDevicesMobile)}); 0 = sınırsız`}><Input type="number" min="0" max="50" value={userEdit.mobile} onChange={(e) => setUserEdit({ ...userEdit, mobile: e.target.value })} /></Field>
+          </FormGrid>
+        </>)}
+      </FormModal>
+      <SearchDetailModal data={searchDetail} onClose={() => setSearchDetail(null)} />
       <Modal open={!!devUser} onClose={() => setDevUser(null)} title={devUser ? `Cihazlar · ${devUser.user.email}` : ""} subtitle="Admin tarafında kaldırma sınırsızdır. Kaldırılan cihazla girişte kullanıcı yeniden kayıt yapmak zorunda kalır." size="md"
         footer={<Button variant="secondary" onClick={() => setDevUser(null)}>Kapat</Button>}>
         {devUser && <DataTable rows={devUser.devices} dense pageSize={0}
           columns={[{ key: "name", title: "Cihaz", primary: true, render: (d) => <span style={{ opacity: d.removedAt ? 0.55 : 1 }}>{d.name}</span>, sub: (d) => d.userAgent ? <span className="truncate" style={{ maxWidth: 260, display: "inline-block" }} title={d.userAgent}>{d.userAgent}</span> : "" }, { key: "kind", title: "Tür", render: (d) => <Badge tone="neutral" dot={false}>{d.kind === "mobile" ? "mobil" : "pc"}</Badge> }, { key: "lastUsedAt", title: "Son kullanım", render: (d) => fmtDate(d.lastUsedAt) }, { key: "createdAt", title: "Kayıt", render: (d) => fmtDate(d.createdAt), hideOnMobile: true }, { key: "removedAt", title: "Durum", render: (d) => (d.removedAt ? <Badge tone="neutral">kaldırıldı · {d.removedBy === "approval" ? "onayla" : d.removedBy === "admin" ? "admin" : "kullanıcı"}</Badge> : <Badge tone="ok">aktif</Badge>) }]}
-          actions={(d) => [{ icon: "trash", title: "Kaldır", tone: "danger", hidden: !!d.removedAt, onClick: removeDevice }]}
+          actions={(d) => [{ icon: "ban", title: "Kaldır (cihaz kaydı pasife alınır)", tone: "danger", hidden: !!d.removedAt, onClick: removeDevice }]}
           empty={{ icon: "smartphone", title: "Kayıtlı cihaz yok", text: "Kullanıcı ilk girişinde cihazını kaydeder." }} />}
       </Modal>
     </div>

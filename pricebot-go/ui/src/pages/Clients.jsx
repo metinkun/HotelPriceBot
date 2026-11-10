@@ -25,15 +25,15 @@ export default function Clients({ navigate }) {
 
   return (
     <div>
-      <PageHeader title="Müşteriler" description="API entegrasyonu ve web portal müşterileri. Satıra çift tıklayarak detayına gidin." actions={<Button icon="plus" onClick={() => setModal(true)}>Yeni müşteri</Button>} />
+      <PageHeader title="Müşteriler" description="API entegrasyonu ve web portal müşterileri. Satıra çift tıklayarak detayına gidin. Müşteri silinmez, pasife alınır." actions={<Button icon="plus" onClick={() => setModal(true)}>Yeni müşteri</Button>} />
       {err && <Alert tone="bad">{err}</Alert>}
       <DataTable rows={list} loading={loading} search={{ placeholder: "Müşteri adı veya e-posta…", keys: ["name", "email"] }}
         columns={[
           { key: "name", title: "Müşteri", primary: true, sortable: true, sub: (c) => c.email || "—" },
-          { key: "clientType", title: "Tip", render: (c) => <Badge tone="info" dot={false}>{TYPE[c.clientType] || "API"}</Badge>, hideOnMobile: true },
-          { key: "planCode", title: "Plan", sortable: true, render: (c) => c.planCode ? <code>{c.planCode}</code> : <span className="muted">plansız</span> },
+          { key: "clientType", title: "Tip", render: (c) => <Badge tone="info" dot={false}>{TYPE[c.clientType] || "API"}</Badge>, hideOnMobile: true, filterValue: (c) => TYPE[c.clientType] || "API" },
+          { key: "planCode", title: "Paket", sortable: true, render: (c) => c.planCode ? <code>{c.planCode}</code> : <span className="muted">paketsiz</span>, filterValue: (c) => c.planCode || "paketsiz" },
           { key: "keyCount", title: "Anahtar", align: "num", hideOnMobile: true },
-          { key: "isActive", title: "Durum", render: (c) => (c.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>) },
+          { key: "isActive", title: "Durum", render: (c) => (c.isActive ? <Badge tone="ok">aktif</Badge> : <Badge tone="bad">pasif</Badge>), filterValue: (c) => (c.isActive ? "aktif" : "pasif") },
         ]}
         actions={(c) => [{ icon: "eye", title: "Detay", onClick: open }, { icon: "power", title: c.isActive ? "Pasife al" : "Aktifleştir", onClick: toggleActive }]}
         onRowDoubleClick={open} empty={{ icon: "users", title: "Henüz müşteri yok", action: <Button icon="plus" onClick={() => setModal(true)}>Yeni müşteri</Button> }} />
@@ -42,7 +42,7 @@ export default function Clients({ navigate }) {
         <Field label="Ad" required><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required autoFocus placeholder="Örn. Acme Travel" /></Field>
         <FormGrid>
           <Field label="E-posta"><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="ops@acme.com" /></Field>
-          <Field label="Plan" hint="Plansız = sınırsız"><Select value={form.planId} onChange={(e) => setForm({ ...form, planId: e.target.value })}><option value="">(plansız)</option>{plans.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.code})</option>)}</Select></Field>
+          <Field label="Paket" hint="Paketsiz = sınırsız"><Select value={form.planId} onChange={(e) => setForm({ ...form, planId: e.target.value })}><option value="">(paketsiz)</option>{plans.map((p) => <option key={p.id} value={p.id}>{p.name} ({p.code})</option>)}</Select></Field>
         </FormGrid>
       </FormModal>
     </div>

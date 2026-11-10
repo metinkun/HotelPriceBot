@@ -199,12 +199,21 @@ func (s *Server) issuePortalToken(u *db.PortalUser, c *db.Client, devID int) (ma
 }
 
 // deviceLimits kullanicinin cihaz kullanimi / siniri.
-func (s *Server) deviceLimits(ctx context.Context, c *db.Client, devs []db.Device) map[string]any {
+func (s *Server) deviceLimits(ctx context.Context, c *db.Client, u *db.PortalUser, devs []db.Device) map[string]any {
 	var plan *db.Plan
 	if c.PlanID != nil {
 		plan, _ = s.db.GetPlan(ctx, *c.PlanID)
 	}
 	lim := db.EffectiveLimits(c, plan)
+	// Kullanici bazinda cihaz limiti paket/musteri degerini ezer
+	if u != nil {
+		if u.MaxDevicesPC != nil {
+			lim.MaxDevicesPC = *u.MaxDevicesPC
+		}
+		if u.MaxDevicesMobile != nil {
+			lim.MaxDevicesMobile = *u.MaxDevicesMobile
+		}
+	}
 	pc, mob := 0, 0
 	for _, d := range devs {
 		if d.Kind == "mobile" {
@@ -291,7 +300,7 @@ func (s *Server) portalLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ss := &setupSession{UserID: u.ID, ClientID: c.ID, Email: u.Email, Kind: kind, UA: r.UserAgent(), IP: clientIP(r)}
-	limits := s.deviceLimits(r.Context(), c, devs)
+	limits := s.deviceLimits(r.Context(), c, u, devs)
 	if len(devs) == 0 {
 		if !deviceSlotFree(limits, kind) {
 			s.loginLog(r, intp(c.ID), intp(u.ID), u.Email, nil, strp(kind), "device_limit", "")
@@ -356,7 +365,7 @@ func (s *Server) portalWebAuthnRegisterBegin(w http.ResponseWriter, r *http.Requ
 		writeError(w, r, err)
 		return
 	}
-	limits := s.deviceLimits(r.Context(), c, devs)
+	limits := s.deviceLimits(r.Context(), c, u, devs)
 	if !deviceSlotFree(limits, ss.Kind) {
 		s.loginLog(r, intp(c.ID), intp(u.ID), u.Email, nil, strp(ss.Kind), "device_limit", "")
 		writeJSON(w, 409, map[string]any{"error": "Cihaz siniriniz dolu. Bir cihazi kaldirmak icin yoneticinizden onay isteyebilirsiniz.", "code": "device_limit", "limits": limits, "devices": publicDevices(devs), "setupToken": tok})
@@ -395,7 +404,7 @@ func (s *Server) portalWebAuthnRegisterFinish(w http.ResponseWriter, r *http.Req
 		writeError(w, r, err)
 		return
 	}
-	limits := s.deviceLimits(r.Context(), c, devs)
+	limits := s.deviceLimits(r.Context(), c, u, devs)
 	if !deviceSlotFree(limits, ss.Kind) {
 		writeJSON(w, 409, map[string]any{"error": "Cihaz siniriniz dolu", "code": "device_limit", "limits": limits, "devices": publicDevices(devs), "setupToken": tok})
 		return
@@ -577,7 +586,7 @@ func (s *Server) portalDevices(w http.ResponseWriter, r *http.Request) {
 		curID = cur.ID
 	}
 	writeJSON(w, 200, map[string]any{
-		"devices": devs, "currentDeviceId": curID, "limits": s.deviceLimits(r.Context(), c, devs),
+		"devices": devs, "currentDeviceId": curID, "limits": s.deviceLimits(r.Context(), c, u, devs),
 		"removalsToday": s.db.UserDeviceRemovalsToday(r.Context(), u.ID), "dailyRemovalLimit": 1,
 		"requireDeviceAuth": c.RequireDeviceAuth, "pendingApprovals": pending,
 	})

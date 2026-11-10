@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api, addDays } from "../api.js";
-import { PageHeader, Card, Button, Field, Input, FormGrid, FormSection, Segmented, ChipSelect, Badge, Progress, Alert, EmptyState, Icon, statusTone, statusLabel } from "@kit";
+import { PageHeader, Card, Button, Field, Input, FormGrid, FormSection, Segmented, ChipSelect, SitePicker, Badge, Progress, Alert, EmptyState, Icon, statusTone, statusLabel } from "@kit";
 import ResultTable from "./ResultTable.jsx";
 
 export default function Search({ me, param, navigate, refreshMe }) {
@@ -67,7 +67,7 @@ export default function Search({ me, param, navigate, refreshMe }) {
           <FormSection>Tarih ve kişi</FormSection>
           <div style={{ marginBottom: 12 }}>
             <Segmented value={kind} onChange={setKind} options={[{ value: "prices", label: "Sadece otel" }, { value: "packages", label: "Otel + uçak + transfer", disabled: !me.plan.allowPackages }]} />
-            {!me.plan.allowPackages && <span className="muted small" style={{ marginLeft: 10 }}>Paket sorgusu planınızda kapalı.</span>}
+            {!me.plan.allowPackages && <span className="muted small" style={{ marginLeft: 10 }}>Otel + uçak sorgusu paketinizde kapalı.</span>}
           </div>
           <FormGrid style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
             <Field label="Giriş"><Input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} required /></Field>
@@ -78,7 +78,7 @@ export default function Search({ me, param, navigate, refreshMe }) {
             {kind === "packages" && <Field label="Kalkış (IATA)"><Input value={airport} onChange={(e) => setAirport(e.target.value.toUpperCase())} maxLength={3} placeholder="SAW" /></Field>}
           </FormGrid>
           <FormSection>Siteler <span className="muted" style={{ textTransform: "none", letterSpacing: 0, fontWeight: 500 }}>(boş = tüm etkin siteler)</span></FormSection>
-          <ChipSelect value={provs} onChange={setProvs} options={[...enabled.map((p) => ({ value: p.name, label: p.label, hint: p.requiresBrowser ? "~10 sn" : undefined })), ...me.providers.filter((p) => p.maintenance).map((p) => ({ value: p.name, label: p.label, hint: "bakımda", disabled: true, title: "Site geçici olarak kapalı" }))]} />
+          <SitePicker compact value={provs} onChange={setProvs} emptyMeansAll options={[...enabled.map((p) => ({ value: p.name, label: p.label, hint: p.domain + (p.requiresBrowser ? " · ~10 sn" : "") })), ...me.providers.filter((p) => p.maintenance).map((p) => ({ value: p.name, label: p.label, hint: p.domain, disabled: true, title: "Site geçici olarak kapalı (bakımda)", badge: <Badge tone="warn" dot={false}>bakımda</Badge> }))]} />
           <div className="sr-row center" style={{ marginTop: 20 }}>
             <Button type="submit" size="lg" icon="search" loading={busy} disabled={sel.length === 0 || quotaFull}>Fiyatları getir</Button>
             <span className="muted small">{sel.length} otel · {provs.length || enabled.length} site{L.dailySearches > 0 && ` · bugün ${U.searches || 0}/${L.dailySearches} arama`}</span>
