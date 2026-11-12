@@ -11,8 +11,8 @@
       "description": "Local"
     },
     {
-      "url": "https://hotel.alpkun.com",
-      "description": "Production"
+      "url": "https://api.smartrate.app",
+      "description": "Production (musteri API)"
     }
   ],
   "components": {

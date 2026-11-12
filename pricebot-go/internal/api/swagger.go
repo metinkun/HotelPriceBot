@@ -18,7 +18,7 @@ func (s *Server) openAPISpec(w http.ResponseWriter, _ *http.Request) {
 	}
 	spec["servers"] = []map[string]string{
 		{"url": fmt.Sprintf("http://localhost:%d", s.cfg.Port), "description": "Local"},
-		{"url": "https://hotel.alpkun.com", "description": "Production"},
+		{"url": "https://api.smartrate.app", "description": "Production (musteri API)"},
 	}
 	writeJSON(w, 200, spec)
 }

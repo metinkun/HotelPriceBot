@@ -35,8 +35,8 @@ type Config struct {
 	// E-posta (sifre sifirlama linki). SMTP_HOST bos ise gonderim yapilmaz, link ekranda gosterilir.
 	SMTPHost, SMTPUser, SMTPPassword, SMTPFrom, SMTPTLS string
 	SMTPPort                                            int
-	PublicPortalURL                                     string        // orn. https://app.smartrate.com/portal/  (bos: istekten turetilir)
-	PublicAPIURL                                        string        // musteri paketindeki API taban adresi, orn. https://api.smartrate.app (bos: istekten turetilir)
+	PublicPortalURL                                     string        // orn. https://demo.smartrate.app/portal/  (bos: production'da bu, aksi halde istekten turetilir)
+	PublicAPIURL                                        string        // musteri paketindeki API taban adresi, orn. https://api.smartrate.app (bos: production'da bu, aksi halde istekten turetilir)
 	PasswordResetTTL                                    time.Duration // link gecerlilik suresi
 	ProxySyncInterval                                   time.Duration
 
@@ -122,6 +122,17 @@ func Load() *Config {
 			logFormat = "text"
 		}
 	}
+	// Canli alan adlari (12 Kas 2026): .env'de verilmemisse production'da varsayilan; diger ortamlarda istekten turetilir.
+	publicAPI := env("PUBLIC_API_URL", "")
+	publicPortal := env("PUBLIC_PORTAL_URL", "")
+	if envName == "production" {
+		if publicAPI == "" {
+			publicAPI = "https://api.smartrate.app"
+		}
+		if publicPortal == "" {
+			publicPortal = "https://demo.smartrate.app/portal/"
+		}
+	}
 
 	return &Config{
 		Env:         envName,
@@ -148,8 +159,8 @@ func Load() *Config {
 
 		SMTPHost: env("SMTP_HOST", ""), SMTPPort: envInt("SMTP_PORT", 587), SMTPUser: env("SMTP_USER", ""), SMTPPassword: env("SMTP_PASSWORD", ""),
 		SMTPFrom: env("SMTP_FROM", ""), SMTPTLS: env("SMTP_TLS", ""),
-		PublicPortalURL:  env("PUBLIC_PORTAL_URL", ""),
-		PublicAPIURL:     env("PUBLIC_API_URL", ""),
+		PublicPortalURL:  publicPortal,
+		PublicAPIURL:     publicAPI,
 		PasswordResetTTL: time.Duration(envInt("PASSWORD_RESET_TTL_MINUTES", 60)) * time.Minute,
 
 		BrowserHeadless:       env("PUPPETEER_HEADLESS", "true") != "false",

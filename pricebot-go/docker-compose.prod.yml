@@ -1,5 +1,7 @@
 # Production overlay: Caddy ile otomatik TLS, dis dunyaya sadece 80/443 acik, gunluk DB yedegi.
-# Kullanim: DOMAIN=hotel.alpkun.com docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Kullanim: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Alan adlari (Caddy, hepsi ayni uygulamaya): admin.smartrate.app (admin), demo.smartrate.app (portal), api.smartrate.app (musteri API).
+# Farkli alan adi icin: DOMAIN="a.example.com, b.example.com" ...
 services:
   postgres:
     ports: !reset []
@@ -15,6 +17,8 @@ services:
       APP_ENV: production
       LOG_FORMAT: json
       SWAGGER_ENABLED: "true"
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-https://api.smartrate.app}
+      PUBLIC_PORTAL_URL: ${PUBLIC_PORTAL_URL:-https://demo.smartrate.app/portal/}
     expose:
       - "3000"
 
@@ -26,7 +30,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      DOMAIN: ${DOMAIN:-hotel.alpkun.com}
+      DOMAIN: ${DOMAIN:-admin.smartrate.app, demo.smartrate.app, api.smartrate.app}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

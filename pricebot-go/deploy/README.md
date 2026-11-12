@@ -1,16 +1,19 @@
 # Deploy (tek sunucu, Docker)
 
-Gereksinimler: Docker + Compose v2, 80/443 acik, DNS A kaydi (hotel.alpkun.com -> sunucu IP).
+Gereksinimler: Docker + Compose v2, 80/443 acik, DNS A kayitlari (admin.smartrate.app, demo.smartrate.app, api.smartrate.app -> sunucu IP).
+Uc alan adi da ayni uygulamaya gider: admin paneli `/admin/`, portal `/portal/`, musteri API `/api/v1/*` + Swagger `/docs`.
 Onerilen: 2 vCPU / 4 GB RAM (2 GB ile calisir; tarayici sekmesi 2 ile sinirli).
 
 ```bash
 git clone <repo> && cd HotelPriceBot/pricebot-go
 cp .env.example .env            # ADMIN_API_KEY, WEBSHARE_API_KEY, cookie'ler, CANARY_HOTEL_ID
-DOMAIN=hotel.alpkun.com docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-curl -s https://hotel.alpkun.com/health
+GIT_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+curl -s https://api.smartrate.app/health   # version alani surumu gosterir
 ```
 
-- Guncelleme: `git pull && docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+- Guncelleme: `git pull && GIT_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+- `.env` icinde `PUBLIC_API_URL=https://api.smartrate.app` ve `PUBLIC_PORTAL_URL=https://demo.smartrate.app/portal/` (prod overlay varsayilan olarak bunlari verir;
+  musteri paketi ve sifre sifirlama linkleri bu adresleri kullanir).
 - Loglar: `docker compose logs -f app` (JSON, her satirda reqId)
 - Yedekler: `backups` volume'unda gunluk `pricebot-YYYYMMDD-HHMMSS.sql.gz`, 14 gun saklanir.
   Geri yukleme: `gunzip -c yedek.sql.gz | docker compose exec -T postgres psql -U botuser -d pricebot`
