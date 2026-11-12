@@ -6,7 +6,7 @@ export { Card, Stat, PageHeader, EmptyState, Alert, Badge, Progress, Skeleton, A
 export { DataTable, nodeText } from "./Table.jsx";
 export { Modal, FormModal, DialogProvider, useConfirm, usePrompt } from "./Modal.jsx";
 export { ToastProvider, useToast } from "./Toast.jsx";
-export { AppShell, AuthLayout, AuthVisual } from "./Shell.jsx";
+export { AppShell, AuthLayout, AuthVisual, VersionTag, useVersion } from "./Shell.jsx";
 export { useTheme, getTheme, applyTheme } from "./theme.js";
 export * from "./format.js";
 export { SitePicker } from "./features/SitePicker.jsx";

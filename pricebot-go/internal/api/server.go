@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"pricebot/internal/version"
 	"strconv"
 	"strings"
 	"time"
@@ -296,6 +297,7 @@ func (s *Server) health(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, 200, map[string]any{
 		"status": "ok", "providers": s.reg.Names(),
 		"uptimeSeconds": int(time.Since(s.started).Seconds()),
+		"version":       version.Version, "commit": version.Commit, "builtAt": version.BuiltAt,
 	})
 }
 

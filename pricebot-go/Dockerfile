@@ -25,7 +25,12 @@ COPY . .
 # Derlenmis panel ve portal Go'ya gomulur
 COPY --from=ui /ui/dist/ ./internal/api/adminui/dist/
 COPY --from=portal /ui/dist/ ./internal/api/portalui/dist/
-RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/pricebot ./cmd/server
+# Surum: VERSION dosyasi + GIT_COMMIT build arg (compose: GIT_COMMIT=$(git rev-parse --short HEAD) docker compose up -d --build)
+ARG GIT_COMMIT=
+RUN V=$(tr -d ' \n' < VERSION) && B=$(date -u +%Y-%m-%dT%H:%M:%SZ) && \
+    CGO_ENABLED=0 GOOS=linux go build -trimpath \
+      -ldflags="-s -w -X pricebot/internal/version.Version=$V -X pricebot/internal/version.Commit=$GIT_COMMIT -X pricebot/internal/version.BuiltAt=$B" \
+      -o /out/pricebot ./cmd/server
 
 # ---- Runtime (Chromium dahil: Touristica icin headless tarayici gerekir) ----
 FROM debian:bookworm-slim

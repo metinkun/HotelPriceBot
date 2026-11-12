@@ -809,6 +809,21 @@
                         "tatilsepeti",
                         "jolly"
                       ]
+                    },
+                    "uptimeSeconds": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "1.1.0"
+                    },
+                    "commit": {
+                      "type": "string",
+                      "example": "8f93e17"
+                    },
+                    "builtAt": {
+                      "type": "string",
+                      "example": "2026-11-12T10:00:00Z"
                     }
                   }
                 }

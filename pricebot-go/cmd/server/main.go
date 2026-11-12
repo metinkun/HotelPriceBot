@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"pricebot/internal/version"
 	"strings"
 	"syscall"
 	"time"
@@ -22,8 +23,8 @@ import (
 	"pricebot/internal/details"
 	"pricebot/internal/jobs"
 	"pricebot/internal/limiter"
-	"pricebot/internal/providers"
 	"pricebot/internal/mail"
+	"pricebot/internal/providers"
 	"pricebot/internal/proxy"
 	"pricebot/internal/services"
 )
@@ -103,7 +104,7 @@ func main() {
 	}
 
 	go func() {
-		slog.Info("PriceBot calisiyor", "port", cfg.Port, "env", cfg.Env, "providers", strings.Join(reg.Names(), ","),
+		slog.Info("PriceBot calisiyor", "version", version.String(), "port", cfg.Port, "env", cfg.Env, "providers", strings.Join(reg.Names(), ","),
 			"cache", rc.Enabled(), "swagger", cfg.SwaggerOn)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			slog.Error("HTTP sunucu hatasi", "err", err)

@@ -6,6 +6,25 @@ import { Avatar } from "./Card.jsx";
 import { useTheme } from "./theme.js";
 import { cx } from "./format.js";
 
+// Sunucudan surum bilgisi (/health): tek kaynak, dagitilan binary'nin surumunu gosterir.
+let versionCache = null;
+export function useVersion() {
+  const [v, setV] = useState(versionCache);
+  useEffect(() => {
+    if (versionCache) return;
+    fetch("/health").then((r) => r.json()).then((j) => { versionCache = { version: j.version || "dev", commit: j.commit || "", builtAt: j.builtAt || "" }; setV(versionCache); }).catch(() => setV({ version: "" }));
+  }, []);
+  return v;
+}
+
+// Silik surum etiketi; title'da commit + derleme zamani.
+export function VersionTag({ className, light }) {
+  const v = useVersion();
+  if (!v || !v.version) return null;
+  const tip = ["Sürüm " + v.version, v.commit && "commit " + v.commit, v.builtAt && "derleme " + v.builtAt.replace("T", " ").replace("Z", " UTC")].filter(Boolean).join(" · ");
+  return <div className={cx("sr-version", light && "light", className)} title={tip}>v{v.version}{v.commit ? <span> · {v.commit}</span> : null}</div>;
+}
+
 /*
 AppShell: sol menu (masaustu) / cekmece + alt sekme cubugu (mobil), ust cubuk.
   product: "Admin" | "Portal"
@@ -37,6 +56,7 @@ export function AppShell({ product, nav, current, onNavigate, user, onLogout, ti
         <div className="sr-side-foot">
           {footerLinks}
           {user && <div className="sr-user"><Avatar name={user.name} /><div className="sr-user-text"><b>{user.name}</b><small title={user.sub}>{user.sub}</small></div><IconButton icon="logout" title="Çıkış" onClick={onLogout} style={{ color: "#B6C0D9" }} /></div>}
+          <VersionTag light />
         </div>
       </aside>
       <div className="sr-main">
@@ -73,6 +93,7 @@ export function AuthLayout({ product, headline, text, points = [], visual, child
           <div className="sr-auth-mobile-brand"><Logo size={40} product={product} onDark={false} /></div>
           {children}
         </div>
+        <VersionTag className="sr-auth-version" />
       </div>
     </div>
   );

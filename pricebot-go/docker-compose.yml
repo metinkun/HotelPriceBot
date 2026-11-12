@@ -38,7 +38,10 @@ services:
           memory: 256M
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-}
     container_name: pricebot_go_app
     env_file:
       - .env

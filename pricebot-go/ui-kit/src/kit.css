@@ -71,6 +71,11 @@ button { font-family: inherit; }
 .sr-user { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; }
 .sr-user b { display: block; color: #fff; font-size: 13px; line-height: 1.2; } .sr-user small { color: #8EA0C8; font-size: 12px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sr-user .sr-user-text { min-width: 0; flex: 1; }
+.sr-version { font-size: 11px; color: var(--muted-2); opacity: .7; font-variant-numeric: tabular-nums; letter-spacing: .02em; user-select: text; cursor: default; }
+.sr-version.light { color: #8EA0C8; opacity: .55; padding: 8px 8px 0; }
+.sr-version:hover { opacity: 1; }
+.sr-auth-form { position: relative; }
+.sr-auth-version { position: absolute; right: 16px; bottom: 12px; }
 .sr-main { min-width: 0; display: flex; flex-direction: column; }
 .sr-topbar { position: sticky; top: 0; z-index: 20; height: var(--topbar-h); display: flex; align-items: center; gap: 12px; padding: 0 28px; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: saturate(160%) blur(10px); -webkit-backdrop-filter: saturate(160%) blur(10px); border-bottom: 1px solid var(--line); }
 .sr-topbar .sr-crumb { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; min-width: 0; }

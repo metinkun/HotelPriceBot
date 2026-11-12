@@ -36,6 +36,18 @@ open http://localhost:3000/docs       # Swagger
 
 Production: bkz. [deploy/README.md](deploy/README.md) (Caddy TLS, kapali portlar, gunluk yedek).
 
+## Surum
+
+Tek kaynak `VERSION` dosyasidir (semver, orn. `1.1.0`). Dockerfile bunu ve `GIT_COMMIT` build arg'ini binary'ye gomer;
+`/health` yaniti `version`, `commit`, `builtAt` dondurur ve admin/portal arayuzleri sol menunun altinda ve giris ekraninda
+silik olarak `v1.1.0 · abc1234` gosterir. Yeni surum cikarirken:
+
+```bash
+echo 1.2.0 > VERSION && git commit -am "v1.2.0" && git tag v1.2.0 && git push && git push --tags
+GIT_COMMIT=$(git rev-parse --short HEAD) docker compose up -d --build   # commit bos birakilirsa yalnizca surum gorunur
+curl -s http://localhost:3000/health | grep -o '"version":"[^"]*"'
+```
+
 ## Mimari
 
 ```
