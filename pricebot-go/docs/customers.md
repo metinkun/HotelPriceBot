@@ -6,7 +6,11 @@
 - Istekler `X-API-Key` ile `/api/v1/jobs` (asenkron, onerilen) veya `/api/prices*`, `/api/packages` (senkron) uclarina gider.
 - Plan: gunluk kredi, izinli siteler, paket ve `fresh` izni, istek/dk. Ek olarak **musteri basina etkin siteler**
   (admin > Musteri > "Siteler & portal") plan izinlerini daha da daraltir; kapali site icin 403 doner.
-- Dokuman: `/docs` (Swagger), `postman/`.
+- **Otel kapsami**: API musterisi yalnizca kendisine baglanan otelleri (`client_hotels`) gorur (`GET /api/v1/hotels`) ve
+  sorgulayabilir; listede olmayan `hotelId` 404 doner. Oteller admin > Musteri > Oteller'den baglanir, "Excel indir" ile
+  musteriye verilecek kimlik listesi (hotelId, ad, kunye, site eslesmeleri) indirilir.
+- Dokuman: `/docs` (Swagger), `postman/` (tam koleksiyon) ve **`postman/musteri/`** (musteriye verilecek koleksiyon + ortam,
+  `python3 postman/musteri.py` ile uretilir), musteri rehberi `docs/api-entegrasyon-rehberi.md`.
 
 ## 2) Web portal musterisi (`clientType = portal` veya `both`)
 

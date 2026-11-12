@@ -102,6 +102,7 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /api/v1/jobs", s.client(s.createJob))
 	mux.Handle("GET /api/v1/jobs/{id}", s.client(s.getJob))
 	mux.Handle("GET /api/v1/me", s.client(s.clientMe))
+	mux.Handle("GET /api/v1/hotels", s.client(s.clientHotels))
 
 	// Admin oturumu
 	mux.HandleFunc("POST /api/admin/auth/login", s.adminLogin)
@@ -112,6 +113,7 @@ func (s *Server) Handler() http.Handler {
 	// Admin - URL bazli otel
 	mux.Handle("POST /api/admin/hotels", s.admin(s.createHotel))
 	mux.Handle("GET /api/admin/hotels", s.admin(s.listHotels))
+	mux.Handle("GET /api/admin/hotels/export", s.admin(s.adminExportHotels))
 	mux.Handle("GET /api/admin/hotels/{id}", s.admin(s.getHotel))
 	mux.Handle("PUT /api/admin/hotels/{id}", s.admin(s.updateHotel))
 
@@ -154,6 +156,7 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("PUT /api/admin/clients/{id}/limits", s.admin(s.adminSetClientLimits))
 	mux.Handle("POST /api/admin/clients/{id}/limits/reset", s.admin(s.adminResetClientLimits))
 	mux.Handle("POST /api/admin/clients/{id}/hotels", s.admin(s.adminLinkClientHotel))
+	mux.Handle("GET /api/admin/clients/{id}/hotels/export", s.admin(s.adminExportClientHotels))
 	mux.Handle("DELETE /api/admin/clients/{id}/hotels/{hotelId}", s.admin(s.adminUnlinkClientHotel))
 	mux.Handle("GET /api/admin/login-logs", s.admin(s.adminLoginLogs))
 	mux.Handle("GET /api/admin/approvals", s.admin(s.adminApprovals))

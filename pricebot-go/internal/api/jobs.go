@@ -52,6 +52,10 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	if err := s.requireClientHotels(r, req.HotelID); err != nil {
+		writeError(w, r, err)
+		return
+	}
 	if req.Type == jobs.TypePackages {
 		if err := s.packagesAllowed(r); err != nil {
 			writeError(w, r, err)

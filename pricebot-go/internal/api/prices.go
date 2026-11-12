@@ -22,6 +22,10 @@ func (s *Server) getAllPrices(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	if err := s.requireClientHotels(r, pq.HotelID); err != nil {
+		writeError(w, r, err)
+		return
+	}
 	providers := parseProviderList(q.Get("provider"))
 	if err := s.providerNamesValid(providers); err != nil {
 		writeError(w, r, err)
@@ -53,6 +57,10 @@ func (s *Server) getPrice(w http.ResponseWriter, r *http.Request) {
 		ChildAges: parseChildAges(q.Get("childAges")),
 	}
 	if err := validatePriceQuery(&pq); err != nil {
+		writeError(w, r, err)
+		return
+	}
+	if err := s.requireClientHotels(r, pq.HotelID); err != nil {
 		writeError(w, r, err)
 		return
 	}
@@ -98,6 +106,10 @@ func (s *Server) getBulkPrices(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	if err := s.requireClientHotels(r, bq.HotelIDs...); err != nil {
+		writeError(w, r, err)
+		return
+	}
 	if _, err := s.providersForPlan(r, []string{body.Provider}); err != nil {
 		writeError(w, r, err)
 		return
@@ -123,6 +135,10 @@ func (s *Server) getPackages(w http.ResponseWriter, r *http.Request) {
 		ChildAges: parseChildAges(q.Get("childAges")),
 	}
 	if err := validatePackageQuery(&pq); err != nil {
+		writeError(w, r, err)
+		return
+	}
+	if err := s.requireClientHotels(r, pq.HotelID); err != nil {
 		writeError(w, r, err)
 		return
 	}

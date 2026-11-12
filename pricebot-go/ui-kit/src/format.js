@@ -35,5 +35,15 @@ export function createApi(tokenKey) {
     if (!res.ok) { const err = new Error((data && data.error) || `HTTP ${res.status}`); err.status = res.status; err.data = data; throw err; }
     return data;
   }
-  return { api, getToken, setToken };
+  // Dosya indirme (xlsx vb.): Bearer ile GET, blob -> tarayici indirme.
+  async function download(path, fallbackName = "dosya") {
+    const headers = {}; const tok = getToken(); if (tok) headers.Authorization = "Bearer " + tok;
+    const res = await fetch(path, { headers });
+    if (!res.ok) { let msg = `HTTP ${res.status}`; try { msg = (await res.json()).error || msg; } catch {} throw new Error(msg); }
+    const cd = res.headers.get("Content-Disposition") || ""; const m = /filename="?([^";]+)"?/.exec(cd);
+    const blob = await res.blob(); const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = (m && m[1]) || fallbackName; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  return { api, getToken, setToken, download };
 }

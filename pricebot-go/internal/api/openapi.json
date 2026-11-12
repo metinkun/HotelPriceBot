@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Hotel Price Bot API",
-    "version": "2.4",
+    "version": "2.5",
     "description": "Birlesik cok-saglayicili otel fiyat botu (13 site: etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, tatilsitesi, prontotour, tatilcikus, tatildukkani).\n\n**Kimlik dogrulama:** musteri uclari `X-API-Key` basligi ister (admin panelinden uretilir). Admin uclari `Authorization: Bearer <JWT>` (panel girisi) veya `x-api-key: ADMIN_API_KEY` kabul eder.\n\n**Onerilen akis (asenkron):** `POST /api/v1/jobs` ile is olustur -> `requestId` al -> `GET /api/v1/jobs/{id}?wait=20` ile sonucu cek. Senkron `/api/prices*` ve `/api/packages` uclari geriye uyumluluk icin korunur.\n\n**Kota:** bir siteye atilan her gercek sorgu 1 kredi; cache'ten (5 dk) donen sonuc 0 kredi. Yanitta `cached` ve `fetchedAt` alanlari bulunur; `X-Quota-Limit` / `X-Quota-Used` basliklari gunluk durumu verir.\n\n2.4: otel ozeti (/overview), site detayi, arama detayi, planli arama gecmisi ve tarih araligi, sifre sifirlama linki, kullanici bazinda cihaz limiti, proxy durumu; silme uclari kaldirildi (pasife alma), portaldan otel ekleme/cikarma kaldirildi. Fiyat yanitlarinda price.note (musait degil ama fiyat var)."
   },
   "servers": [
@@ -1944,7 +1944,7 @@
             "ApiKeyAuth": []
           }
         ],
-        "description": "Istegi kuyruga alir ve `requestId` doner. Ayni istek 10 dk icinde tekrar gelirse yeni is acilmaz, mevcut is doner (`deduplicated: true`, HTTP 200). Provider bazli eszamanlilik siniri (touristica 1, setur 3, digerleri 5) ve devre kesici uygulanir.",
+        "description": "Istegi kuyruga alir ve `requestId` doner. Ayni istek 10 dk icinde tekrar gelirse yeni is acilmaz, mevcut is doner (`deduplicated: true`, HTTP 200). Provider bazli eszamanlilik siniri (touristica 1, setur 3, digerleri 5) ve devre kesici uygulanir. hotelId musteriye tanimli otellerden olmali (GET /api/v1/hotels); degilse 404.",
         "requestBody": {
           "required": true,
           "content": {
@@ -2125,7 +2125,7 @@
         "tags": [
           "Asenkron Is (v1)"
         ],
-        "summary": "Anahtar sahibi: plan, izinli provider'lar, bugunku kullanim",
+        "summary": "Anahtar sahibi: paket, izinli siteler, bugunku kullanim, otel sayisi",
         "security": [
           {
             "ApiKeyAuth": []
@@ -5397,6 +5397,209 @@
                   "isActive": {
                     "type": "boolean"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hotels": {
+      "get": {
+        "tags": [
+          "Asenkron Is (v1)"
+        ],
+        "summary": "Musteriye tanimli oteller (hotelId listesi + her otelde sorgulanabilir siteler)",
+        "description": "API musterisi yalnizca kendisine baglanmis otelleri gorur ve sorgulayabilir; listede olmayan hotelId ile fiyat/paket istegi 404 doner. providers: eslesmesi olan + acik + paket izinli siteler; missingProviders: izinli olup eslesmesi olmayan siteler.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Ad, kimlik veya sehirde arama"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Otel listesi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "hotels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "hotelId": {
+                            "type": "string",
+                            "example": "ext_3248"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Ekor Elegance Hotel"
+                          },
+                          "label": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "city": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "region": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "country": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "TRNC"
+                          },
+                          "stars": {
+                            "type": "integer",
+                            "nullable": true
+                          },
+                          "chain": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "isActive": {
+                            "type": "boolean"
+                          },
+                          "providers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": [
+                              "etstur",
+                              "jolly",
+                              "touristica"
+                            ]
+                          },
+                          "missingProviders": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": [
+                              "setur"
+                            ]
+                          },
+                          "linkedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Gecersiz anahtar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/hotels/export": {
+      "get": {
+        "tags": [
+          "Admin - Otel (URL bazli)"
+        ],
+        "summary": "Tum otelleri Excel (xlsx) olarak indir",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "xlsx dosyasi",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/hotels/export": {
+      "get": {
+        "tags": [
+          "Admin - Hesap Limitleri & Onaylar"
+        ],
+        "summary": "Musterinin otel listesini Excel (xlsx) olarak indir (musteriye verilecek hotelId listesi)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "xlsx dosyasi",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Musteri bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }

@@ -1,0 +1,3884 @@
+{
+  "item": [
+    {
+      "name": "1. Hesap, oteller ve fiyat sorgusu (önerilen)",
+      "description": "Onerilen musteri akisi",
+      "item": [
+        {
+          "id": "04929282-9129-424b-8067-6f9a0f58c9b9",
+          "name": "Anahtar sahibi: paket, izinli siteler, bugunku kullanim, otel sayisi",
+          "request": {
+            "name": "Anahtar sahibi: paket, izinli siteler, bugunku kullanim, otel sayisi",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a44291e2-694e-49b7-95ea-73e7630f3d1f",
+              "name": "Kimlik ve plan",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b6a90dd8-ac18-45d5-9ac9-264d292eabbb",
+              "name": "Gecersiz anahtar",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5611105-f351-4e77-bf83-c176f8313683",
+          "name": "Musteriye tanimli oteller (hotelId listesi + her otelde sorgulanabilir siteler)",
+          "request": {
+            "name": "Musteriye tanimli oteller (hotelId listesi + her otelde sorgulanabilir siteler)",
+            "description": {
+              "content": "API musterisi yalnizca kendisine baglanmis otelleri gorur ve sorgulayabilir; listede olmayan hotelId ile fiyat/paket istegi 404 doner. providers: eslesmesi olan + acik + paket izinli siteler; missingProviders: izinli olup eslesmesi olmayan siteler.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "hotels"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Ad, kimlik veya sehirde arama",
+                    "type": "text/plain"
+                  },
+                  "key": "search",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2dd77a2a-ef57-46f1-abe0-231dc97dac49",
+              "name": "Otel listesi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "hotels"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Ad, kimlik veya sehirde arama",
+                        "type": "text/plain"
+                      },
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": \"<integer>\",\n  \"hotels\": [\n    {\n      \"hotelId\": \"<string>\",\n      \"name\": \"<string>\",\n      \"label\": \"<string>\",\n      \"city\": \"<string>\",\n      \"region\": \"<string>\",\n      \"country\": \"<string>\",\n      \"stars\": \"<integer>\",\n      \"chain\": \"<string>\",\n      \"isActive\": \"<boolean>\",\n      \"providers\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"missingProviders\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"linkedAt\": \"<dateTime>\"\n    },\n    {\n      \"hotelId\": \"<string>\",\n      \"name\": \"<string>\",\n      \"label\": \"<string>\",\n      \"city\": \"<string>\",\n      \"region\": \"<string>\",\n      \"country\": \"<string>\",\n      \"stars\": \"<integer>\",\n      \"chain\": \"<string>\",\n      \"isActive\": \"<boolean>\",\n      \"providers\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"missingProviders\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"linkedAt\": \"<dateTime>\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1c55428-1d31-4523-ac65-a5f36fd34d67",
+              "name": "Gecersiz anahtar",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "hotels"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Ad, kimlik veya sehirde arama",
+                        "type": "text/plain"
+                      },
+                      "key": "search",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2501904e-8452-4ac3-9427-3aa3798ad646",
+          "name": "Is olustur (onerilen akis)",
+          "request": {
+            "name": "Is olustur (onerilen akis)",
+            "description": {
+              "content": "Istegi kuyruga alir ve `requestId` doner. Ayni istek 10 dk icinde tekrar gelirse yeni is acilmaz, mevcut is doner (`deduplicated: true`, HTTP 200). Provider bazli eszamanlilik siniri (touristica 1, setur 3, digerleri 5) ve devre kesici uygulanir. hotelId musteriye tanimli otellerden olmali (GET /api/v1/hotels); degilse 404.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a078f673-5c7d-4519-940a-3a7773bc6ddb",
+              "name": "Ayni istek zaten kuyrukta (deduplicated)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"<string>\",\n  \"status\": \"<string>\",\n  \"deduplicated\": \"<boolean>\",\n  \"pollAfterMs\": \"<integer>\",\n  \"statusUrl\": \"<string>\",\n  \"expiresInSeconds\": \"<integer>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea7b2158-5829-4b3e-acd6-60c148b09fab",
+              "name": "Kuyruga alindi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "Location",
+                  "value": "<string>"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"<string>\",\n  \"status\": \"<string>\",\n  \"deduplicated\": \"<boolean>\",\n  \"pollAfterMs\": \"<integer>\",\n  \"statusUrl\": \"<string>\",\n  \"expiresInSeconds\": \"<integer>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59293f42-0c33-483c-811b-5c2dd6b6e5c9",
+              "name": "Gecersiz parametre",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52b96fc4-29cc-4460-ade4-15e4204b7b82",
+              "name": "API anahtari gecersiz/eksik",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5f7ca737-e327-425a-ad42-d4d9282a1270",
+              "name": "Plan kisiti",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "78102b0e-d84b-449b-8ad7-0f6abb63f736",
+              "name": "Kota/kuyruk dolu",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba016d12-76aa-4dd2-8eaf-0252749709e8",
+              "name": "Kuyruk etkin degil (Redis yok)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"type\": \"prices\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"airportCode\": \"<string>\",\n  \"fresh\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('is olusturuldu', () => pm.expect(pm.response.code).to.be.oneOf([200, 202]));",
+                  "const j = pm.response.json(); if (j.requestId) pm.environment.set('requestId', j.requestId);"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b7a39c15-1617-49c9-a46f-9995229378db",
+          "name": "Is durumu / sonucu",
+          "request": {
+            "name": "Is durumu / sonucu",
+            "description": {
+              "content": "`wait` verilirse (max 30 sn) is bitene kadar bekler (uzun bekleme). Bitmemisse `Retry-After: 1` basligi doner. Kismi sonuclar `result` icinde biten provider'larla gorunur. Sonuc 1 saat saklanir.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "wait",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "{{requestId}}",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "174e61b9-8d2b-44cd-8fd2-3b0cd9189406",
+              "name": "Is",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "wait",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"running\",\n  \"createdAt\": \"<dateTime>\",\n  \"startedAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\",\n  \"request\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"adults\": \"<integer>\",\n    \"type\": \"prices\",\n    \"children\": 0,\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"airportCode\": \"<string>\",\n    \"fresh\": \"<boolean>\"\n  },\n  \"progress\": {\n    \"ad_3\": \"running\",\n    \"adipisicing3\": \"done\",\n    \"qui432\": \"error\",\n    \"doea\": \"running\"\n  },\n  \"result\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"results\": [\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      }\n    ],\n    \"errors\": [\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": \"<string>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cbfce796-89d9-4a7d-8b65-bdb41eb125cf",
+              "name": "Is bulunamadi / suresi dolmus",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "jobs",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "wait",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.status && j.status !== 'done' && j.status !== 'failed') { console.log('is suruyor:', j.status); postman.setNextRequest(pm.info.requestName); }",
+                  "else pm.test('is tamamlandi', () => pm.expect(j.status).to.eql('done'));"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Senkron fiyat uçları (isteğe bağlı)",
+      "description": "Senkron (geriye uyumlu)",
+      "item": [
+        {
+          "id": "a468017d-957b-4174-99dc-afa890074f5e",
+          "name": "Tek otel fiyat sorgula",
+          "request": {
+            "name": "Tek otel fiyat sorgula",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "prices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "provider",
+                  "value": "tatilbudur"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "hotelId",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkIn",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkOut",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "adults",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "children",
+                  "value": "0"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Virgulle ayrilmis cocuk yaslari",
+                    "type": "text/plain"
+                  },
+                  "key": "childAges",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Cache'i atla (plan izni gerekir)",
+                    "type": "text/plain"
+                  },
+                  "key": "fresh",
+                  "value": "<boolean>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e75b9a3d-9b00-4d59-ad64-fd978d1da08c",
+              "name": "Fiyat bilgisi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0154a496-d5a1-4402-8e91-6767a615c2a6",
+              "name": "Eksik parametre veya gecersiz provider",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "331038d6-2295-4579-92bb-6a506457c57d",
+              "name": "API anahtari gecersiz/eksik",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4ddc99d9-b730-4dd2-84d5-3279e3db6425",
+              "name": "Plan bu provider/paket sorgusunu kapsamiyor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b63b6a9-455b-4b94-b3b0-df8fe540583a",
+              "name": "Otel eslestirmesi bulunamadi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bfcc66b0-2e4c-42a2-8e43-a28dca88643f",
+              "name": "Gunluk kota veya dakikalik sinir asildi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "tatilbudur"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "80753ce6-cf7d-4aa3-959d-48194e0f8707",
+          "name": "Toplu otel fiyat sorgula",
+          "request": {
+            "name": "Toplu otel fiyat sorgula",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "prices",
+                "bulk"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"<string>\",\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ea4a2fb4-4028-4a1a-9344-b2c9830d060f",
+              "name": "Toplu fiyat bilgisi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "bulk"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"provider\": \"<string>\",\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7e58d7a7-0b70-4ac9-8701-7ef01fe0a9bf",
+              "name": "Eksik parametre",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "bulk"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"provider\": \"<string>\",\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d48ded37-6824-47fe-b20f-5c75616b8e4f",
+              "name": "API anahtari gecersiz/eksik",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "bulk"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"provider\": \"<string>\",\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e09e391-4b53-40ad-8cee-2697ea48f9a2",
+              "name": "Kota asildi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "bulk"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"provider\": \"<string>\",\n  \"hotelIds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"adults\": \"<integer>\",\n  \"children\": 0,\n  \"childAges\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "31887b22-1742-4272-9228-d65c6ee2d769",
+          "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
+          "request": {
+            "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
+            "description": {
+              "content": "Bir internalHotelId icin eslesen tum provider'lardan (etstur + tatilsepeti...) paralel fiyat doner. provider verilmezse otelin tum provider'lari sorgulanir.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "prices",
+                "all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "hotelId",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkIn",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkOut",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "adults",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "children",
+                  "value": "0"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "childAges",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                    "type": "text/plain"
+                  },
+                  "key": "provider",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Cache'i atla (plan izni gerekir)",
+                    "type": "text/plain"
+                  },
+                  "key": "fresh",
+                  "value": "<boolean>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "39169a27-c24d-42f3-8d7a-6ad8e0a2fbab",
+              "name": "Tum provider fiyatlari",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"results\": [\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    }\n  ],\n  \"errors\": [\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "168470d9-31cf-4f1e-8d6b-0edb5c34778f",
+              "name": "Eksik parametre",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8a18478d-6125-4cbd-910e-2a6dc36800f7",
+              "name": "API anahtari gecersiz/eksik",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b468468-a7a9-48ad-9569-a53a71a95ff3",
+              "name": "Plan bu provider/paket sorgusunu kapsamiyor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b36b9525-8a4d-4a80-9c99-4dd80f21b25a",
+              "name": "Otel eslestirmesi bulunamadi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9140378d-c829-400c-b213-732b75a66589",
+              "name": "Gunluk kota veya dakikalik sinir asildi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "prices",
+                    "all"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Opsiyonel, virgulle: etstur,tatilsepeti",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Paket fiyatı (otel + uçak + transfer, paket izni gerekir)",
+      "description": "",
+      "item": [
+        {
+          "id": "5082b45f-9b56-4471-9684-b552486af094",
+          "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
+          "request": {
+            "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
+            "description": {
+              "content": "Otel + Ucak + Transfer paket fiyatlarini sorgular.\n\n**Kullanim sekilleri:**\n- `?provider=etstur` — Tek provider'dan sorgula\n- `?provider=etstur,tatilbudur` — Birden fazla provider'dan paralel sorgula\n- Provider parametresi bos birakilirsa paket destekleyen **tum** provider'lar sorgulanir\n\nTek provider verildiginde dogrudan sonuc doner. Birden fazla veya hepsi secildiginde `{ hotelId, results: [...], errors?, notMapped? }` formatinda doner.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "packages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                    "type": "text/plain"
+                  },
+                  "key": "provider",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "hotelId",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) Kalkis havalimani IATA kodu",
+                    "type": "text/plain"
+                  },
+                  "key": "airportCode",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkIn",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "checkOut",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  },
+                  "key": "adults",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "children",
+                  "value": "0"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Virgulle ayrilmis cocuk yaslari",
+                    "type": "text/plain"
+                  },
+                  "key": "childAges",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Cache'i atla (plan izni gerekir)",
+                    "type": "text/plain"
+                  },
+                  "key": "fresh",
+                  "value": "<boolean>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f183de65-6863-4754-825e-fe5e79296a05",
+              "name": "Paket fiyat listesi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"examples\": {\n    \"tekProvider\": {\n      \"summary\": \"Tek provider sonucu\",\n      \"value\": {\n        \"internalHotelId\": \"hotel-cy-1\",\n        \"providerHotelId\": \"61b893df0b29\",\n        \"hotelName\": \"Acapulco Resort\",\n        \"airportCode\": \"IST\",\n        \"available\": true,\n        \"roomCount\": 2,\n        \"rooms\": [\n          {\n            \"roomId\": \"6530\",\n            \"roomName\": \"Villa - Yarim Pansiyon\",\n            \"roomSize\": 30,\n            \"nightCount\": 11,\n            \"boards\": [\n              {\n                \"boardType\": \"Yarim Pansiyon\",\n                \"currency\": \"TL\",\n                \"listPrice\": 352000,\n                \"price\": 186027,\n                \"discountRate\": 40,\n                \"cancellation\": \"FREE_CANCELLATION\"\n              }\n            ]\n          }\n        ]\n      }\n    },\n    \"multiProvider\": {\n      \"summary\": \"Coklu provider sonucu\",\n      \"value\": {\n        \"hotelId\": \"hotel-cy-1\",\n        \"results\": [\n          {\n            \"provider\": \"etstur\",\n            \"available\": true,\n            \"roomCount\": 10,\n            \"rooms\": [\n              \"...\"\n            ]\n          },\n          {\n            \"provider\": \"tatilsepeti\",\n            \"available\": true,\n            \"roomCount\": 5,\n            \"rooms\": [\n              \"...\"\n            ]\n          }\n        ],\n        \"notMapped\": [\n          \"tatilbudur\"\n        ]\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0ffae142-2361-4f24-83de-9f65e864bf31",
+              "name": "Eksik parametre veya provider desteklemiyor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ef5d931c-aa57-43cc-8a40-f063a8b1c0f1",
+              "name": "API anahtari gecersiz/eksik",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91d41ab7-2eae-41f3-bbf0-f876abbbcd0b",
+              "name": "Plan bu provider/paket sorgusunu kapsamiyor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7f86d1c-b05e-435e-9094-d1621ffad91e",
+              "name": "Otel eslestirmesi bulunamadi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b51bff09-82e9-4778-bf9a-a33d5d1ab1db",
+              "name": "Gunluk kota veya dakikalik sinir asildi",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "packages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Provider adi. Tek (etstur), coklu (etstur,tatilbudur) veya bos (tum provider'lar)",
+                        "type": "text/plain"
+                      },
+                      "key": "provider",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "hotelId",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Kalkis havalimani IATA kodu",
+                        "type": "text/plain"
+                      },
+                      "key": "airportCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkIn",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "checkOut",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) ",
+                        "type": "text/plain"
+                      },
+                      "key": "adults",
+                      "value": "<integer>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "",
+                        "type": "text/plain"
+                      },
+                      "key": "children",
+                      "value": "0"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Virgulle ayrilmis cocuk yaslari",
+                        "type": "text/plain"
+                      },
+                      "key": "childAges",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Cache'i atla (plan izni gerekir)",
+                        "type": "text/plain"
+                      },
+                      "key": "fresh",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"<string>\",\n  \"requestId\": \"<string>\",\n  \"details\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Sağlık kontrolü",
+      "description": "",
+      "item": [
+        {
+          "id": "2e60fc1a-efb8-44f8-b2ff-a35457a55e15",
+          "name": "Saglik kontrolu + provider listesi",
+          "request": {
+            "name": "Saglik kontrolu + provider listesi",
+            "description": {},
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "33677fc1-c65f-4591-bfe2-889e23a86ec0",
+              "name": "Servis calisiyor",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"<string>\",\n  \"providers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"uptimeSeconds\": \"<integer>\",\n  \"version\": \"<string>\",\n  \"commit\": \"<string>\",\n  \"builtAt\": \"<string>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{baseUrl}}"
+    }
+  ],
+  "info": {
+    "_postman_id": "b160db81-f72f-4034-8fde-136e54d3879f",
+    "name": "SmartRate API (müşteri)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Kimlik: her istekte X-API-Key başlığı (koleksiyon düzeyinde {{apiKey}} değişkeninden gelir). Önerilen akış: GET /api/v1/me -> GET /api/v1/hotels -> POST /api/v1/jobs -> GET /api/v1/jobs/{{requestId}}?wait=20. Ayrıntı: docs/api-entegrasyon-rehberi.md veya {{baseUrl}}/docs"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  }
+}

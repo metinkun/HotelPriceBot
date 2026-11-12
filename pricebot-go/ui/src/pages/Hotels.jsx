@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api } from "../api.js";
+import { api, download } from "../api.js";
 import { PageHeader, DataTable, Button, Modal, FormModal, Field, Input, Select, Textarea, Switch, FormGrid, Segmented, Badge, Alert, EmptyState, useConfirm, useToast } from "@kit";
 
 export default function Hotels({ navigate }) {
@@ -45,7 +45,7 @@ export default function Hotels({ navigate }) {
 
   return (
     <div>
-      <PageHeader title="Oteller" description="Sistemdeki oteller, künyeleri ve her sitedeki eşleştirmeleri. Satıra çift tıklayarak otel özetine gidin. Silme yoktur; otel pasife alınır." actions={<><Button variant="secondary" icon="upload" onClick={() => navigate("import")}>Toplu ekle</Button><Button icon="plus" onClick={() => setModal(true)}>Otel ekle</Button></>} />
+      <PageHeader title="Oteller" description="Sistemdeki oteller, künyeleri ve her sitedeki eşleştirmeleri. Satıra çift tıklayarak otel özetine gidin. Silme yoktur; otel pasife alınır." actions={<><Button variant="secondary" icon="download" onClick={() => download("/api/admin/hotels/export", "oteller.xlsx").catch((e) => toast.error(e.message))}>Excel indir</Button><Button variant="secondary" icon="upload" onClick={() => navigate("import")}>Toplu ekle</Button><Button icon="plus" onClick={() => setModal(true)}>Otel ekle</Button></>} />
       {err && <Alert tone="bad">{err}</Alert>}
       {result?.errors?.length > 0 && <Alert tone="warn">Çözümlenemeyen siteler: {result.errors.map((e) => `${e.provider}: ${e.error}`).join(" · ")}</Alert>}
       <DataTable rows={rows} rowKey={(h) => h.internalHotelId} loading={loading}

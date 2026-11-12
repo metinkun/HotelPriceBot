@@ -87,6 +87,8 @@ ui-portal/             React/Vite musteri portali (/portal/)
 
 ## API ozeti
 
+Musteri rehberi: [docs/api-entegrasyon-rehberi.md](docs/api-entegrasyon-rehberi.md); musteriye verilecek Postman paketi `postman/musteri/`.
+
 | Yontem | Yol | Aciklama |
 |---|---|---|
 | GET | /health, /ready | canlilik / hazirlik (Postgres zorunlu, Redis opsiyonel) |

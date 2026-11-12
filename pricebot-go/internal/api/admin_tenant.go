@@ -199,7 +199,6 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, c)
 }
 
-
 // ---- API anahtarlari ----
 
 func generateAPIKey() string {
@@ -387,6 +386,8 @@ func (s *Server) clientMe(w http.ResponseWriter, r *http.Request) {
 	}
 	if !id.IsAdmin {
 		out["usedToday"] = s.usage.UsedToday(r.Context(), id.ClientID)
+		out["hotelCount"] = s.db.CountClientHotels(r.Context(), id.ClientID)
+		out["hotelsUrl"] = "/api/v1/hotels"
 	}
 	writeJSON(w, 200, out)
 }

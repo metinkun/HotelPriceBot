@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, fmtDate, parseReq, WEEKDAYS_SHORT } from "../api.js";
+import { api, download, fmtDate, parseReq, WEEKDAYS_SHORT } from "../api.js";
 import { PageHeader, Card, Stat, DataTable, Button, Modal, FormModal, Field, Input, Select, FormGrid, Badge, Alert, Tabs, KeyBox, Switch, Skeleton, KV, SitePicker, SearchDetailModal, useConfirm, usePrompt, useToast, statusTone, statusLabel } from "@kit";
 import { loginLogColumns } from "./LoginLogs.jsx";
 
@@ -203,7 +203,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
           )}
           {tab === "hotels" && (
             <DataTable rows={data.hotels} dense toolbar={<span className="muted small">{data.hotels.length} / {inf(lim.limits.maxHotels)} otel</span>}
-              toolbarRight={<Button size="sm" icon="link" onClick={() => setHotelModal(true)} disabled={lim.limits.maxHotels > 0 && data.hotels.length >= lim.limits.maxHotels}>Sistem otelinden ekle</Button>}
+              toolbarRight={<><Button size="sm" variant="secondary" icon="download" title="Müşteriye verilecek otel kimlik listesi (hotelId, ad, künye, site eşleşmeleri)" onClick={() => download(`/api/admin/clients/${clientId}/hotels/export`, `oteller-musteri-${clientId}.xlsx`).catch((e) => toast.error(e.message))} disabled={!data.hotels.length}>Excel indir</Button><Button size="sm" icon="link" onClick={() => setHotelModal(true)} disabled={lim.limits.maxHotels > 0 && data.hotels.length >= lim.limits.maxHotels}>Sistem otelinden ekle</Button></>}
               columns={[{ key: "internalHotelId", title: "Otel", primary: true, render: (h) => <>{hotelName(h.internalHotelId)}{c.ownHotelId === h.internalHotelId && <Badge tone="info" dot={false} className="" style={{ marginLeft: 8 }}>kendi oteli</Badge>}</>, sub: (h) => <code>{h.internalHotelId}</code> }, { key: "label", title: "Etiket", render: (h) => h.label || <span className="muted">—</span>, hideOnMobile: true }, { key: "createdAt", title: "Bağlanma", render: (h) => fmtDate(h.createdAt), hideOnMobile: true }]}
               actions={(h) => [{ icon: "eye", title: "Detay", onClick: (x) => navigate("hoteldetail", x.internalHotelId) }, { icon: "link", title: "Listeden çıkar (bağlantıyı kaldır)", tone: "danger", onClick: unlinkHotel }]} onRowDoubleClick={(h) => navigate("hoteldetail", h.internalHotelId)} empty={{ icon: "building", title: "Müşteriye bağlı otel yok", text: "Müşterinin otel listesini buradan yönetirsiniz (portaldan otel eklenemez); 'Sistem otelinden ekle' ile bağlayın." }} />
           )}
