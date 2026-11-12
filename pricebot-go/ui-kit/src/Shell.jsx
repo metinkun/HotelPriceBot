@@ -17,12 +17,12 @@ export function useVersion() {
   return v;
 }
 
-// Silik surum etiketi; title'da commit + derleme zamani.
+// Silik surum etiketi (yalnizca surum numarasi); title'da derleme zamani.
 export function VersionTag({ className, light }) {
   const v = useVersion();
   if (!v || !v.version) return null;
-  const tip = ["Sürüm " + v.version, v.commit && "commit " + v.commit, v.builtAt && "derleme " + v.builtAt.replace("T", " ").replace("Z", " UTC")].filter(Boolean).join(" · ");
-  return <div className={cx("sr-version", light && "light", className)} title={tip}>v{v.version}{v.commit ? <span> · {v.commit}</span> : null}</div>;
+  const tip = ["Sürüm " + v.version, v.builtAt && "derleme " + v.builtAt.replace("T", " ").replace("Z", " UTC")].filter(Boolean).join(" · ");
+  return <div className={cx("sr-version", light && "light", className)} title={tip}>v{v.version}</div>;
 }
 
 /*

@@ -40,7 +40,7 @@ Production: bkz. [deploy/README.md](deploy/README.md) (Caddy TLS, kapali portlar
 
 Tek kaynak `VERSION` dosyasidir (semver, orn. `1.1.0`). Dockerfile bunu ve `GIT_COMMIT` build arg'ini binary'ye gomer;
 `/health` yaniti `version`, `commit`, `builtAt` dondurur ve admin/portal arayuzleri sol menunun altinda ve giris ekraninda
-silik olarak `v1.1.0 · abc1234` gosterir. Yeni surum cikarirken:
+silik olarak `v1.1.0` gosterir (commit yalnizca `/health` yanitinda). Yeni surum cikarirken:
 
 ```bash
 echo 1.2.0 > VERSION && git commit -am "v1.2.0" && git tag v1.2.0 && git push && git push --tags
