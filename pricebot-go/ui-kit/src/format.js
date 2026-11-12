@@ -36,9 +36,10 @@ export function createApi(tokenKey) {
     return data;
   }
   // Dosya indirme (xlsx vb.): Bearer ile GET, blob -> tarayici indirme.
-  async function download(path, fallbackName = "dosya") {
+  async function download(path, fallbackName = "dosya", { method = "GET", body } = {}) {
     const headers = {}; const tok = getToken(); if (tok) headers.Authorization = "Bearer " + tok;
-    const res = await fetch(path, { headers });
+    if (body) headers["Content-Type"] = "application/json";
+    const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
     if (!res.ok) { let msg = `HTTP ${res.status}`; try { msg = (await res.json()).error || msg; } catch {} throw new Error(msg); }
     const cd = res.headers.get("Content-Disposition") || ""; const m = /filename="?([^";]+)"?/.exec(cd);
     const blob = await res.blob(); const url = URL.createObjectURL(blob);

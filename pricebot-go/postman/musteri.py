@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Tam koleksiyondan MUSTERIYE verilecek koleksiyonu uretir: yalnizca API musterisi uclari (X-API-Key).
 Kullanim: python3 postman/musteri.py
-Cikti: postman/musteri/SmartRate-API.postman_collection.json + SmartRate-API.postman_environment.json
+Cikti: internal/api/clientpkg/ (Go binary'ye gomulur; admin > Musteri > "Musteri paketini indir" bu dosyalari
+anahtar/adres doldurulmus olarak zip'ler) + docs/api-entegrasyon-rehberi.md kopyasi.
 """
 import json, os, copy
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+PKG = os.path.join(ROOT, "..", "internal", "api", "clientpkg")
 src = json.load(open(os.path.join(ROOT, "pricebot.postman_collection.json")))
 KEEP = {"Asenkron Is (v1)": "1. Hesap, oteller ve fiyat sorgusu (önerilen)",
         "Fiyat Sorgulama": "2. Senkron fiyat uçları (isteğe bağlı)",
@@ -35,12 +37,9 @@ items.sort(key=lambda f: f["name"])
 out["item"] = items
 # Yalnizca apiKey ve requestId degiskenleri gerekir
 out["variable"] = [{"key": "baseUrl", "value": "{{baseUrl}}"}]
-os.makedirs(os.path.join(ROOT, "musteri"), exist_ok=True)
-json.dump(out, open(os.path.join(ROOT, "musteri", "SmartRate-API.postman_collection.json"), "w"), ensure_ascii=False, indent=2)
-env = {"name": "SmartRate API", "_postman_variable_scope": "environment", "values": [
-    {"key": "baseUrl", "value": "https://hotel.alpkun.com", "enabled": True},
-    {"key": "apiKey", "value": "pb_live_... (SmartRate tarafından verilen anahtar)", "enabled": True, "type": "secret"},
-    {"key": "requestId", "value": "", "enabled": True}]}
-json.dump(env, open(os.path.join(ROOT, "musteri", "SmartRate-API.postman_environment.json"), "w"), ensure_ascii=False, indent=2)
+os.makedirs(PKG, exist_ok=True)
+json.dump(out, open(os.path.join(PKG, "SmartRate-API.postman_collection.json"), "w"), ensure_ascii=False, indent=2)
+import shutil
+shutil.copyfile(os.path.join(ROOT, "..", "docs", "api-entegrasyon-rehberi.md"), os.path.join(PKG, "API-Entegrasyon-Rehberi.md"))
 n = sum(len(f["item"]) for f in items)
 print(f"musteri koleksiyonu: {len(items)} klasor, {n} istek")

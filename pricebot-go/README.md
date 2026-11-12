@@ -87,7 +87,7 @@ ui-portal/             React/Vite musteri portali (/portal/)
 
 ## API ozeti
 
-Musteri rehberi: [docs/api-entegrasyon-rehberi.md](docs/api-entegrasyon-rehberi.md); musteriye verilecek Postman paketi `postman/musteri/`.
+Musteri rehberi: [docs/api-entegrasyon-rehberi.md](docs/api-entegrasyon-rehberi.md). Musteriye verilecek paket (Postman koleksiyonu + ortam + rehber + otel listesi) admin > Musteri > API anahtarlari > "Musteri paketi" ile zip olarak iner; API adresi `PUBLIC_API_URL` ile ayarlanir. Gomulu dosyalar `python3 postman/musteri.py` ile yenilenir.
 
 | Yontem | Yol | Aciklama |
 |---|---|---|

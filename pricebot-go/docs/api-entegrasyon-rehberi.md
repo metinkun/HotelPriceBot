@@ -6,9 +6,9 @@ Bu doküman SmartRate fiyat karşılaştırma servisine API ile bağlanacak mü�
 
 | Bilgi | Değer |
 |---|---|
-| Taban adres | `https://hotel.alpkun.com` (size bildirilen adres) |
+| Taban adres | `{{BASE_URL}}` |
 | Kimlik | Her istekte `X-API-Key: <anahtarınız>` başlığı |
-| Dokümantasyon | `https://hotel.alpkun.com/docs` (Swagger, OpenAPI indirilebilir) |
+| Dokümantasyon | `{{BASE_URL}}/docs` (Swagger, OpenAPI indirilebilir) |
 | Postman | `SmartRate-API.postman_collection.json` + `SmartRate-API.postman_environment.json` |
 
 Anahtar `pb_live_` ile başlar, yalnızca size iletilir ve sunucuda düz metin olarak saklanmaz. Anahtarınızı kaybederseniz
@@ -18,7 +18,8 @@ yeni anahtar üretilir, eskisi iptal edilir.
 
 1. Postman > Import > iki dosyayı birlikte sürükleyin (koleksiyon + ortam).
 2. Sağ üstten "SmartRate API" ortamını seçin.
-3. Ortamda `baseUrl` ve `apiKey` değerlerini doldurun. Koleksiyondaki tüm istekler bu iki değişkeni kullanır.
+3. Ortam dosyasında `baseUrl` ve `apiKey` değerleri size özel hazırlanmıştır; koleksiyondaki tüm istekler bu iki değişkeni kullanır.
+   (`apiKey` boşsa size iletilen anahtarı buraya yazın.)
 4. "1. Hesap, oteller ve fiyat sorgusu" klasöründeki istekleri sırayla çalıştırın. İş oluşturma isteği `requestId`
    değişkenini otomatik yazar; durum isteği iş bitene kadar kendini tekrarlar (Collection Runner ile).
 

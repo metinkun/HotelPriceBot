@@ -32,6 +32,8 @@ export default function ClientDetail({ param: clientId, navigate }) {
   const [tab, setTab] = useState("limits");
   const [err, setErr] = useState("");
   const [newKey, setNewKey] = useState(null);
+  const [pkgModal, setPkgModal] = useState(false);
+  const [pkg, setPkg] = useState({ baseUrl: "", apiKey: "", includeHotels: true });
   const [userModal, setUserModal] = useState(false);
   const [newUser, setNewUser] = useState({ email: "", password: "", name: "" });
   const [devUser, setDevUser] = useState(null); // {user, devices}
@@ -70,6 +72,15 @@ export default function ClientDetail({ param: clientId, navigate }) {
     const label = await prompt({ title: "Yeni API anahtarı", label: "Etiket (opsiyonel)", placeholder: "örn. üretim, test" });
     if (label === null) return;
     try { const r = await api(`/api/admin/clients/${c.id}/keys`, { method: "POST", body: { label: label || null } }); setNewKey(r.key); setTab("keys"); await load(); } catch (e) { toast.error(e.message); }
+  };
+  const openPkg = async (key) => {
+    let baseUrl = pkg.baseUrl;
+    if (!baseUrl) { try { baseUrl = (await api(`/api/admin/clients/${clientId}/package/defaults`)).baseUrl; } catch { baseUrl = window.location.origin; } }
+    setPkg({ baseUrl, apiKey: key || "", includeHotels: true }); setPkgModal(true);
+  };
+  const downloadPkg = async () => {
+    await download(`/api/admin/clients/${clientId}/package`, "SmartRate-API.zip", { method: "POST", body: { baseUrl: pkg.baseUrl, apiKey: pkg.apiKey || "", includeHotels: pkg.includeHotels } });
+    setPkgModal(false); toast.success("Müşteri paketi indirildi.");
   };
   const revoke = async (k) => { if (!(await confirm({ title: "Anahtar iptal edilsin mi?", message: `${k.keyPrefix}… anahtarı bir daha kullanılamaz.`, confirmText: "İptal et", danger: true }))) return; try { await api("/api/admin/keys/" + k.id, { method: "DELETE" }); toast.success("Anahtar iptal edildi."); await load(); } catch (e) { toast.error(e.message); } };
   const createUser = async () => { await api(`/api/admin/clients/${clientId}/portal-users`, { method: "POST", body: { ...newUser, name: newUser.name || null } }); setUserModal(false); setNewUser({ email: "", password: "", name: "" }); toast.success("Portal kullanıcısı eklendi."); await load(); };
@@ -189,8 +200,8 @@ export default function ClientDetail({ param: clientId, navigate }) {
           </>)}
           {tab === "keys" && (<>
             {!lim.limits.allowApi && <Alert tone="warn">Bu müşterinin paketi API erişimi içermiyor; anahtar üretilemez. Limitler sekmesinden "API kullanıcısı" açılabilir.</Alert>}
-            {newKey && <div style={{ marginBottom: 12 }}><KeyBox label="Yeni anahtar — yalnızca bir kez gösterilir, şimdi kopyalayın:" value={newKey} /><div className="sr-row" style={{ marginTop: 8 }}><Button size="sm" variant="secondary" icon="copy" onClick={() => { navigator.clipboard?.writeText(newKey); toast.success("Kopyalandı."); }}>Kopyala</Button><Button size="sm" variant="ghost" onClick={() => setNewKey(null)}>Gizle</Button></div></div>}
-            <DataTable rows={sel.keys} dense toolbarRight={<Button size="sm" icon="plus" onClick={createKey} disabled={!lim.limits.allowApi}>Yeni anahtar</Button>}
+            {newKey && <div style={{ marginBottom: 12 }}><KeyBox label="Yeni anahtar — yalnızca bir kez gösterilir, şimdi kopyalayın:" value={newKey} /><div className="sr-row" style={{ marginTop: 8 }}><Button size="sm" variant="secondary" icon="copy" onClick={() => { navigator.clipboard?.writeText(newKey); toast.success("Kopyalandı."); }}>Kopyala</Button><Button size="sm" icon="download" onClick={() => openPkg(newKey)} title="Postman koleksiyonu + bu anahtarla dolu ortam + rehber + otel listesi (zip)">Müşteri paketini bu anahtarla indir</Button><Button size="sm" variant="ghost" onClick={() => setNewKey(null)}>Gizle</Button></div></div>}
+            <DataTable rows={sel.keys} dense toolbarRight={<><Button size="sm" variant="secondary" icon="download" onClick={() => openPkg("")} title="Postman koleksiyonu + ortam + rehber + otel listesi (zip); anahtar alanı boş kalır">Müşteri paketi (anahtarsız)</Button><Button size="sm" icon="plus" onClick={createKey} disabled={!lim.limits.allowApi}>Yeni anahtar</Button></>}
               columns={[{ key: "keyPrefix", title: "Anahtar", primary: true, render: (k) => <code>{k.keyPrefix}…</code>, filterValue: (k) => k.keyPrefix }, { key: "label", title: "Etiket", render: (k) => k.label || <span className="muted">—</span> }, { key: "lastUsedAt", title: "Son kullanım", render: (k) => fmtDate(k.lastUsedAt), hideOnMobile: true }, { key: "createdAt", title: "Oluşturma", render: (k) => fmtDate(k.createdAt), hideOnMobile: true }, { key: "revokedAt", title: "Durum", render: (k) => (k.revokedAt ? <Badge tone="bad">iptal</Badge> : <Badge tone="ok">aktif</Badge>) }]}
               actions={(k) => [{ icon: "ban", title: "İptal et", tone: "danger", hidden: !!k.revokedAt, onClick: revoke }]} empty={{ icon: "key", title: "Anahtar yok" }} />
           </>)}
@@ -261,6 +272,11 @@ export default function ClientDetail({ param: clientId, navigate }) {
           actions={(d) => [{ icon: "ban", title: "Kaldır (cihaz kaydı pasife alınır)", tone: "danger", hidden: !!d.removedAt, onClick: removeDevice }]}
           empty={{ icon: "smartphone", title: "Kayıtlı cihaz yok", text: "Kullanıcı ilk girişinde cihazını kaydeder." }} />}
       </Modal>
+      <FormModal open={pkgModal} onClose={() => setPkgModal(false)} title="Müşteri entegrasyon paketi" subtitle="Zip içinde: Postman koleksiyonu, adres + anahtar dolu ortam dosyası, entegrasyon rehberi, otel listesi (Excel), BENİOKU. Müşteriye e-posta ile gönderilir." submitText="Zip indir" onSubmit={downloadPkg}>
+        <Field label="API adresi (baseUrl)" hint="Müşterinin istek atacağı adres. PUBLIC_API_URL ayarlıysa oradan gelir."><Input value={pkg.baseUrl} onChange={(e) => setPkg({ ...pkg, baseUrl: e.target.value })} placeholder="https://api.smartrate.app" /></Field>
+        <Field label="API anahtarı (isteğe bağlı)" hint={pkg.apiKey ? "Ortam dosyasına yazılır; zip'i yalnızca müşteriye iletin." : "Boş bırakılırsa müşteri anahtarı ortam dosyasına kendisi yazar. Anahtar yalnızca üretildiği anda bilinir."}><Input value={pkg.apiKey} onChange={(e) => setPkg({ ...pkg, apiKey: e.target.value })} placeholder="pb_live_…" /></Field>
+        <Switch checked={pkg.includeHotels} onChange={(e) => setPkg({ ...pkg, includeHotels: e.target.checked })} label="Otel listesini (Oteller.xlsx) ekle" />
+      </FormModal>
     </div>
   );
 }

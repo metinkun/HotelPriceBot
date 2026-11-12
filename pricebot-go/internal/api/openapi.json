@@ -5606,6 +5606,113 @@
           }
         }
       }
+    },
+    "/api/admin/clients/{id}/package/defaults": {
+      "get": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteri paketi icin varsayilan API adresi (PUBLIC_API_URL veya istek adresi)",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{baseUrl, fromConfig}"
+          }
+        }
+      }
+    },
+    "/api/admin/clients/{id}/package": {
+      "post": {
+        "tags": [
+          "Admin - Musteri & Plan"
+        ],
+        "summary": "Musteriye verilecek entegrasyon paketi (zip): Postman koleksiyonu + adres/anahtar dolu ortam + rehber + otel listesi (xlsx) + BENIOKU",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "baseUrl": {
+                    "type": "string",
+                    "example": "https://api.smartrate.app"
+                  },
+                  "apiKey": {
+                    "type": "string",
+                    "description": "Yalnizca uretildigi anda bilinen duz anahtar; bos ise ortam dosyasinda yer tutucu kalir"
+                  },
+                  "includeHotels": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "zip dosyasi",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Gecersiz adres/anahtar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Musteri bulunamadi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [

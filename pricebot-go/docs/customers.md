@@ -9,8 +9,10 @@
 - **Otel kapsami**: API musterisi yalnizca kendisine baglanan otelleri (`client_hotels`) gorur (`GET /api/v1/hotels`) ve
   sorgulayabilir; listede olmayan `hotelId` 404 doner. Oteller admin > Musteri > Oteller'den baglanir, "Excel indir" ile
   musteriye verilecek kimlik listesi (hotelId, ad, kunye, site eslesmeleri) indirilir.
-- Dokuman: `/docs` (Swagger), `postman/` (tam koleksiyon) ve **`postman/musteri/`** (musteriye verilecek koleksiyon + ortam,
-  `python3 postman/musteri.py` ile uretilir), musteri rehberi `docs/api-entegrasyon-rehberi.md`.
+- Dokuman: `/docs` (Swagger), `postman/` (tam koleksiyon). **Musteri paketi**: admin > Musteri > API anahtarlari > "Musteri paketi"
+  (anahtar uretildigi anda "bu anahtarla indir"): zip = Postman koleksiyonu + adres/anahtar dolu ortam + rehber + Oteller.xlsx + BENIOKU.
+  Gomulu dosyalar `internal/api/clientpkg/` (`python3 postman/musteri.py` yeniler), rehber kaynagi `docs/api-entegrasyon-rehberi.md`,
+  API adresi `PUBLIC_API_URL`.
 
 ## 2) Web portal musterisi (`clientType = portal` veya `both`)
 

@@ -157,6 +157,8 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("POST /api/admin/clients/{id}/limits/reset", s.admin(s.adminResetClientLimits))
 	mux.Handle("POST /api/admin/clients/{id}/hotels", s.admin(s.adminLinkClientHotel))
 	mux.Handle("GET /api/admin/clients/{id}/hotels/export", s.admin(s.adminExportClientHotels))
+	mux.Handle("GET /api/admin/clients/{id}/package/defaults", s.admin(s.adminClientPackageDefaults))
+	mux.Handle("POST /api/admin/clients/{id}/package", s.admin(s.adminClientPackage))
 	mux.Handle("DELETE /api/admin/clients/{id}/hotels/{hotelId}", s.admin(s.adminUnlinkClientHotel))
 	mux.Handle("GET /api/admin/login-logs", s.admin(s.adminLoginLogs))
 	mux.Handle("GET /api/admin/approvals", s.admin(s.adminApprovals))

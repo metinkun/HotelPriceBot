@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"sort"
 	"strings"
@@ -167,6 +168,12 @@ func (s *Server) requireClientHotels(r *http.Request, ids ...string) error {
 // ---- Admin: Excel disa aktarma ----
 
 func (s *Server) writeHotelsXLSX(w http.ResponseWriter, filename string, rows []clientHotelRow, withLabel bool) {
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
+	s.hotelsXLSXTo(w, rows, withLabel)
+}
+
+func (s *Server) hotelsXLSXTo(w io.Writer, rows []clientHotelRow, withLabel bool) {
 	header := []string{"Otel kimliği (hotelId)", "Otel adı"}
 	if withLabel {
 		header = append(header, "Etiket")
@@ -200,8 +207,6 @@ func (s *Server) writeHotelsXLSX(w http.ResponseWriter, filename string, rows []
 		}
 		data = append(data, rec)
 	}
-	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
 	_ = xlsx.Write(w, "Oteller", header, data)
 }
 

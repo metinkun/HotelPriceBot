@@ -1,6 +1,7 @@
 .env
 .git
 *.md
+!internal/api/clientpkg/*.md
 ui/node_modules
 ui/dist
 ui-portal/node_modules
