@@ -74,6 +74,9 @@ button { font-family: inherit; }
 .sr-version { font-size: 11px; color: var(--muted-2); opacity: .7; font-variant-numeric: tabular-nums; letter-spacing: .02em; user-select: text; cursor: default; }
 .sr-version.light { color: #8EA0C8; opacity: .55; padding: 8px 8px 0; }
 .sr-version:hover { opacity: 1; }
+.sr-version-top { margin: 0 4px 0 6px; white-space: nowrap; }
+.sr-version-side { display: none; }
+@media (max-width: 860px) { .sr-version-top { display: none; } .sr-version-side { display: block; } }
 .sr-auth-form { position: relative; }
 .sr-auth-version { position: absolute; right: 16px; bottom: 12px; }
 .sr-main { min-width: 0; display: flex; flex-direction: column; }

@@ -56,7 +56,7 @@ export function AppShell({ product, nav, current, onNavigate, user, onLogout, ti
         <div className="sr-side-foot">
           {footerLinks}
           {user && <div className="sr-user"><Avatar name={user.name} /><div className="sr-user-text"><b>{user.name}</b><small title={user.sub}>{user.sub}</small></div><IconButton icon="logout" title="Çıkış" onClick={onLogout} style={{ color: "#B6C0D9" }} /></div>}
-          <VersionTag light />
+          <VersionTag light className="sr-version-side" />
         </div>
       </aside>
       <div className="sr-main">
@@ -65,6 +65,7 @@ export function AppShell({ product, nav, current, onNavigate, user, onLogout, ti
           <div className="sr-crumb"><b>{title}</b></div>
           <div className="sr-spacer" />
           {topbarExtra}
+          <VersionTag className="sr-version-top" />
           <IconButton icon={theme === "dark" ? "sun" : "moon"} title={theme === "dark" ? "Açık tema" : "Koyu tema"} onClick={toggleTheme} />
         </header>
         <main className="sr-content">{children}</main>
