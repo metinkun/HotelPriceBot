@@ -17,7 +17,7 @@ import (
 // Musteriye verilecek entegrasyon paketi: Postman koleksiyonu (gomulu), ortam dosyasi (adres + anahtar dolu),
 // rehber (adres dolu), otel listesi (xlsx) ve kisa bir BENIOKU. `python3 postman/musteri.py` dosyalari yeniler.
 //
-//go:embed clientpkg/SmartRate-API.postman_collection.json clientpkg/API-Entegrasyon-Rehberi.md
+//go:embed clientpkg/SmartRate-API.postman_collection.json clientpkg/API-Entegrasyon-Rehberi.md clientpkg/API-Referans.md
 var clientPkgFS embed.FS
 
 // apiBaseURL musteri paketindeki taban adres: PUBLIC_API_URL, yoksa istegin kendi adresi.
@@ -103,6 +103,12 @@ func (s *Server) adminClientPackage(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	// 3b) Uc nokta referansi (istek/yanit ornekleri)
+	ref, _ := clientPkgFS.ReadFile("clientpkg/API-Referans.md")
+	if err := add("API-Referans.md", bytes.ReplaceAll(ref, []byte("{{BASE_URL}}"), []byte(base))); err != nil {
+		writeError(w, r, err)
+		return
+	}
 	// 4) Otel listesi
 	hotelNote := "Otel listesi pakete eklenmedi; GET /api/v1/hotels ile alinabilir."
 	if withHotels {
@@ -128,7 +134,8 @@ Hazirlanma: %s
 Icerik
   SmartRate-API.postman_collection.json   Postman koleksiyonu (tum musteri uclari)
   SmartRate-API.postman_environment.json  Postman ortami: baseUrl=%s, apiKey%s
-  API-Entegrasyon-Rehberi.md              Uclar, ornekler, hata kodlari, oneriler
+  API-Entegrasyon-Rehberi.md              Baslangic rehberi, hata kodlari, oneriler
+  API-Referans.md                         Tum uc noktalar: istek/yanit ornekleri ve veri modelleri
   %s
 
 Baslangic

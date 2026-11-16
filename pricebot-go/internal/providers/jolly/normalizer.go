@@ -118,10 +118,15 @@ func normalizePrice(data *ReservationResponse) *types.NormalizedPrice {
 		price = a.TotalPrice
 	}
 	roomName, boardType := firstRoom(data.HTML)
+	rooms := roomOffers(data.HTML)
+	// Site satisa kapali otellerde analytics modelinde 1 TL yer tutucu doner ve oda karti olmaz: musait degil say.
+	if price != nil && *price <= 1 && len(rooms) == 0 {
+		price, listPrice = nil, nil
+	}
 	available := data.IsAvailableHotel && price != nil && *price > 0
 
 	return &types.NormalizedPrice{
-		Rooms:        roomOffers(data.HTML),
+		Rooms:        rooms,
 		Available:    available,
 		HotelName:    types.StrOrNil(a.ProductName),
 		City:         types.StrOrNil(a.CityName),

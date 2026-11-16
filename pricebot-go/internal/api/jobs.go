@@ -125,7 +125,9 @@ func (s *Server) getJob(w http.ResponseWriter, r *http.Request) {
 	if !job.Finished() {
 		w.Header().Set("Retry-After", "1")
 	}
-	writeJSON(w, 200, job)
+	out := *job
+	out.IdentityJSON = nil // ic kimlik bilgisi musteriye donmez
+	writeJSON(w, 200, &out)
 }
 
 // GET /api/v1/jobs/stats (admin)

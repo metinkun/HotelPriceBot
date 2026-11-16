@@ -41,5 +41,6 @@ os.makedirs(PKG, exist_ok=True)
 json.dump(out, open(os.path.join(PKG, "SmartRate-API.postman_collection.json"), "w"), ensure_ascii=False, indent=2)
 import shutil
 shutil.copyfile(os.path.join(ROOT, "..", "docs", "api-entegrasyon-rehberi.md"), os.path.join(PKG, "API-Entegrasyon-Rehberi.md"))
+shutil.copyfile(os.path.join(ROOT, "..", "docs", "api-referans.md"), os.path.join(PKG, "API-Referans.md"))
 n = sum(len(f["item"]) for f in items)
 print(f"musteri koleksiyonu: {len(items)} klasor, {n} istek")

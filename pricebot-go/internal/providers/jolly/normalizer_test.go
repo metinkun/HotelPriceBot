@@ -117,3 +117,11 @@ func TestNormalizePriceRooms(t *testing.T) {
 		t.Errorf("lead fiyat %v oda listesinde musait olarak yok", *p.Price)
 	}
 }
+
+func TestNormalizePricePlaceholderOneTL(t *testing.T) {
+	one := 1.0
+	p := normalizePrice(&ReservationResponse{HTML: "<div>oda yok</div>", IsAvailableHotel: true, AnalyticsDataModel: &Analytics{DiscountedPrice: &one, TotalPrice: &one, Currency: "TRY"}})
+	if p.Available || p.Price != nil {
+		t.Fatalf("1 TL yer tutucu musait degil sayilmali: %+v", p)
+	}
+}
