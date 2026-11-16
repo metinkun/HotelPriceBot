@@ -59,6 +59,7 @@ Geliştirme bu sorular netleşmeden, aşağıda yazılı varsayımlarla ilerledi
 34. **Coral Tatil (coraltatil.com)**: site Imperva/Incapsula bot koruması arkasında; düz HTTP ile hiçbir sayfa açılmıyor (JS
     challenge). Sağlayıcı ancak headless tarayıcı akışıyla (Touristica modeli) yazılabilir; önce tarayıcıyla ağ trafiği yakalanmalı.
     16 Kas: onay verildi, tarayıcı ile keşif yapıldı ve `coraltatil` sağlayıcısı eklendi (tek kalıcı sekme; paket/statik detay yok).
+    KKTC listesinden 52 otel Coral'da eşleşti; kalan ~27 otel Coral'ın portföyünde yok (isimle arama boş döndü).
 35. **Salamis Bay Conti / Tatildukkani**: sitenin arama API'si Kasım 2026'da değişmişti (socket akışı kaldırıldı); düzeltildi.
     Tatilbudur aynı sorguda sunucudan sonuç veriyor; canlıda görülen boş sonuç muhtemelen Akamai 403 (IP) kaynaklı, proxy
     aboneliği ile çözülür. Canlı loglarda doğrulanmalı.

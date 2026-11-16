@@ -48,6 +48,11 @@ Satista olmayan odalar genelde yanitta hic yer almaz (musait olmayan tarihlerde 
 ### 3. Otel cozumleme — ayni veri rotasi `sidp`'siz: `hotelDetail.id/name/friendlyUrl` (resolve). Slug URL'den:
 `https://www.coraltatil.com/<slug>/[?sidp=...]`.
 
+**Dikkat (slug cakismasi):** ayni `friendlyUrl` birden fazla otelde olabilir (orn. `colony-hotel` = Girne 3765 ve Roma 39779);
+`sidp`'siz veri rotasi bunlardan birini (Roma) doner. Fiyat akisinda `sidp` otel kimligini tasidigi icin dogru otel gelir;
+bu yuzden eslestirmede kimlik tercihen isimle aramadan (`ListArrivalLocations`, sehir bilgisiyle) alinmali, URL ile
+cozumlemede sehir/ad kontrol edilmelidir. KKTC listesinde Colony (ext_8) kimligi elle 3765 yapildi.
+
 ### 4. Isimle arama — `POST /endpoints/OnlyHotelProduct/ListArrivalLocations {"text":"salamis"}`
 -> `result.locations[]` (`type 7` otel: `id "3787-7"`, `name`, `friendlyUrl`, `parent.name "Magusa, Kuzey Kıbrıs, Kıbrıs"`).
 Diger tipler (ulke/bolge/sehir) elenir. Parametre adi `text` (digerleri tum ulke listesini doner).
