@@ -82,6 +82,7 @@ func (p *Provider) GetPrice(ctx context.Context, m *provider.Mapping, q types.Pr
 	if price.HotelName == nil {
 		price.HotelName = m.HotelName
 	}
+	p.attachRooms(ctx, pageURLOf(m), q.CheckIn, q.CheckOut, q.Adults, q.ChildAges, price)
 	return &provider.PriceResult{
 		InternalHotelID: m.InternalHotelID, ProviderHotelID: m.ProviderHotelID, HotelName: m.HotelName,
 		Found: price.Available, Price: price,
@@ -102,10 +103,14 @@ func (p *Provider) GetBulkPrices(ctx context.Context, ms []provider.Mapping, q t
 		return nil, err
 	}
 	out := make([]provider.PriceResult, 0, len(ms))
-	for _, m := range ms {
+	for i := range ms {
+		m := &ms[i]
 		price := normalizeResponse(data, m.ProviderHotelID)
 		if price.HotelName == nil {
 			price.HotelName = m.HotelName
+		}
+		if price.Available {
+			p.attachRooms(ctx, pageURLOf(m), q.CheckIn, q.CheckOut, q.Adults, q.ChildAges, price)
 		}
 		out = append(out, provider.PriceResult{
 			InternalHotelID: m.InternalHotelID, ProviderHotelID: m.ProviderHotelID, HotelName: m.HotelName,

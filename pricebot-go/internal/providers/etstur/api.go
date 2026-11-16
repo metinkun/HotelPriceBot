@@ -130,12 +130,19 @@ type roomSearchResponse struct {
 
 type PackageBoard struct {
 	ID        string `json:"id"`
+	PriceCode string `json:"priceCode"`
 	BoardType *struct {
 		Code  string `json:"code"`
 		Label string `json:"label"`
 	} `json:"boardType"`
 	Price        *PriceBlock `json:"price"`
 	Cancellation *string     `json:"cancellation"`
+	// Availability.Type: AVAILABLE | NOT_AVAILABLE | MIN_STAY (NightCount ile)
+	Availability *struct {
+		Type       string `json:"type"`
+		NightCount *int   `json:"nightCount"`
+	} `json:"availability"`
+	LastAllotmentCount *int `json:"lastAllotmentCount"`
 }
 
 type PackageRoom struct {
@@ -301,13 +308,30 @@ func (p *Provider) collectHotelsByIDs(ctx context.Context, destinationURL string
 // ---- Paket akisi ----
 
 func (p *Provider) fetchRoomSearch(ctx context.Context, etsturHotelID string, occ Occupancy) (roomSearchID, cookie string, err error) {
-	ci, err := toRoomDate(occ.CheckIn)
+	pr, cookie, err := p.fetchRoomMulti(ctx, etsturHotelID, occ)
 	if err != nil {
 		return "", "", err
 	}
+	if !pr.Success || pr.Result == nil || pr.Result.RoomSearchID == "" {
+		msg := "Oda aramasi basarisiz (roomSearchId yok)"
+		if pr.ErrorMessage != nil && *pr.ErrorMessage != "" {
+			msg = *pr.ErrorMessage
+		}
+		return "", "", fmt.Errorf("%s", msg)
+	}
+	return pr.Result.RoomSearchID, cookie, nil
+}
+
+// fetchRoomMulti POST room/multi: otelin TUM oda + pansiyon teklifleri (fiyat, musaitlik) + roomSearchId.
+// Cookie (JSESSIONID) yalnizca sonraki room/multi/package cagrisi icin gerekir.
+func (p *Provider) fetchRoomMulti(ctx context.Context, etsturHotelID string, occ Occupancy) (*packageResponse, string, error) {
+	ci, err := toRoomDate(occ.CheckIn)
+	if err != nil {
+		return nil, "", err
+	}
 	co, err := toRoomDate(occ.CheckOut)
 	if err != nil {
-		return "", "", err
+		return nil, "", err
 	}
 	ages := occ.ChildAges
 	if ages == nil {
@@ -322,20 +346,13 @@ func (p *Provider) fetchRoomSearch(ctx context.Context, etsturHotelID string, oc
 	})
 	resp, err := httpx.Post(ctx, roomURL, body, httpx.Merge(defaultHeaders), 20*time.Second)
 	if err != nil {
-		return "", "", err
+		return nil, "", err
 	}
-	var data roomSearchResponse
+	var data packageResponse
 	if err := json.Unmarshal(resp.Body, &data); err != nil {
-		return "", "", fmt.Errorf("Etstur oda yaniti parse edilemedi: %w", err)
+		return nil, "", fmt.Errorf("Etstur oda yaniti parse edilemedi: %w", err)
 	}
-	if !data.Success || data.Result == nil || data.Result.RoomSearchID == "" {
-		msg := "Oda aramasi basarisiz (roomSearchId yok)"
-		if data.ErrorMessage != nil && *data.ErrorMessage != "" {
-			msg = *data.ErrorMessage
-		}
-		return "", "", fmt.Errorf("%s", msg)
-	}
-	return data.Result.RoomSearchID, resp.SetCookies(), nil
+	return &data, resp.SetCookies(), nil
 }
 
 func (p *Provider) fetchPackage(ctx context.Context, roomSearchID, airportCode, cookie string) (*packageResponse, error) {

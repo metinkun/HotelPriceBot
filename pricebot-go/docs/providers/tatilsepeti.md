@@ -148,3 +148,14 @@ probe tatilsepeti search "Acapulco"            -> Acapulco Resort Convention Spa
 probe tatilsepeti search "Cratos Premium"      -> 22 (ilk: Cratos Premium Hotel 2750)
 probe tatilsepeti search "Salamis Bay Conti"   -> 12 (ilk: Salamis Bay Conti Resort Hotel 212, Magosa)
 ```
+
+
+## Oda listesi (Kasim 2026)
+
+Detay sayfasinin kendi slug URL'ine form POST (`hotelDomesticDetail.js`): `Search=oda:2[-cocukYasi...];tarih:dd.MM.yyyy,dd.MM.yyyy;click:true`
+(cocuk yaslari `-` ile; paket ucundaki `,` ile karistirma). Yanit JSON `roomList` = sunucu tarafli HTML:
+`.hotel-detail-cards[data-roomtypeid]` kartlari; tek pansiyon `__price-div__single` (pansiyon `__all-inclusive`), coklu
+pansiyon `__pension-types__badge span` + takip eden `__multiple`; `__all-prices__default-price` liste, `__discount-price`
+satis, `__all-prices__discount` %; `__reservation-div__btn` yoksa (Tarih Degistir / kapasite / fiyat yok) teklif `sold_out`.
+`showLoadMore=true` ise `GET /hotel/detail?id=&GetAllOtherRoomTypes=true&pageNumber=1` ile (cerezle) diger oda tipleri
+(uygulanmadi). Cerez/token gerekmez. Fixture: `testdata/room_list_multi.html`, `room_list_stop.html`.

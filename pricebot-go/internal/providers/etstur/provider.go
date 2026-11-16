@@ -43,8 +43,21 @@ func (p *Provider) GetPrice(ctx context.Context, m *provider.Mapping, q types.Pr
 	res := &provider.PriceResult{InternalHotelID: m.InternalHotelID, ProviderHotelID: m.ProviderHotelID, HotelName: m.HotelName, Found: h != nil}
 	if h != nil {
 		res.Price = normalizeHotel(h)
+		p.attachRooms(ctx, m.ProviderHotelID, occupancyOf(q.CheckIn, q.CheckOut, q.Adults, q.Children, q.ChildAges), res.Price)
 	}
 	return res, nil
+}
+
+// attachRooms room/multi ile tum oda tekliflerini ekler (ek bir istek; hata olursa oda listesi bos kalir, lead fiyat korunur).
+func (p *Provider) attachRooms(ctx context.Context, hotelID string, occ Occupancy, price *types.NormalizedPrice) {
+	if price == nil {
+		return
+	}
+	pr, _, err := p.fetchRoomMulti(ctx, hotelID, occ)
+	if err != nil {
+		return
+	}
+	price.Rooms = roomOffers(pr)
 }
 
 // GetBulkPrices destinasyon bazli gruplama ile optimize edilmis bulk sorgu.
@@ -93,6 +106,22 @@ func (p *Provider) GetBulkPrices(ctx context.Context, ms []provider.Mapping, q t
 		}(dest, group)
 	}
 	wg.Wait()
+	// Oda listeleri: otel basina bir room/multi cagrisi (bulundugu sirada, en fazla 4 paralel)
+	sem := make(chan struct{}, 4)
+	var wg2 sync.WaitGroup
+	for i := range results {
+		if !results[i].Found || results[i].Price == nil {
+			continue
+		}
+		wg2.Add(1)
+		go func(r *provider.PriceResult) {
+			defer wg2.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			p.attachRooms(ctx, r.ProviderHotelID, occ, r.Price)
+		}(&results[i])
+	}
+	wg2.Wait()
 	return results, nil
 }
 

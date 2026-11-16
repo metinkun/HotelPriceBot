@@ -12,7 +12,7 @@ export default function DetailChanges({ navigate }) {
   const load = () => api("/api/admin/details/changes?limit=300").then(setD).catch((e) => setErr(e.message)).finally(() => setLoading(false));
   useEffect(() => { load(); api("/api/admin/hotels").then((l) => setHotels(Object.fromEntries(l.map((h) => [h.internalHotelId, h.hotelName || h.internalHotelId])))).catch(() => {}); }, []);
   const runAll = async () => {
-    if (!(await confirm({ title: "Tüm oteller şimdi kontrol edilsin mi?", message: "13 acente × tüm oteller yeniden çekilir; 3-4 dakika sürer ve tarayıcı belleğini yoğun kullanır. Normalde her gece 04:00'te otomatik çalışır.", confirmText: "Şimdi çalıştır" }))) return;
+    if (!(await confirm({ title: "Tüm oteller şimdi kontrol edilsin mi?", message: "Tüm acenteler × tüm oteller yeniden çekilir; 3-4 dakika sürer ve tarayıcı belleğini yoğun kullanır. Normalde her gece 04:00'te otomatik çalışır.", confirmText: "Şimdi çalıştır" }))) return;
     try { const r = await api("/api/admin/details/run", { method: "POST" }); toast.success(r.message || "Kontrol başlatıldı."); } catch (e) { toast.error(e.message); }
   };
   const openStatic = (c) => { location.hash = `hotelstatic/${c.internalHotelId}/${c.provider || ""}`; };

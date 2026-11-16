@@ -1,0 +1,118 @@
+{
+ "success": true,
+ "result": {
+  "roomSearchId": "x",
+  "minPrice": {
+   "currency": "TL",
+   "amount": 60000.0,
+   "discountedPrice": 33000.0,
+   "discountRate": 0
+  },
+  "flightPackage": true,
+  "roomGroups": [
+   {
+    "guests": {
+     "adultCount": 2,
+     "childCount": 0,
+     "childAges": null,
+     "infantCount": 0
+    },
+    "rooms": [
+     {
+      "roomId": "6490",
+      "roomName": "Park Standart Oda",
+      "roomSize": 24,
+      "nightCount": 3,
+      "maxAdultCapacity": 2,
+      "subBoards": [
+       {
+        "id": "6490-2871",
+        "priceCode": "136|28c894465b46|19|2026-12-15|2026-12-18|2|Sales|44lff639b030itiftph1z6rf4xhz3c4h6|3nvkr63amixn4iy1x1c2onjn135ish0f6",
+        "boardType": {
+         "code": "UAI",
+         "label": "Ultra Her Şey Dahil",
+         "icon": "fa-regular fa-champagneGlasses"
+        },
+        "price": {
+         "currency": "TL",
+         "amount": 60000.0,
+         "discountedPrice": 33000.0,
+         "discountRate": 45
+        },
+        "availability": {
+         "type": "AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 99,
+        "cancellation": "FREE_CANCELLATION"
+       }
+      ]
+     },
+     {
+      "roomId": "6492",
+      "roomName": "Garden Standart Oda",
+      "roomSize": null,
+      "nightCount": 3,
+      "maxAdultCapacity": 2,
+      "subBoards": [
+       {
+        "id": "6492-1365",
+        "priceCode": "136|28c894465b46|19|2026-12-15|2026-12-18|2|Sales|44lff6fd8es8i8mqzr2rhyyvlxuc4c96|3nvkr63amixn4iy1x1c2onjn135ish0f6",
+        "boardType": {
+         "code": "UAI",
+         "label": "Ultra Her Şey Dahil",
+         "icon": "fa-regular fa-champagneGlasses"
+        },
+        "price": {
+         "currency": "TL",
+         "amount": 63000.0,
+         "discountedPrice": 34650.0,
+         "discountRate": 45
+        },
+        "availability": {
+         "type": "NOT_AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 100,
+        "cancellation": "FREE_CANCELLATION"
+       }
+      ]
+     },
+     {
+      "roomId": "286479",
+      "roomName": "Anabina Deniz Manzaralı Oda",
+      "roomSize": 27,
+      "nightCount": 3,
+      "maxAdultCapacity": 2,
+      "subBoards": [
+       {
+        "id": "286479-1365",
+        "priceCode": "136|28c894465b46|19|2026-12-15|2026-12-18|2|Sales|44lff67t423sspfmzx1ydj9c3d60ltr6|3nvkr63amixn4iy1x1c2onjn135ish0f6",
+        "boardType": {
+         "code": "UAI",
+         "label": "Ultra Her Şey Dahil",
+         "icon": "fa-regular fa-champagneGlasses"
+        },
+        "price": {
+         "currency": "TL",
+         "amount": 69000.0,
+         "discountedPrice": 37950.0,
+         "discountRate": 45
+        },
+        "availability": {
+         "type": "AVAILABLE",
+         "nightCount": null,
+         "availableDate": null
+        },
+        "lastAllotmentCount": 99,
+        "cancellation": "FREE_CANCELLATION"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

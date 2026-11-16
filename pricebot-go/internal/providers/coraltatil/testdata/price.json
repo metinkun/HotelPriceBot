@@ -1,0 +1,9 @@
+{"hotel":{"id":"3787","name":"Salamis Bay Conti","friendlyUrl":"salamis-bay-conti","locationSummary":"Kıbrıs, Kuzey Kıbrıs, Magusa","place":"Magusa"},
+ "rooms":{"240002":"Salamis Park Oda","240000":"Salamis Garden Oda","1921058":"Deniz Manzaralı Ana Bina","871291":"Junior Villa Oda"},
+ "meals":{"e6c01a6104651c7ef31db3d95b0040f2":"Ultra Her Şey Dahil"},
+ "products":[
+  {"roomKey":"240002","mealKey":"e6c01a6104651c7ef31db3d95b0040f2","stopSale":true,"availability":1,"checkIn":"2026-12-15","checkOut":"2026-12-18","nights":3,"oldAmount":60000,"amount":32400,"discountPercent":46,"currency":"TRY"},
+  {"roomKey":"871291","mealKey":"e6c01a6104651c7ef31db3d95b0040f2","stopSale":false,"availability":1,"checkIn":"2026-12-15","checkOut":"2026-12-18","nights":3,"oldAmount":103500,"amount":55890,"discountPercent":46,"currency":"TRY"},
+  {"roomKey":"240000","mealKey":"e6c01a6104651c7ef31db3d95b0040f2","stopSale":false,"availability":1,"checkIn":"2026-12-15","checkOut":"2026-12-18","nights":3,"oldAmount":63000,"amount":34020,"discountPercent":46,"currency":"TRY"},
+  {"roomKey":"1921058","mealKey":"e6c01a6104651c7ef31db3d95b0040f2","stopSale":false,"availability":2,"checkIn":"2026-12-15","checkOut":"2026-12-18","nights":3,"oldAmount":69000,"amount":37260,"discountPercent":46,"currency":"TRY"}
+ ]}

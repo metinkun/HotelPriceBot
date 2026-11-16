@@ -1,6 +1,7 @@
 package tatilsepeti
 
 import (
+	"os"
 	"testing"
 )
 
@@ -79,5 +80,54 @@ func TestBuildPackageSearchString(t *testing.T) {
 	got := buildPackageSearchString(2, []int{5, 8}, "2026-07-26", "2026-07-31")
 	if got != "oda:2,5,8;tarih:26.07.2026,31.07.2026;click:true" {
 		t.Errorf("beklenmeyen: %s", got)
+	}
+}
+
+func TestParseRoomListMulti(t *testing.T) {
+	b, err := os.ReadFile("testdata/room_list_multi.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rooms := parseRoomList(string(b), "Yarım Pansiyon")
+	if len(rooms) < 4 {
+		t.Fatalf("en az 4 teklif (2 oda x 2 pansiyon) bekleniyordu: %d", len(rooms))
+	}
+	boards := map[string]bool{}
+	for _, r := range rooms {
+		boards[r.BoardType] = true
+		if r.RoomName == "" || r.Price == nil || *r.Price <= 0 || r.ListPrice == nil || *r.ListPrice <= *r.Price || r.DiscountRate <= 0 || !r.Available {
+			t.Errorf("eksik teklif: %+v", r)
+		}
+	}
+	if !boards["Yarım Pansiyon"] || !boards["Tam Pansiyon Plus"] {
+		t.Errorf("pansiyonlar eksik: %v", boards)
+	}
+	if searchParam("2026-12-15", "2026-12-18", 2, []int{5, 8}) != "oda:2-5-8;tarih:15.12.2026,18.12.2026;click:true" {
+		t.Errorf("searchParam: %s", searchParam("2026-12-15", "2026-12-18", 2, []int{5, 8}))
+	}
+}
+
+func TestParseRoomListStopSale(t *testing.T) {
+	b, err := os.ReadFile("testdata/room_list_stop.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rooms := parseRoomList(string(b), "Ultra Herşey Dahil")
+	var sold, ok int
+	for _, r := range rooms {
+		if r.Status == "sold_out" {
+			sold++
+			if r.Price == nil || *r.Price <= 0 {
+				t.Errorf("satista olmayan odada fiyat yine de beklenir: %+v", r)
+			}
+		} else {
+			ok++
+		}
+	}
+	if sold != 1 || ok != 2 {
+		t.Fatalf("2 musait + 1 satis disi bekleniyordu: musait=%d satisdisi=%d (%+v)", ok, sold, rooms)
+	}
+	if rooms[len(rooms)-1].Status != "sold_out" {
+		t.Errorf("satis disi en sonda olmali")
 	}
 }

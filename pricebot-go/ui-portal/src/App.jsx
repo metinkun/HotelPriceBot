@@ -120,7 +120,7 @@ function Login({ onLogin }) {
   );
 
   return (
-    <AuthLayout product="Portal" headline="Otel fiyatlarını tek ekranda karşılaştırın." text="13 acentenin güncel fiyatları yan yana. Anlık arama yapın, haftalık planlar kurun, otel bilgileri değişince haberiniz olsun."
+    <AuthLayout product="Portal" headline="Otel fiyatlarını tek ekranda karşılaştırın." text="14 acentenin güncel fiyatları yan yana. Anlık arama yapın, haftalık planlar kurun, otel bilgileri değişince haberiniz olsun."
       points={["Anlık ve planlı fiyat karşılaştırması", "Otel + uçak + transfer paketleri", "Kayıtlı cihazla güvenli giriş (Face ID / Touch ID)"]} visual={<AuthVisual />}>
       {!stage ? (
         <form onSubmit={submit} className="sr-stack">

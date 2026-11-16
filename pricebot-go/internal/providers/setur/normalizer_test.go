@@ -61,3 +61,22 @@ func TestDecode(t *testing.T) {
 		t.Errorf("decode hatali: %v", got)
 	}
 }
+
+func TestParseRooms(t *testing.T) {
+	b, err := os.ReadFile("testdata/initial_data_rooms.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rooms := parseRooms(string(b))
+	if len(rooms) != 3 {
+		t.Fatalf("3 oda bekleniyordu: %d", len(rooms))
+	}
+	if rooms[0].RoomName != "Salamis Park Oda" || rooms[0].BoardType != "Ultra Her Şey Dahil" || *rooms[0].Price != 36000 || *rooms[0].ListPrice != 60000 || rooms[0].DiscountRate != 40 || !rooms[0].Available {
+		t.Fatalf("ilk oda beklenen degil: %+v", rooms[0])
+	}
+	// AskSellPlan -> on_request ve musait olanlardan sonra siralanir
+	last := rooms[len(rooms)-1]
+	if last.Status != "on_request" || last.Available {
+		t.Fatalf("on_request bekleniyordu: %+v", last)
+	}
+}

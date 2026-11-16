@@ -37,3 +37,27 @@ func TestToTouristicaDate(t *testing.T) {
 		t.Error("dd.MM.yyyy bekleniyordu")
 	}
 }
+
+func TestRoomOffers(t *testing.T) {
+	raw := &RawPrice{
+		RoomBlocks: []string{"3 Gecelik Toplam Fiyat 87.000 TL 51.330 TL Rezervasyon Yap", "3 Gecelik Toplam Fiyat 95.000 TL 60.000 TL Rezervasyon Yap"},
+		RoomCards: []RoomCard{
+			{RoomName: "Bungalow Oda", BoardType: "Tam Pansiyon Plus", Text: "Bungalow Oda Tam Pansiyon Plus Oda Kapasitesi 3 Gecelik Toplam Fiyat 95.000 TL 60.000 TL Rezervasyon Yap"},
+			{RoomName: "Standart Oda", BoardType: "Yarım Pansiyon", Text: "Standart Oda Yarım Pansiyon 3 Gecelik Toplam Fiyat 87.000 TL 51.330 TL Rezervasyon Yap"},
+			{RoomName: "Suit Oda", BoardType: "Yarım Pansiyon", Text: "Suit Oda Yarım Pansiyon 3 Gecelik Toplam Fiyat 120.000 TL 70.000 TL Seçtiğiniz tarihlerde müsait değil"},
+		},
+	}
+	p := normalize(raw)
+	if len(p.Rooms) != 3 || *p.Price != 51330 {
+		t.Fatalf("beklenmeyen: %+v", p)
+	}
+	if p.Rooms[0].RoomName != "Standart Oda" || p.Rooms[0].BoardType != "Yarım Pansiyon" || *p.Rooms[0].ListPrice != 87000 || !p.Rooms[0].Available {
+		t.Errorf("ilk teklif: %+v", p.Rooms[0])
+	}
+	if p.Rooms[2].Status != "sold_out" || *p.Rooms[2].Price != 70000 {
+		t.Errorf("satis disi: %+v", p.Rooms[2])
+	}
+	if p.RoomName == nil || *p.RoomName != "Standart Oda" || p.BoardType == nil || *p.BoardType != "Yarım Pansiyon" {
+		t.Errorf("lead oda/pansiyon: %v %v", p.RoomName, p.BoardType)
+	}
+}

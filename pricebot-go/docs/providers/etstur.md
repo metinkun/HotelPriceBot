@@ -66,3 +66,12 @@ Premium Hotel Port Spa; "Salamis Bay Conti" -> Salamis Bay Conti Resort Hotel (Y
 - `starRating` Kibris otellerinde null -> `stars` yok.
 - Odalar fiyat aramasindan geldigi icin musait olmayan oda tipleri listede gorunmez.
 - Telefon alani cogunlukla null.
+
+
+## Oda listesi (Kasim 2026)
+
+`POST /services/api/room/multi` (zaten roomSearchId icin cagriliyordu) `result.roomGroups[].rooms[].subBoards[]` ile TUM oda +
+pansiyon tekliflerini verir: `price{amount (liste), discountedPrice, discountRate, currency}`, `boardType.label`, `availability.type`
+(AVAILABLE | NOT_AVAILABLE | MIN_STAY+nightCount), `lastAllotmentCount`. Ayni oda farkli pansiyonda ayri satir gelir
+("Villa Oda - Yarim Pansiyon"); pansiyon eki oda adindan temizlenir. Cerez gerekmez. Fiyat sorgusunda otel basina ek bir
+istek (`attachRooms`); bulk'ta en fazla 4 paralel. Fixture: `testdata/room_multi_live.json`.

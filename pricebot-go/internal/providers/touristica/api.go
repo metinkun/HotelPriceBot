@@ -27,10 +27,18 @@ func toTouristicaDate(iso string) string {
 }
 
 type RawPrice struct {
-	RoomBlocks    []string `json:"roomBlocks"`
-	PackageBlocks []string `json:"packageBlocks"`
-	HotelName     *string  `json:"hotelName"`
-	City          *string  `json:"city"`
+	RoomBlocks    []string   `json:"roomBlocks"`
+	PackageBlocks []string   `json:"packageBlocks"`
+	RoomCards     []RoomCard `json:"roomCards"` // oda karti bazinda: oda adi + pansiyon + fiyat metni
+	HotelName     *string    `json:"hotelName"`
+	City          *string    `json:"city"`
+}
+
+// RoomCard sayfadaki bir oda karti (.availability-item): h4.accommodation-type + h5.hotel-pension-type + metin.
+type RoomCard struct {
+	RoomName  string `json:"roomName"`
+	BoardType string `json:"boardType"`
+	Text      string `json:"text"`
 }
 
 type Resolved struct {
@@ -106,6 +114,17 @@ const jsReadBlocks = `(function(){
     if (/Otel \+ Uçak/i.test(t)) packageBlocks.push(t);
     else if (/Gecelik Toplam Fiyat/i.test(t)) roomBlocks.push(t);
   });
+  // Oda kartlari: .availability-item (oda adi h4.accommodation-type, pansiyon h5.hotel-pension-type)
+  var roomCards = [];
+  document.querySelectorAll(".availability-item").forEach(function(card){
+    if (card.hasAttribute("data-pb-stale")) return;
+    var head = card.querySelector("h4.accommodation-type, .accommodation-type");
+    if (!head) return;
+    var board = card.querySelector("h5.hotel-pension-type, .hotel-pension-type");
+    var t = (card.innerText || "").replace(/\s+/g, " ").trim();
+    if (!/TL|₺/.test(t)) return;
+    roomCards.push({ roomName: (head.textContent || "").replace(/\s+/g, " ").trim(), boardType: board ? (board.textContent || "").replace(/\s+/g, " ").trim() : "", text: t.slice(0, 600) });
+  });
   var h1 = document.querySelector("h1");
   var crumbBox = document.querySelector('[class*="breadcrumb"], [class*="bread-crumb"]');
   var crumbLinks = crumbBox ? Array.from(crumbBox.querySelectorAll("a")).filter(function(a){ return /Otelleri$/.test((a.textContent || "").trim()); }) : [];
@@ -113,6 +132,7 @@ const jsReadBlocks = `(function(){
   return {
     roomBlocks: Array.from(new Set(roomBlocks)).slice(0, 20),
     packageBlocks: Array.from(new Set(packageBlocks)).slice(0, 10),
+    roomCards: roomCards.slice(0, 40),
     hotelName: h1 ? (h1.textContent || "").trim() : null,
     city: crumb ? (crumb.textContent || "").trim().replace(/\s*Otelleri$/i, "") : null
   };

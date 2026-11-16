@@ -29,6 +29,7 @@ func decode(s string) *string {
 // normalize Setur sayfa verisini ortak NormalizedPrice formatina cevirir.
 func normalize(d *HotelData) *types.NormalizedPrice {
 	out := &types.NormalizedPrice{
+		Rooms:         d.Rooms,
 		HotelName:     decode(d.HotelName),
 		City:          types.StrOrNil(d.City),
 		BoardType:     types.StrOrNil(d.BoardType),

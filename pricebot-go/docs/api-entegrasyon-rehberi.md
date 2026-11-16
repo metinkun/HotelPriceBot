@@ -92,8 +92,7 @@ bazı sitelerde fiyat yine de dolu gelebilir (`note` alanı açıklar). Sonuç 1
 **Tüm oda fiyatları:** `price.rooms` sitenin o tarih için listelediği her oda + pansiyon teklifini içerir (müsait olanlar
 önce, fiyata göre sıralı). `price.price` / `roomName` / `boardType` en ucuz müsait teklifin özetidir. Teklif durumu `status`:
 `available` (anında satış), `on_request` (site fiyat gösterir, "talep et" ile sorulur), `sold_out` (satışta değil; fiyat
-yine de yazıyorsa gösterilir). Etstur, Setur, Tatilsepeti ve Touristica sadece en uygun fiyatı yayınladığından bu sitelerde
-`rooms` boş gelir.
+yine de yazıyorsa gösterilir). Tüm sitelerde oda listesi döner; bir site o tarih için tek teklif yayınlıyorsa liste tek elemanlıdır.
 
 ## 5. Limitler ve hata kodları
 

@@ -13,6 +13,7 @@ import (
 
 	"pricebot/internal/httpx"
 	"pricebot/internal/provider"
+	"pricebot/internal/types"
 )
 
 const (
@@ -45,7 +46,90 @@ type LowestPrice struct {
 	RoomInformation         string   `json:"roomInformation"`
 }
 
+// seturRoomOffer initialData.data.rooms[] (tarihli sayfa): oda x pansiyon x fiyat varyasyonu.
+type seturRoomOffer struct {
+	ID       any    `json:"id"`
+	Name     string `json:"name"`
+	TypeName string `json:"typeName"`
+	Details  []struct {
+		IsRefundable bool `json:"isRefundable"`
+		RoomInfo     struct {
+			BoardType string `json:"boardType"`
+		} `json:"roomInfo"`
+		Informations []struct {
+			AvailabilityStatus  string `json:"availabilityStatus"`
+			AvailabilityMessage string `json:"availabilityMessage"`
+			Variations          []struct {
+				PromotionInfoName           string   `json:"promotionInfoName"`
+				DiscountPercent             float64  `json:"discountPercent"`
+				TotalSellingPrice           *float64 `json:"totalSellingPrice"`
+				TotalDiscountedSellingPrice *float64 `json:"totalDiscountedSellingPrice"`
+				Currency                    string   `json:"currency"`
+			} `json:"variations"`
+		} `json:"informations"`
+	} `json:"details"`
+}
+
+// parseRooms RSC akisindaki initialData.data.rooms[] -> oda teklifleri. Durumlar: Available -> available,
+// AskSellPlan -> on_request (fiyat var, musaitlik sorulur), N_A -> fiyatsiz (atlanir).
+func parseRooms(payload string) []types.RoomOffer {
+	var wrap struct {
+		Data struct {
+			Rooms []seturRoomOffer `json:"rooms"`
+		} `json:"data"`
+	}
+	if err := rscExtract(payload, `"initialData":`, &wrap); err != nil {
+		return nil
+	}
+	rooms := []types.RoomOffer{}
+	for _, r := range wrap.Data.Rooms {
+		name := strings.TrimSpace(r.Name)
+		if tn := strings.TrimSpace(r.TypeName); tn != "" && !strings.Contains(name, tn) {
+			name = name + " " + tn
+		}
+		for _, det := range r.Details {
+			for _, inf := range det.Informations {
+				for _, v := range inf.Variations {
+					if v.TotalDiscountedSellingPrice == nil && v.TotalSellingPrice == nil {
+						continue
+					}
+					price := 0.0
+					if v.TotalDiscountedSellingPrice != nil {
+						price = *v.TotalDiscountedSellingPrice
+					} else {
+						price = *v.TotalSellingPrice
+					}
+					if price <= 0 {
+						continue
+					}
+					list := 0.0
+					if v.TotalSellingPrice != nil {
+						list = *v.TotalSellingPrice
+					}
+					st := types.RoomSoldOut
+					switch strings.ToLower(inf.AvailabilityStatus) {
+					case "available":
+						st = types.RoomAvailable
+					case "asksellplan":
+						st = types.RoomOnRequest
+					}
+					ro := types.NewRoom(name, det.RoomInfo.BoardType, price, list, v.Currency, st)
+					if v.DiscountPercent > 0 {
+						ro.DiscountRate = v.DiscountPercent
+					}
+					if v.PromotionInfoName != "" && v.PromotionInfoName != "Standart Fiyat" {
+						ro.CampaignName = types.Str(v.PromotionInfoName)
+					}
+					rooms = append(rooms, ro)
+				}
+			}
+		}
+	}
+	return types.SortRooms(rooms)
+}
+
 type HotelData struct {
+	Rooms           []types.RoomOffer
 	LowestPrice     *LowestPrice
 	RoomInformation string
 	GuestAdultCount *int
@@ -118,10 +202,12 @@ func fetchHotelPage(ctx context.Context, slug, checkIn, checkOut string, adults 
 	if err != nil {
 		return nil, err
 	}
-	raw := strings.ReplaceAll(resp.Text(), `\"`, `"`)
+	page := resp.Text()
+	raw := strings.ReplaceAll(page, `\"`, `"`)
 
 	lp := parseLowest(raw)
 	d := &HotelData{
+		Rooms:           parseRooms(rscPayload(page)),
 		LowestPrice:     lp,
 		GuestAdultCount: intPtr(provider.FirstMatch(reGuestAd, raw)),
 		GuestChildCount: intPtr(provider.FirstMatch(reGuestCh, raw)),

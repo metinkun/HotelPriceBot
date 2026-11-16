@@ -1,6 +1,57 @@
 package etstur
 
-import "pricebot/internal/types"
+import (
+	"strings"
+
+	"pricebot/internal/types"
+)
+
+// roomOffers room/multi yanitini oda + pansiyon tekliflerine cevirir. Site ayni odayi her pansiyon icin
+// ayri satir ("Villa Oda - Yarim Pansiyon") olarak verir; pansiyon eki oda adindan temizlenir.
+func roomOffers(pr *packageResponse) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	if pr == nil {
+		return rooms
+	}
+	for _, r := range pr.allRooms() {
+		for _, sb := range r.SubBoards {
+			if sb.Price == nil || sb.Price.Amount <= 0 {
+				continue
+			}
+			board := ""
+			if sb.BoardType != nil {
+				board = sb.BoardType.Label
+			}
+			name := strings.TrimSpace(r.RoomName)
+			if board != "" {
+				name = strings.TrimSpace(strings.TrimSuffix(name, " - "+board))
+			}
+			price := sb.Price.Amount
+			if sb.Price.DiscountedPrice != nil && *sb.Price.DiscountedPrice > 0 {
+				price = *sb.Price.DiscountedPrice
+			}
+			st := types.RoomAvailable
+			var minStay *int
+			if sb.Availability != nil {
+				switch strings.ToUpper(sb.Availability.Type) {
+				case "AVAILABLE", "":
+				case "MIN_STAY":
+					st = types.RoomSoldOut
+					minStay = sb.Availability.NightCount
+				default:
+					st = types.RoomSoldOut
+				}
+			}
+			ro := types.NewRoom(name, board, price, sb.Price.Amount, sb.Price.Currency, st)
+			if sb.Price.DiscountRate > 0 {
+				ro.DiscountRate = sb.Price.DiscountRate
+			}
+			ro.MinStayNights = minStay
+			rooms = append(rooms, ro)
+		}
+	}
+	return types.SortRooms(rooms)
+}
 
 func normalizeHotel(h *Hotel) *types.NormalizedPrice {
 	room := h.Room

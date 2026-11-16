@@ -56,7 +56,7 @@ function Login({ onLogin }) {
     catch (ex) { setErr(ex.message); } finally { setBusy(false); }
   };
   return (
-    <AuthLayout product="Admin" headline="Tüm acenteler, tek yönetim paneli." text="Müşteriler, paketler, oteller ve 13 sitenin sağlığı tek ekranda. Kanarya testi her gün sizin yerinize kontrol eder."
+    <AuthLayout product="Admin" headline="Tüm acenteler, tek yönetim paneli." text="Müşteriler, paketler, oteller ve tüm sitelerin sağlığı tek ekranda. Kanarya testi her gün sizin yerinize kontrol eder."
       points={["Müşteri ve API anahtarı yönetimi", "Site sağlığı, devre kesici, kanarya", "Otel detaylarında günlük değişiklik takibi"]} visual={<AuthVisual />}>
       <form onSubmit={submit} className="sr-stack">
         <div><h2>Yönetici girişi</h2><div className="sub">Yalnızca yetkili hesaplar.</div></div>

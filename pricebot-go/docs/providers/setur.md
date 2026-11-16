@@ -64,3 +64,12 @@ probe setur search "Salamis Bay Conti"  -> 1 (id 506, Magosa)
 - Fiyat/paket notlari icin `api.go` ve `provider.go` yorumlari (paket yalnizca "lowest" fiyat).
 - RSC akis bicimi (Next.js surumu) degisirse `rsc.go` kirilir; hata "Setur sayfasinda RSC payload bulunamadi".
 - Oda kapasitesi/ozellikleri statik sayfada yok (yalnizca ad, m2, gorseller).
+
+
+## Oda listesi (Kasim 2026)
+
+Tarihli detay sayfasinin RSC akisinda `initialData.data.rooms[]` TUM oda x pansiyon tekliflerini icerir (ek istek yok):
+`rooms[].name (+typeName)`, `details[].roomInfo.boardType`, `details[].informations[].availabilityStatus`
+(Available | AskSellPlan = sorulacak | N_A = fiyatsiz), `variations[].totalSellingPrice` (liste) /
+`totalDiscountedSellingPrice` (satis) / `discountPercent` / `currency`. `parseRooms(rscPayload(page))`;
+fixture `testdata/initial_data_rooms.txt`. (Isteğe bagli: `RSC: 1` basligi ile ~32 KB ham akis, 307 -> `&_rsc`.)

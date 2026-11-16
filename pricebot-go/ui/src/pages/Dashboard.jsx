@@ -41,7 +41,7 @@ export default function Dashboard({ navigate }) {
 
   return (
     <div>
-      <PageHeader title="Özet" description="Bugünkü kullanım, iş kuyruğu ve 13 sitenin sağlık durumu. Sayfa 15 saniyede bir yenilenir." />
+      <PageHeader title="Özet" description="Bugünkü kullanım, iş kuyruğu ve tüm sitelerin sağlık durumu. Sayfa 15 saniyede bir yenilenir." />
       {err && <Alert tone="bad">{err}</Alert>}
       <div className="sr-grid">
         <Stat icon="zap" label="Bugünkü kredi" value={usage?.totals?.credits ?? 0} sub="site çağrısı" />

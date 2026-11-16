@@ -1,8 +1,10 @@
 package touristica
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"pricebot/internal/provider"
 	"pricebot/internal/types"
@@ -57,7 +59,43 @@ func parseRoomBlock(block string) parsedBlock {
 	return out
 }
 
-// normalize ham fiyat bloklarini ortak NormalizedPrice'a cevirir (en ucuz teklif).
+var reCardSoldOut = regexp.MustCompile(`(?i)m[üu]sait\s*de[ğg]il|sat[ıi][şs]a\s*kapal[ıi]|t[üu]kendi|doludur|stop\s*sale`)
+
+// roomOffers oda kartlarini tekliflere cevirir: karttaki en dusuk TL satis, en yuksek liste fiyatidir.
+// "Otel + Ucak" paket metni iceren kartlar (paket sekmesi) atlanir; "musait degil" notu olanlar sold_out.
+func roomOffers(cards []RoomCard) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	seen := map[string]bool{}
+	for _, c := range cards {
+		txt := c.Text
+		if i := strings.Index(txt, "Otel + Uçak"); i >= 0 {
+			txt = txt[:i]
+		}
+		pb := parseRoomBlock(txt)
+		if pb.Price == nil {
+			continue
+		}
+		key := fmt.Sprintf("%s|%s|%v", c.RoomName, c.BoardType, *pb.Price)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		st := types.RoomAvailable
+		if reCardSoldOut.MatchString(c.Text) {
+			st = types.RoomSoldOut
+		}
+		lp := 0.0
+		if pb.ListPrice != nil {
+			lp = *pb.ListPrice
+		}
+		ro := types.NewRoom(c.RoomName, c.BoardType, *pb.Price, lp, "TL", st)
+		ro.MinStayNights = pb.Nights
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalize ham fiyat bloklarini ortak NormalizedPrice'a cevirir (en ucuz teklif; Rooms oda kartlari).
 func normalize(raw *RawPrice) *types.NormalizedPrice {
 	var best *parsedBlock
 	for _, b := range raw.RoomBlocks {
@@ -70,12 +108,24 @@ func normalize(raw *RawPrice) *types.NormalizedPrice {
 			best = &cp
 		}
 	}
+	rooms := roomOffers(raw.RoomCards)
 	if best == nil {
-		return types.Unavailable(raw.HotelName, raw.City)
+		u := types.Unavailable(raw.HotelName, raw.City)
+		u.Rooms = rooms
+		return u
 	}
-	return &types.NormalizedPrice{
+	out := &types.NormalizedPrice{
+		Rooms:     rooms,
 		Available: true, HotelName: raw.HotelName, City: raw.City,
 		Currency: types.Str("TL"), ListPrice: best.ListPrice, Price: best.Price,
 		DiscountRate: types.DiscountRateOf(best.ListPrice, best.Price), MinStayNights: best.Nights,
 	}
+	// Oda adi/pansiyon: lead fiyatla eslesen musait kart
+	for _, r := range rooms {
+		if r.Available && r.Price != nil && *r.Price == *best.Price {
+			out.RoomName, out.BoardType = types.StrOrNil(r.RoomName), types.StrOrNil(r.BoardType)
+			break
+		}
+	}
+	return out
 }

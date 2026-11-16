@@ -89,3 +89,10 @@ Acapulco: rating 8.1 / 621 yorum, konum 35.33029,33.420895, 2 pansiyon tipi, gir
 - Detay cagrisi sekme havuzunu kullanir: `TOURISTICA_TABS=1` iken fiyat sorgulariyla sirali calisir (~2-3 sn sayfa acik ise, ~6 sn navigasyonla).
 - Testler: `details_test.go` fixture'lari `testdata/detail_page.html` (kisaltilmis galeri/kampanya/etkinlik), `testdata/odalar.html`
   (ilk 3 kart), `testdata/autocomplete_*.html`.
+
+
+## Oda listesi (Kasim 2026)
+
+`jsReadBlocks` artik `.availability-item` kartlarini da okur: `h4.accommodation-type` (oda), `h5.hotel-pension-type`
+(pansiyon), kart metni. Go tarafinda karttaki en dusuk TL satis, en yuksek liste fiyati (`parseRoomBlock`); "musait degil"
+notu -> `sold_out`. Lead teklifin oda/pansiyon adi da buradan doldurulur. Salamis: 8 oda.

@@ -58,7 +58,7 @@ internal/services      hotel / price / package is mantigi, Fetcher (cache + sini
 internal/details       statik otel detayi: gunluk cekim, hash/diff, degisiklik bildirimi, ilk goruntulemede vurgu
 internal/portal        musteri portali: aramalar (job uzerinden) ve planli aramalar (30 sn zamanlayici)
 internal/jobs          asenkron is kuyrugu (Redis durum, in-process worker havuzu, tekillestirme, kismi sonuc)
-internal/providers     13 site (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm,
+internal/providers     14 site (etstur, tatilsepeti, jolly, tatilbudur, touristica, setur, gezinomi, enuygun, mngturizm, coraltatil,
                        tatilsitesi, prontotour, tatilcikus, tatildukkani) + registry; fiyat, paket, statik detay, isimle arama
 internal/provider      ortak Provider arayuzu ve sonuc tipleri
 internal/cache         Redis cache (provider basina, 5 dk) + singleflight

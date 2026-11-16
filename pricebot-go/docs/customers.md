@@ -93,7 +93,9 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
 - **Tüm oda fiyatları** (Kasım 2026): `NormalizedPrice.rooms` sitenin listelediği her oda + pansiyon teklifi (`status`: available /
   on_request / sold_out); lead alanlar en ucuz müsait teklif. Sonuç tablosunda otel satırına tıklayınca tüm siteler için oda listesi açılır.
-  Oda listesi vermeyen siteler: etstur, setur, tatilsepeti (tek fiyatlı uçlar), touristica (oda adı okunmuyor).
+  Kasım 2026 sonu: 14 sitenin tamamı oda listesi veriyor (etstur room/multi, setur RSC rooms, tatilsepeti detay POST, touristica kart okuma).
+- **Coral Tatil** (coraltatil.com, Kasım 2026): Imperva bot koruması nedeniyle yalnızca headless tarayıcı ile (tek kalıcı sekme,
+  `CORAL_SESSION_MINUTES`); isimle arama ve URL çözümleme var, paket ve statik detay yok. Bkz. `docs/providers/coraltatil.md`.
 - **Fiyat + müsaitlik**: sonuç tablosunda her hücrede fiyat ve yeşil "müsait" / kırmızı "müsait değil" etiketi; Tatilbudur'da düğmesiz
   (satılmış) yanıttaki fiyat da gösterilir (`price.note`). Müsait olmayan fiyat "en ucuz" vurgusuna girmez.
 - **Şifre sıfırlama linki**: admin > Müşteri > Portal kullanıcıları > "Şifre sıfırlama linki" → tek kullanımlık, süreli link

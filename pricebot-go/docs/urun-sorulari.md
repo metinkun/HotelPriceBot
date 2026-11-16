@@ -55,11 +55,10 @@ Geliştirme bu sorular netleşmeden, aşağıda yazılı varsayımlarla ilerledi
 ## 16 Kas 2026 istekleri
 
 33. **Tüm oda fiyatları**: `price.rooms` ile her sitenin listelediği oda + pansiyon teklifleri dönüyor; sonuç tablosunda otel satırına
-    tıklayınca açılır. Etstur, Setur ve Tatilsepeti yalnızca en uygun fiyatı yayınlayan uçlar kullanıyor; Touristica'da oda adı
-    okunmuyor. Bu dört sitede oda listesi için ek geliştirme (sitelerin oda uçlarının keşfi) gerekir; isteniyor mu?
+    tıklayınca açılır. 16 Kas: etstur, setur, tatilsepeti ve touristica için de oda uçları keşfedilip eklendi; 14 sitenin tamamı oda listesi veriyor.
 34. **Coral Tatil (coraltatil.com)**: site Imperva/Incapsula bot koruması arkasında; düz HTTP ile hiçbir sayfa açılmıyor (JS
     challenge). Sağlayıcı ancak headless tarayıcı akışıyla (Touristica modeli) yazılabilir; önce tarayıcıyla ağ trafiği yakalanmalı.
-    Yakalama komutu bu oturumda izin gerektirdi; yetki verilince devam edilecek.
+    16 Kas: onay verildi, tarayıcı ile keşif yapıldı ve `coraltatil` sağlayıcısı eklendi (tek kalıcı sekme; paket/statik detay yok).
 35. **Salamis Bay Conti / Tatildukkani**: sitenin arama API'si Kasım 2026'da değişmişti (socket akışı kaldırıldı); düzeltildi.
     Tatilbudur aynı sorguda sunucudan sonuç veriyor; canlıda görülen boş sonuç muhtemelen Akamai 403 (IP) kaynaklı, proxy
     aboneliği ile çözülür. Canlı loglarda doğrulanmalı.

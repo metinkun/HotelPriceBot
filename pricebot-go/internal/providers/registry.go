@@ -9,6 +9,7 @@ import (
 	"pricebot/internal/browser"
 	"pricebot/internal/config"
 	"pricebot/internal/provider"
+	"pricebot/internal/providers/coraltatil"
 	"pricebot/internal/providers/enuygun"
 	"pricebot/internal/providers/etstur"
 	"pricebot/internal/providers/gezinomi"
@@ -45,6 +46,7 @@ func New(cfg *config.Config, b *browser.Manager) *Registry {
 	r.register(prontotour.New())
 	r.register(tatilcikus.New())
 	r.register(tatildukkani.New())
+	r.register(coraltatil.New(b, cfg.CoralSessionAge))
 	return r
 }
 
