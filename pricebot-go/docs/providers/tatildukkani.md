@@ -1,6 +1,12 @@
 # Tatil Dukkani (tatildukkani.com) provider
 
-Durum: **tarayici gerekmez; duz HTTP (JSON API) + bir Socket.IO (WebSocket) adimi.** Cerez/CSRF yok;
+> **Kasim 2026 degisikligi:** site `searchlog/hotel/init` ve `socket-login` uclarini kaldirdi (404) ve
+> `avabilityCriteria` artik gelmiyor. Oda/fiyat listesi dogrudan `POST /api/seo_page/slug` yanitinda
+> `data.result.availability.rooms[]` olarak geliyor (ayni Room semasi: roomTitle, conceptTitle, status, fee,
+> posterPrice, roomCampaign...). Kod once bunu kullanir; yanitta `availability` yoksa ama eski `avabilityCriteria`
+> varsa asagidaki socket akisini dener, ikisi de yoksa anlasilir hata doner. Fixture: `testdata/page_availability.json`.
+
+Durum (eski akis, 2026-11 oncesi): **tarayici gerekmez; duz HTTP (JSON API) + bir Socket.IO (WebSocket) adimi.** Cerez/CSRF yok;
 tek gereken, herkese acik `GET /guest` ile alinan misafir `apiToken`'i (sabit gorunuyor, kodda 6 saat
 cache'lenir). Kod: `internal/providers/tatildukkani/` (`api.go` HTTP, `socket.go` ws akisi,
 `normalizer.go`, `provider.go`).

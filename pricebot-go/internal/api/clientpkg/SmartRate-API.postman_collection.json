@@ -5,7 +5,7 @@
       "description": "Onerilen musteri akisi",
       "item": [
         {
-          "id": "04929282-9129-424b-8067-6f9a0f58c9b9",
+          "id": "58962de1-a557-451b-9168-541d8aa20525",
           "name": "Anahtar sahibi: paket, izinli siteler, bugunku kullanim, otel sayisi",
           "request": {
             "name": "Anahtar sahibi: paket, izinli siteler, bugunku kullanim, otel sayisi",
@@ -50,7 +50,7 @@
           },
           "response": [
             {
-              "id": "a44291e2-694e-49b7-95ea-73e7630f3d1f",
+              "id": "efa708f2-75b9-41e2-9ca8-1f11fc3a1983",
               "name": "Kimlik ve plan",
               "originalRequest": {
                 "url": {
@@ -85,7 +85,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "b6a90dd8-ac18-45d5-9ac9-264d292eabbb",
+              "id": "2c11b325-ccd6-42e3-bf69-6a5a4c8a0130",
               "name": "Gecersiz anahtar",
               "originalRequest": {
                 "url": {
@@ -136,7 +136,7 @@
           }
         },
         {
-          "id": "a5611105-f351-4e77-bf83-c176f8313683",
+          "id": "15aba2d4-c711-4f63-b775-f433a5ba0216",
           "name": "Musteriye tanimli oteller (hotelId listesi + her otelde sorgulanabilir siteler)",
           "request": {
             "name": "Musteriye tanimli oteller (hotelId listesi + her otelde sorgulanabilir siteler)",
@@ -194,7 +194,7 @@
           },
           "response": [
             {
-              "id": "2dd77a2a-ef57-46f1-abe0-231dc97dac49",
+              "id": "3f5e462c-ea4d-4d37-ae98-89c60b0e916a",
               "name": "Otel listesi",
               "originalRequest": {
                 "url": {
@@ -249,7 +249,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "c1c55428-1d31-4523-ac65-a5f36fd34d67",
+              "id": "4d3b6cff-ba2b-4e90-875b-8e2fd81490d1",
               "name": "Gecersiz anahtar",
               "originalRequest": {
                 "url": {
@@ -310,7 +310,7 @@
           }
         },
         {
-          "id": "2501904e-8452-4ac3-9427-3aa3798ad646",
+          "id": "6daa74b3-286e-4664-b4fa-a2817762e4b6",
           "name": "Is olustur (onerilen akis)",
           "request": {
             "name": "Is olustur (onerilen akis)",
@@ -371,7 +371,7 @@
           },
           "response": [
             {
-              "id": "a078f673-5c7d-4519-940a-3a7773bc6ddb",
+              "id": "aa343bdc-12b3-44b1-9484-d7528b2cc559",
               "name": "Ayni istek zaten kuyrukta (deduplicated)",
               "originalRequest": {
                 "url": {
@@ -429,7 +429,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "ea7b2158-5829-4b3e-acd6-60c148b09fab",
+              "id": "80c1d781-d149-4e8c-bfdc-e4d40b7dfc23",
               "name": "Kuyruga alindi",
               "originalRequest": {
                 "url": {
@@ -496,7 +496,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "59293f42-0c33-483c-811b-5c2dd6b6e5c9",
+              "id": "c70b49e0-73a4-4ac9-b85e-56e36de8837d",
               "name": "Gecersiz parametre",
               "originalRequest": {
                 "url": {
@@ -554,7 +554,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "52b96fc4-29cc-4460-ade4-15e4204b7b82",
+              "id": "4ed645bf-fbac-4149-89dc-0559b9cbfddd",
               "name": "API anahtari gecersiz/eksik",
               "originalRequest": {
                 "url": {
@@ -612,7 +612,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "5f7ca737-e327-425a-ad42-d4d9282a1270",
+              "id": "a2ebb0fe-3fd0-4e1d-b8ed-ae89f90267f6",
               "name": "Plan kisiti",
               "originalRequest": {
                 "url": {
@@ -670,7 +670,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "78102b0e-d84b-449b-8ad7-0f6abb63f736",
+              "id": "32de65b3-1518-4afb-8668-9f794c20f090",
               "name": "Kota/kuyruk dolu",
               "originalRequest": {
                 "url": {
@@ -728,7 +728,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "ba016d12-76aa-4dd2-8eaf-0252749709e8",
+              "id": "50ce00d3-da8d-4560-b21b-b67cbe95d5c8",
               "name": "Kuyruk etkin degil (Redis yok)",
               "originalRequest": {
                 "url": {
@@ -803,7 +803,7 @@
           }
         },
         {
-          "id": "b7a39c15-1617-49c9-a46f-9995229378db",
+          "id": "67979887-bc41-4d6b-8e33-6d610ea6f373",
           "name": "Is durumu / sonucu",
           "request": {
             "name": "Is durumu / sonucu",
@@ -873,7 +873,7 @@
           },
           "response": [
             {
-              "id": "174e61b9-8d2b-44cd-8fd2-3b0cd9189406",
+              "id": "478b0b98-43dd-447f-b80c-41d8c17f41c2",
               "name": "Is",
               "originalRequest": {
                 "url": {
@@ -924,12 +924,12 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"requestId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"running\",\n  \"createdAt\": \"<dateTime>\",\n  \"startedAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\",\n  \"request\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"adults\": \"<integer>\",\n    \"type\": \"prices\",\n    \"children\": 0,\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"airportCode\": \"<string>\",\n    \"fresh\": \"<boolean>\"\n  },\n  \"progress\": {\n    \"ad_3\": \"running\",\n    \"adipisicing3\": \"done\",\n    \"qui432\": \"error\",\n    \"doea\": \"running\"\n  },\n  \"result\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"results\": [\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      }\n    ],\n    \"errors\": [\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": \"<string>\"\n}",
+              "body": "{\n  \"requestId\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"running\",\n  \"createdAt\": \"<dateTime>\",\n  \"startedAt\": \"<dateTime>\",\n  \"finishedAt\": \"<dateTime>\",\n  \"request\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"adults\": \"<integer>\",\n    \"type\": \"prices\",\n    \"children\": 0,\n    \"childAges\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"providers\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"airportCode\": \"<string>\",\n    \"fresh\": \"<boolean>\"\n  },\n  \"progress\": {\n    \"labore7df\": \"error\",\n    \"quis_4\": \"error\",\n    \"nostrudbc0\": \"done\"\n  },\n  \"result\": {\n    \"hotelId\": \"<string>\",\n    \"checkIn\": \"<string>\",\n    \"checkOut\": \"<string>\",\n    \"results\": [\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\",\n          \"rooms\": [\n            {\n              \"roomName\": \"<string>\",\n              \"boardType\": \"<string>\",\n              \"currency\": \"<string>\",\n              \"listPrice\": \"<number>\",\n              \"price\": \"<number>\",\n              \"discountRate\": \"<number>\",\n              \"available\": \"<boolean>\",\n              \"status\": \"on_request\",\n              \"campaignName\": \"<string>\",\n              \"minStayNights\": \"<integer>\"\n            },\n            {\n              \"roomName\": \"<string>\",\n              \"boardType\": \"<string>\",\n              \"currency\": \"<string>\",\n              \"listPrice\": \"<number>\",\n              \"price\": \"<number>\",\n              \"discountRate\": \"<number>\",\n              \"available\": \"<boolean>\",\n              \"status\": \"available\",\n              \"campaignName\": \"<string>\",\n              \"minStayNights\": \"<integer>\"\n            }\n          ],\n          \"note\": \"<string>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"internalHotelId\": \"<string>\",\n        \"providerHotelId\": \"<string>\",\n        \"hotelName\": \"<string>\",\n        \"found\": \"<boolean>\",\n        \"price\": {\n          \"available\": \"<boolean>\",\n          \"hotelName\": \"<string>\",\n          \"city\": \"<string>\",\n          \"roomName\": \"<string>\",\n          \"boardType\": \"<string>\",\n          \"currency\": \"<string>\",\n          \"listPrice\": \"<number>\",\n          \"price\": \"<number>\",\n          \"discountRate\": \"<number>\",\n          \"minStayNights\": \"<integer>\",\n          \"rooms\": [\n            {\n              \"roomName\": \"<string>\",\n              \"boardType\": \"<string>\",\n              \"currency\": \"<string>\",\n              \"listPrice\": \"<number>\",\n              \"price\": \"<number>\",\n              \"discountRate\": \"<number>\",\n              \"available\": \"<boolean>\",\n              \"status\": \"on_request\",\n              \"campaignName\": \"<string>\",\n              \"minStayNights\": \"<integer>\"\n            },\n            {\n              \"roomName\": \"<string>\",\n              \"boardType\": \"<string>\",\n              \"currency\": \"<string>\",\n              \"listPrice\": \"<number>\",\n              \"price\": \"<number>\",\n              \"discountRate\": \"<number>\",\n              \"available\": \"<boolean>\",\n              \"status\": \"available\",\n              \"campaignName\": \"<string>\",\n              \"minStayNights\": \"<integer>\"\n            }\n          ],\n          \"note\": \"<string>\"\n        },\n        \"durationMs\": \"<integer>\",\n        \"cached\": \"<boolean>\",\n        \"fetchedAt\": \"<dateTime>\"\n      }\n    ],\n    \"errors\": [\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      },\n      {\n        \"provider\": \"<string>\",\n        \"error\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": \"<string>\"\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "cbfce796-89d9-4a7d-8b65-bdb41eb125cf",
+              "id": "921decb1-85ba-4d48-920c-5af1fc28a659",
               "name": "Is bulunamadi / suresi dolmus",
               "originalRequest": {
                 "url": {
@@ -1009,7 +1009,7 @@
       "description": "Senkron (geriye uyumlu)",
       "item": [
         {
-          "id": "a468017d-957b-4174-99dc-afa890074f5e",
+          "id": "591208fd-5f1a-4a4b-957d-5180137ec344",
           "name": "Tek otel fiyat sorgula",
           "request": {
             "name": "Tek otel fiyat sorgula",
@@ -1126,7 +1126,7 @@
           },
           "response": [
             {
-              "id": "e75b9a3d-9b00-4d59-ad64-fd978d1da08c",
+              "id": "1ccbc801-5f99-446a-b56e-0137aea0aeb1",
               "name": "Fiyat bilgisi",
               "originalRequest": {
                 "url": {
@@ -1233,7 +1233,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "0154a496-d5a1-4402-8e91-6767a615c2a6",
+              "id": "4538575d-9830-4b25-b3c7-6be3b96b98d6",
               "name": "Eksik parametre veya gecersiz provider",
               "originalRequest": {
                 "url": {
@@ -1340,7 +1340,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "331038d6-2295-4579-92bb-6a506457c57d",
+              "id": "c94cbed8-4acc-4f4a-9ef8-8e290019232a",
               "name": "API anahtari gecersiz/eksik",
               "originalRequest": {
                 "url": {
@@ -1457,7 +1457,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "4ddc99d9-b730-4dd2-84d5-3279e3db6425",
+              "id": "0bb35df4-daa9-4056-9d02-473f149db574",
               "name": "Plan bu provider/paket sorgusunu kapsamiyor",
               "originalRequest": {
                 "url": {
@@ -1574,7 +1574,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "7b63b6a9-455b-4b94-b3b0-df8fe540583a",
+              "id": "8f0db4b8-d28d-44f2-be3e-47d86cf14252",
               "name": "Otel eslestirmesi bulunamadi",
               "originalRequest": {
                 "url": {
@@ -1681,7 +1681,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "bfcc66b0-2e4c-42a2-8e43-a28dca88643f",
+              "id": "a38bf5c0-9513-4a15-a605-f59d41110f4e",
               "name": "Gunluk kota veya dakikalik sinir asildi",
               "originalRequest": {
                 "url": {
@@ -1804,7 +1804,7 @@
           }
         },
         {
-          "id": "80753ce6-cf7d-4aa3-959d-48194e0f8707",
+          "id": "1a546604-261f-4784-b865-512d0fa11074",
           "name": "Toplu otel fiyat sorgula",
           "request": {
             "name": "Toplu otel fiyat sorgula",
@@ -1862,7 +1862,7 @@
           },
           "response": [
             {
-              "id": "ea4a2fb4-4028-4a1a-9344-b2c9830d060f",
+              "id": "92a467c5-4dd1-49cd-8cb5-eec614038356",
               "name": "Toplu fiyat bilgisi",
               "originalRequest": {
                 "url": {
@@ -1910,7 +1910,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "7e58d7a7-0b70-4ac9-8701-7ef01fe0a9bf",
+              "id": "3f893ed6-8520-447a-8ca1-c799c5da770d",
               "name": "Eksik parametre",
               "originalRequest": {
                 "url": {
@@ -1958,7 +1958,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "d48ded37-6824-47fe-b20f-5c75616b8e4f",
+              "id": "76e4d47d-afcb-466e-9532-094be34231c6",
               "name": "API anahtari gecersiz/eksik",
               "originalRequest": {
                 "url": {
@@ -2016,7 +2016,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "3e09e391-4b53-40ad-8cee-2697ea48f9a2",
+              "id": "72fb74c7-54c2-4819-bc5d-568518575aef",
               "name": "Kota asildi",
               "originalRequest": {
                 "url": {
@@ -2080,7 +2080,7 @@
           }
         },
         {
-          "id": "31887b22-1742-4272-9228-d65c6ee2d769",
+          "id": "c4f5b160-c2cd-435c-b6ec-37b9b9e221b7",
           "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
           "request": {
             "name": "Birlesik fiyat (tek otel -> tum sitelerden)",
@@ -2201,7 +2201,7 @@
           },
           "response": [
             {
-              "id": "39169a27-c24d-42f3-8d7a-6ad8e0a2fbab",
+              "id": "78c8e052-b876-4851-992a-66b9024a2b47",
               "name": "Tum provider fiyatlari",
               "originalRequest": {
                 "url": {
@@ -2314,12 +2314,12 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"results\": [\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    }\n  ],\n  \"errors\": [\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    }\n  ]\n}",
+              "body": "{\n  \"hotelId\": \"<string>\",\n  \"checkIn\": \"<string>\",\n  \"checkOut\": \"<string>\",\n  \"results\": [\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\",\n        \"rooms\": [\n          {\n            \"roomName\": \"<string>\",\n            \"boardType\": \"<string>\",\n            \"currency\": \"<string>\",\n            \"listPrice\": \"<number>\",\n            \"price\": \"<number>\",\n            \"discountRate\": \"<number>\",\n            \"available\": \"<boolean>\",\n            \"status\": \"sold_out\",\n            \"campaignName\": \"<string>\",\n            \"minStayNights\": \"<integer>\"\n          },\n          {\n            \"roomName\": \"<string>\",\n            \"boardType\": \"<string>\",\n            \"currency\": \"<string>\",\n            \"listPrice\": \"<number>\",\n            \"price\": \"<number>\",\n            \"discountRate\": \"<number>\",\n            \"available\": \"<boolean>\",\n            \"status\": \"on_request\",\n            \"campaignName\": \"<string>\",\n            \"minStayNights\": \"<integer>\"\n          }\n        ],\n        \"note\": \"<string>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"internalHotelId\": \"<string>\",\n      \"providerHotelId\": \"<string>\",\n      \"hotelName\": \"<string>\",\n      \"found\": \"<boolean>\",\n      \"price\": {\n        \"available\": \"<boolean>\",\n        \"hotelName\": \"<string>\",\n        \"city\": \"<string>\",\n        \"roomName\": \"<string>\",\n        \"boardType\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"listPrice\": \"<number>\",\n        \"price\": \"<number>\",\n        \"discountRate\": \"<number>\",\n        \"minStayNights\": \"<integer>\",\n        \"rooms\": [\n          {\n            \"roomName\": \"<string>\",\n            \"boardType\": \"<string>\",\n            \"currency\": \"<string>\",\n            \"listPrice\": \"<number>\",\n            \"price\": \"<number>\",\n            \"discountRate\": \"<number>\",\n            \"available\": \"<boolean>\",\n            \"status\": \"on_request\",\n            \"campaignName\": \"<string>\",\n            \"minStayNights\": \"<integer>\"\n          },\n          {\n            \"roomName\": \"<string>\",\n            \"boardType\": \"<string>\",\n            \"currency\": \"<string>\",\n            \"listPrice\": \"<number>\",\n            \"price\": \"<number>\",\n            \"discountRate\": \"<number>\",\n            \"available\": \"<boolean>\",\n            \"status\": \"sold_out\",\n            \"campaignName\": \"<string>\",\n            \"minStayNights\": \"<integer>\"\n          }\n        ],\n        \"note\": \"<string>\"\n      },\n      \"durationMs\": \"<integer>\",\n      \"cached\": \"<boolean>\",\n      \"fetchedAt\": \"<dateTime>\"\n    }\n  ],\n  \"errors\": [\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    },\n    {\n      \"provider\": \"<string>\",\n      \"error\": \"<string>\"\n    }\n  ]\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "168470d9-31cf-4f1e-8d6b-0edb5c34778f",
+              "id": "1ab6cdc8-574c-45f0-8c1a-ef0aed0efa79",
               "name": "Eksik parametre",
               "originalRequest": {
                 "url": {
@@ -2427,7 +2427,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "8a18478d-6125-4cbd-910e-2a6dc36800f7",
+              "id": "ae6e5777-7594-41bd-9958-45ba3d9320a4",
               "name": "API anahtari gecersiz/eksik",
               "originalRequest": {
                 "url": {
@@ -2545,7 +2545,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "3b468468-a7a9-48ad-9569-a53a71a95ff3",
+              "id": "d0cd2fef-1b45-48cd-8765-d6eb629df31b",
               "name": "Plan bu provider/paket sorgusunu kapsamiyor",
               "originalRequest": {
                 "url": {
@@ -2663,7 +2663,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "b36b9525-8a4d-4a80-9c99-4dd80f21b25a",
+              "id": "04d92f72-d8b7-454b-90ba-9a5c1a1e7046",
               "name": "Otel eslestirmesi bulunamadi",
               "originalRequest": {
                 "url": {
@@ -2771,7 +2771,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "9140378d-c829-400c-b213-732b75a66589",
+              "id": "cfd45f18-649b-4e2c-af5f-9b61e33a0dc4",
               "name": "Gunluk kota veya dakikalik sinir asildi",
               "originalRequest": {
                 "url": {
@@ -2901,7 +2901,7 @@
       "description": "",
       "item": [
         {
-          "id": "5082b45f-9b56-4471-9684-b552486af094",
+          "id": "7c0fdf09-3dff-49cf-958b-376b85b72484",
           "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
           "request": {
             "name": "Paket fiyatlari (tek, coklu veya tum provider'lar)",
@@ -3030,7 +3030,7 @@
           },
           "response": [
             {
-              "id": "f183de65-6863-4754-825e-fe5e79296a05",
+              "id": "6b654eb5-6bb7-4309-accb-5aefe0530d3d",
               "name": "Paket fiyat listesi",
               "originalRequest": {
                 "url": {
@@ -3156,7 +3156,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "0ffae142-2361-4f24-83de-9f65e864bf31",
+              "id": "bd0a5e96-8683-4eaf-9d6e-d38e1a7c4673",
               "name": "Eksik parametre veya provider desteklemiyor",
               "originalRequest": {
                 "url": {
@@ -3272,7 +3272,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "ef5d931c-aa57-43cc-8a40-f063a8b1c0f1",
+              "id": "0946fa64-e4a4-49f0-8be7-a2b1b28d8c31",
               "name": "API anahtari gecersiz/eksik",
               "originalRequest": {
                 "url": {
@@ -3398,7 +3398,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "91d41ab7-2eae-41f3-bbf0-f876abbbcd0b",
+              "id": "effe685f-f813-4715-b6f8-65ecd11153c2",
               "name": "Plan bu provider/paket sorgusunu kapsamiyor",
               "originalRequest": {
                 "url": {
@@ -3524,7 +3524,7 @@
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "c7f86d1c-b05e-435e-9094-d1621ffad91e",
+              "id": "682a1d80-ea5b-4255-9b61-4283744acb49",
               "name": "Otel eslestirmesi bulunamadi",
               "originalRequest": {
                 "url": {
@@ -3640,7 +3640,7 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "b51bff09-82e9-4778-bf9a-a33d5d1ab1db",
+              "id": "953be5b9-ae5c-4af5-a087-84bd5d404426",
               "name": "Gunluk kota veya dakikalik sinir asildi",
               "originalRequest": {
                 "url": {
@@ -3778,7 +3778,7 @@
       "description": "",
       "item": [
         {
-          "id": "2e60fc1a-efb8-44f8-b2ff-a35457a55e15",
+          "id": "90ae37e4-fdb4-4782-aaa3-f47f010bcd66",
           "name": "Saglik kontrolu + provider listesi",
           "request": {
             "name": "Saglik kontrolu + provider listesi",
@@ -3805,7 +3805,7 @@
           },
           "response": [
             {
-              "id": "33677fc1-c65f-4591-bfe2-889e23a86ec0",
+              "id": "fffe0354-64eb-440e-8c43-170cd478f64c",
               "name": "Servis calisiyor",
               "originalRequest": {
                 "url": {
@@ -3856,7 +3856,7 @@
     }
   ],
   "info": {
-    "_postman_id": "b160db81-f72f-4034-8fde-136e54d3879f",
+    "_postman_id": "27a1dff8-bba0-4ef5-bd0b-f93211390e69",
     "name": "SmartRate API (müşteri)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": "Kimlik: her istekte X-API-Key başlığı (koleksiyon düzeyinde {{apiKey}} değişkeninden gelir). Önerilen akış: GET /api/v1/me -> GET /api/v1/hotels -> POST /api/v1/jobs -> GET /api/v1/jobs/{{requestId}}?wait=20. Ayrıntı: docs/api-entegrasyon-rehberi.md veya {{baseUrl}}/docs"

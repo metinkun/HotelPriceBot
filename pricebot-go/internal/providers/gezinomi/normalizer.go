@@ -13,20 +13,36 @@ func orZero(p *float64) float64 {
 	return *p
 }
 
-// normalizePrice en ucuz (lead) teklifi ortak NormalizedPrice formatina cevirir.
+// normalizePrice en ucuz (lead) teklifi ortak NormalizedPrice formatina cevirir; Rooms tum teklifler.
 func normalizePrice(data *PriceResponse, hotelName *string) *types.NormalizedPrice {
 	var best *types.NormalizedPrice
+	rooms := []types.RoomOffer{}
 	if data != nil && data.Data != nil {
 		for _, room := range data.Data.RoomDetails {
 			for _, rd := range room.ReservationDetails {
-				if rd.Absent {
-					continue
-				}
 				price := rd.TotalDiscountedPrice
 				if price == nil {
 					price = rd.TotalPrice
 				}
 				if price == nil || *price <= 0 {
+					continue
+				}
+				{
+					name := rd.HotelRoomName
+					if name == "" {
+						name = room.RoomName
+					}
+					st := types.RoomAvailable
+					if rd.Absent {
+						st = types.RoomSoldOut
+					}
+					ro := types.NewRoom(name, rd.ConceptName, *price, orZero(rd.TotalPrice), "TL", st)
+					if r := orZero(rd.DiscountRate); r > 0 {
+						ro.DiscountRate = r
+					}
+					rooms = append(rooms, ro)
+				}
+				if rd.Absent {
 					continue
 				}
 				if best == nil || *price < *best.Price {
@@ -44,8 +60,11 @@ func normalizePrice(data *PriceResponse, hotelName *string) *types.NormalizedPri
 		}
 	}
 	if best == nil {
-		return types.Unavailable(hotelName, nil)
+		u := types.Unavailable(hotelName, nil)
+		u.Rooms = types.SortRooms(rooms)
+		return u
 	}
+	best.Rooms = types.SortRooms(rooms)
 	return best
 }
 

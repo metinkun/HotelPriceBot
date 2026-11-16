@@ -1,0 +1,114 @@
+{
+ "success": true,
+ "data": {
+  "type": "HOTEL",
+  "typeId": 1383,
+  "title": "Salamis Bay Conti Resort Hotel",
+  "slug": "salamis-bay-conti-resort-hotel",
+  "airportCode": "ECN",
+  "result": {
+   "id": 1383,
+   "name": "Salamis Bay Conti Resort Hotel",
+   "isAvailable": true,
+   "isPrice": null,
+   "hotelDestination": {
+    "name": "Gazimağusa"
+   },
+   "destination": [
+    {
+     "name": "Kıbrıs"
+    },
+    {
+     "name": "Gazimağusa"
+    }
+   ],
+   "availability": {
+    "uid": "UID_TuGMDaVCwRFOGCrlcKcZTo6pE4YG1gwwUGdDphuCPktfe",
+    "hashCode": "2026-11-16:03-54-21-a7d58407cc409d1013cfa4b4b3f25905407da934",
+    "callback": false,
+    "source": "PUZZLE",
+    "hotelId": 1383,
+    "hotelProviderReference": "HTL_53f3526c508863",
+    "providerCode": "P537SSE31",
+    "status": "AVAILABLE",
+    "statusDesc": 1,
+    "isRoom": 1,
+    "market": "SMK_001",
+    "rooms": [
+     {
+      "priceCode": "HP_dccebf11423f7b0d2917562d3097",
+      "roomCode": "HRM_0f89a23bb013ac",
+      "roomTitle": "Salamis park",
+      "conceptCode": "CPT_ec7d04db3b510a",
+      "conceptTitle": "Ultra her şey dahil",
+      "cost": 24750,
+      "fee": 27225,
+      "posterPrice": 49500,
+      "discountPrice": 27225,
+      "discountRate": 0,
+      "currency": "TRY",
+      "posterRate": 45,
+      "status": "STOP_SALE",
+      "realFee": "27225.00",
+      "roomCampaign": [
+       {
+        "name": "%10 Erken Rezervasyon 2026 KIŞ (D) +%5+10 ILAVE INDIRIM",
+        "rate": "20.0000",
+        "endDate": "2026-12-30"
+       }
+      ],
+      "days": []
+     },
+     {
+      "priceCode": "HP_e73719748e19c5cd948260a1b56f",
+      "roomCode": "HRM_9ff4ae4abbf0df",
+      "roomTitle": "Salamis garden",
+      "conceptCode": "CPT_ec7d04db3b510a",
+      "conceptTitle": "Ultra her şey dahil",
+      "cost": 25875,
+      "fee": 28462.5,
+      "posterPrice": 51750,
+      "discountPrice": 28462.5,
+      "discountRate": 0,
+      "currency": "TRY",
+      "posterRate": 45,
+      "status": "AVAILABLE",
+      "realFee": "28462.50",
+      "roomCampaign": [
+       {
+        "name": "%10 Erken Rezervasyon 2026 KIŞ (D) +%5+10 ILAVE INDIRIM",
+        "rate": "20.0000",
+        "endDate": "2026-12-30"
+       }
+      ],
+      "days": []
+     },
+     {
+      "priceCode": "HP_18ab44f0245cb407b16b7f3b1b99",
+      "roomCode": "HRM_2557e9ae2c1c0109",
+      "roomTitle": "Anabina deniz manzaralı oda",
+      "conceptCode": "CPT_ec7d04db3b510a",
+      "conceptTitle": "Ultra her şey dahil",
+      "cost": 28125,
+      "fee": 30937.5,
+      "posterPrice": 56250,
+      "discountPrice": 30937.5,
+      "discountRate": 0,
+      "currency": "TRY",
+      "posterRate": 45,
+      "status": "AVAILABLE",
+      "realFee": "30937.50",
+      "roomCampaign": [
+       {
+        "name": "%10 Erken Rezervasyon 2026 KIŞ (D) +%5+10 ILAVE INDIRIM",
+        "rate": "20.0000",
+        "endDate": "2026-12-30"
+       }
+      ],
+      "days": []
+     }
+    ]
+   }
+  }
+ }
+}

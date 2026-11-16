@@ -1,6 +1,7 @@
 package tatilbudur
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -71,7 +72,34 @@ func unavailableWithPrice(view string) *types.NormalizedPrice {
 	return out
 }
 
-// normalizePrice fiyati ilk `v2-reservation-button` <a>'sinin temiz attribute'larindan alir.
+// roomOffers otel (packageType != "P") rezervasyon dugmelerinin tamami; masaustu/mobil kopyalari tekillestirilir.
+func roomOffers(view string) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	seen := map[string]bool{}
+	for _, block := range reButtons.FindAllString(view, -1) {
+		if attr(block, "packageType") == "P" {
+			continue
+		}
+		amount := num(attr(block, "amount"))
+		if amount <= 0 {
+			continue
+		}
+		room, board := decode(attr(block, "roomName")), decode(attr(block, "conceptName"))
+		key := fmt.Sprintf("%s|%s|%v", room, board, amount)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		ro := types.NewRoom(room, board, amount, num(attr(block, "poster_price")), attr(block, "currency"), types.RoomAvailable)
+		if r := num(attr(block, "discountRate")); r > 0 {
+			ro.DiscountRate = r
+		}
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice fiyati ilk `v2-reservation-button` <a>'sinin temiz attribute'larindan alir; Rooms tum dugmeler.
 func normalizePrice(data *RoomPriceResponse) *types.NormalizedPrice {
 	view := ""
 	if data != nil {
@@ -90,6 +118,7 @@ func normalizePrice(data *RoomPriceResponse) *types.NormalizedPrice {
 	price := types.F64Pos(num(attr(block, "amount")))
 	listPrice := types.F64Pos(num(attr(block, "poster_price")))
 	out := &types.NormalizedPrice{
+		Rooms:        roomOffers(view),
 		Available:    price != nil,
 		Currency:     trCurrency(attr(block, "currency")),
 		ListPrice:    listPrice,

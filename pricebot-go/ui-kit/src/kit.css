@@ -369,3 +369,13 @@ button { font-family: inherit; }
   .sr-sitepicker-grid { grid-template-columns: 1fr 1fr; }
   .sr-score-bars div { grid-template-columns: 100px 1fr 40px; }
 }
+
+/* Sonuc tablosu: oda listesi aciliri */
+.sr-table tr.sr-clickable { cursor: pointer; }
+.sr-table tr.sr-clickable:hover td { background: var(--surface-2); }
+.sr-link { color: var(--primary); font-weight: 600; }
+.sr-rooms { font-size: 13px; }
+.sr-rooms th { font-size: 11px; padding: 8px 12px; }
+.sr-rooms td { padding: 7px 12px; }
+.sr-rooms tr.sr-best-row td { background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.sr-rooms tr.sr-best-row td:nth-child(4) b { color: var(--ok); }

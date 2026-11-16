@@ -74,6 +74,44 @@ func cheapestOffer(h *Hotel) *pick {
 	return best
 }
 
+func campaignOf(o *Offer) *string {
+	for _, t := range o.DiscountTags {
+		if t.DiscountString != "" && t.Tag != "provider" {
+			return types.Str(strings.TrimSpace(t.Label + " " + t.DiscountString))
+		}
+	}
+	return nil
+}
+
+// allRooms otelin gizli olmayan tum oda+pansiyon teklifleri (satilamayanlar sold_out).
+func allRooms(h *Hotel) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	for ri := range h.Rooms {
+		r := &h.Rooms[ri]
+		if r.HiddenState.Hidden {
+			continue
+		}
+		for oi := range r.Offers {
+			o := &r.Offers[oi]
+			if o.HiddenState.Hidden {
+				continue
+			}
+			amt, cur := offerAmount(o)
+			if amt <= 0 {
+				continue
+			}
+			st := types.RoomAvailable
+			if !o.Saleable {
+				st = types.RoomSoldOut
+			}
+			ro := types.NewRoom(r.Type.Name, o.Concept.Description, amt, o.DiscountFrom, cur, st)
+			ro.CampaignName = campaignOf(o)
+			rooms = append(rooms, ro)
+		}
+	}
+	return types.SortRooms(rooms)
+}
+
 // normalizePrice detail-search yanitini ortak NormalizedPrice formatina cevirir.
 func normalizePrice(sr *SearchResponse, hotelID int) *types.NormalizedPrice {
 	h := findHotel(sr, hotelID)
@@ -82,23 +120,21 @@ func normalizePrice(sr *SearchResponse, hotelID int) *types.NormalizedPrice {
 	}
 	hotelName := types.StrOrNil(h.Data.Name)
 	city := types.StrOrNil(h.Data.Address.City.Name)
+	rooms := allRooms(h)
 	p := cheapestOffer(h)
 	if p == nil {
-		return types.Unavailable(hotelName, city)
+		u := types.Unavailable(hotelName, city)
+		u.Rooms = rooms
+		return u
 	}
 	price := types.F64(p.amount)
 	var listPrice *float64
 	if p.offer.DiscountFrom > p.amount {
 		listPrice = types.F64(p.offer.DiscountFrom)
 	}
-	var campaign *string
-	for _, t := range p.offer.DiscountTags {
-		if t.DiscountString != "" && t.Tag != "provider" {
-			campaign = types.Str(strings.TrimSpace(t.Label + " " + t.DiscountString))
-			break
-		}
-	}
+	campaign := campaignOf(p.offer)
 	return &types.NormalizedPrice{
+		Rooms:        rooms,
 		Available:    true,
 		HotelName:    hotelName,
 		City:         city,

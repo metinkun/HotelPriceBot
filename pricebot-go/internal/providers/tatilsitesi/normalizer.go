@@ -75,16 +75,38 @@ func cheapestRow(rows []HotelRow) *HotelRow {
 	return best
 }
 
-// normalizePrice hotelDetailSearch (Type=Hotel) satirlarini lead/en ucuz teklife cevirir.
+// roomOffers tum satirlar: Rezervasyon -> available, Talep Et (AskSale) -> on_request, Release/StopSale -> sold_out.
+func roomOffers(rows []HotelRow) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	for _, r := range rows {
+		if r.SaleAmount <= 0 {
+			continue
+		}
+		st := types.RoomSoldOut
+		switch {
+		case r.Bookable():
+			st = types.RoomAvailable
+		case r.AskSale && !r.Release && !r.StopSale:
+			st = types.RoomOnRequest
+		}
+		ro := types.NewRoom(provider.DecodeEntities(r.RoomCategoryName), provider.DecodeEntities(r.PansionName), r.SaleAmount, r.NotDiscountAmount, types.Deref(currencyOf(r.SaleCurrency)), st)
+		ro.CampaignName, ro.MinStayNights = rowInfo(r)
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice hotelDetailSearch (Type=Hotel) satirlarini lead/en ucuz teklife cevirir; Rooms tum satirlar.
 func normalizePrice(rows []HotelRow) *types.NormalizedPrice {
 	r := cheapestRow(rows)
 	if r == nil {
-		return &types.NormalizedPrice{Available: false}
+		return &types.NormalizedPrice{Available: false, Rooms: roomOffers(rows)}
 	}
 	listPrice := listPriceOf(*r)
 	price := types.F64(r.SaleAmount)
 	campaign, minStay := rowInfo(*r)
 	return &types.NormalizedPrice{
+		Rooms:         roomOffers(rows),
 		Available:     true,
 		RoomName:      types.StrOrNil(provider.DecodeEntities(r.RoomCategoryName)),
 		BoardType:     types.StrOrNil(provider.DecodeEntities(r.PansionName)),

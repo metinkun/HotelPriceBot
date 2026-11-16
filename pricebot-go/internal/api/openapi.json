@@ -131,6 +131,18 @@
           "minStayNights": {
             "type": "integer",
             "nullable": true
+          },
+          "rooms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoomOffer"
+            },
+            "description": "Sitenin listeledigi TUM oda + pansiyon teklifleri (musait olanlar once, fiyata gore). price/roomName/boardType lead (en ucuz musait) teklif. Oda listesi vermeyen siteler (etstur, setur, tatilsepeti, touristica) bu alani bos birakir."
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "description": "orn. musait degil; sitede gosterilen fiyat"
           }
         }
       },
@@ -775,6 +787,58 @@
           },
           "allowFresh": {
             "type": "boolean"
+          }
+        }
+      },
+      "RoomOffer": {
+        "type": "object",
+        "description": "Bir oda + pansiyon teklifi (konaklama toplami).",
+        "properties": {
+          "roomName": {
+            "type": "string",
+            "example": "Deluxe Oda"
+          },
+          "boardType": {
+            "type": "string",
+            "example": "Her Şey Dahil"
+          },
+          "currency": {
+            "type": "string",
+            "example": "TL"
+          },
+          "listPrice": {
+            "type": "number",
+            "nullable": true,
+            "example": 51750
+          },
+          "price": {
+            "type": "number",
+            "nullable": true,
+            "example": 28462.5
+          },
+          "discountRate": {
+            "type": "number",
+            "example": 45
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "on_request",
+              "sold_out"
+            ],
+            "description": "available: aninda satis; on_request: site fiyat gosterir, 'talep et' ile sorulur; sold_out: satista degil (fiyat yine de gosterilmis olabilir)"
+          },
+          "campaignName": {
+            "type": "string",
+            "nullable": true
+          },
+          "minStayNights": {
+            "type": "integer",
+            "nullable": true
           }
         }
       }

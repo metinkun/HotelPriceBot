@@ -51,3 +51,15 @@ Geliştirme bu sorular netleşmeden, aşağıda yazılı varsayımlarla ilerledi
 30. **"Müsait değil ama fiyat var".** Tatilbudur'da rezervasyon düğmesi olmayan yanıtlarda sayfadaki fiyat yakalanıp "müsait değil" etiketiyle gösteriliyor; diğer sitelerde fiyat yoksa yalnızca etiket görünür. Müsait olmayan fiyat "en ucuz" vurgusuna dahil edilmiyor; doğru mu?
 31. **Kullanıcı bazında cihaz limiti** paket/müşteri değerini ezer (admin > Müşteri > Portal kullanıcıları > Düzenle). Kullanıcı sayısı limiti zaten paket/müşteri limitlerindeydi. Onaylıyor musunuz?
 32. **Planlı arama başlangıç/bitiş tarihi** eklendi; bitiş geçince plan "süresi doldu" görünür, otomatik pasife alınmaz (yeniden tarih verilebilir). Uygun mu?
+
+## 16 Kas 2026 istekleri
+
+33. **Tüm oda fiyatları**: `price.rooms` ile her sitenin listelediği oda + pansiyon teklifleri dönüyor; sonuç tablosunda otel satırına
+    tıklayınca açılır. Etstur, Setur ve Tatilsepeti yalnızca en uygun fiyatı yayınlayan uçlar kullanıyor; Touristica'da oda adı
+    okunmuyor. Bu dört sitede oda listesi için ek geliştirme (sitelerin oda uçlarının keşfi) gerekir; isteniyor mu?
+34. **Coral Tatil (coraltatil.com)**: site Imperva/Incapsula bot koruması arkasında; düz HTTP ile hiçbir sayfa açılmıyor (JS
+    challenge). Sağlayıcı ancak headless tarayıcı akışıyla (Touristica modeli) yazılabilir; önce tarayıcıyla ağ trafiği yakalanmalı.
+    Yakalama komutu bu oturumda izin gerektirdi; yetki verilince devam edilecek.
+35. **Salamis Bay Conti / Tatildukkani**: sitenin arama API'si Kasım 2026'da değişmişti (socket akışı kaldırıldı); düzeltildi.
+    Tatilbudur aynı sorguda sunucudan sonuç veriyor; canlıda görülen boş sonuç muhtemelen Akamai 403 (IP) kaynaklı, proxy
+    aboneliği ile çözülür. Canlı loglarda doğrulanmalı.

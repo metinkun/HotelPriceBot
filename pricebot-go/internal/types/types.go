@@ -2,6 +2,8 @@ package types
 
 import (
 	"math"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -53,6 +55,74 @@ type NormalizedPrice struct {
 	BankCampaignLabel *string  `json:"bankCampaignLabel,omitempty"`
 	MinStayNights     *int     `json:"minStayNights,omitempty"`
 	Note              *string  `json:"note,omitempty"` // orn. "musait degil; sitede gosterilen fiyat"
+	// Rooms sitenin o tarih icin listeledigi TUM oda + pansiyon teklifleri (musait olanlar once, fiyata gore).
+	// Price/RoomName/BoardType yine lead (en ucuz musait) teklifi gosterir. Oda listesi vermeyen sitelerde bos.
+	Rooms []RoomOffer `json:"rooms,omitempty"`
+}
+
+// Oda teklifi durumlari.
+const (
+	RoomAvailable = "available"  // aninda satis
+	RoomOnRequest = "on_request" // site fiyat gosterir, "talep et" ile sorulur
+	RoomSoldOut   = "sold_out"   // satista degil / dolu (fiyat yine de gosterilmis olabilir)
+)
+
+// RoomOffer tek bir oda + pansiyon teklifi (konaklama toplami).
+type RoomOffer struct {
+	RoomName      string   `json:"roomName"`
+	BoardType     string   `json:"boardType"`
+	Currency      *string  `json:"currency"`
+	ListPrice     *float64 `json:"listPrice,omitempty"`
+	Price         *float64 `json:"price"`
+	DiscountRate  float64  `json:"discountRate"`
+	Available     bool     `json:"available"`
+	Status        string   `json:"status"` // available | on_request | sold_out
+	CampaignName  *string  `json:"campaignName,omitempty"`
+	MinStayNights *int     `json:"minStayNights,omitempty"`
+}
+
+// NewRoom teklif uretir: liste fiyati yalnizca satis fiyatindan buyukse yazilir, indirim orani hesaplanir.
+func NewRoom(room, board string, price, listPrice float64, currency, status string) RoomOffer {
+	r := RoomOffer{RoomName: strings.TrimSpace(room), BoardType: strings.TrimSpace(board), Status: status, Available: status == RoomAvailable}
+	if r.RoomName == "" {
+		r.RoomName = "Oda"
+	}
+	if currency == "" || strings.EqualFold(currency, "TRY") || strings.EqualFold(currency, "TRL") {
+		currency = "TL"
+	}
+	r.Currency = Str(currency)
+	r.Price = F64Pos(price)
+	if listPrice > price && price > 0 {
+		r.ListPrice = F64(listPrice)
+	}
+	r.DiscountRate = DiscountRateOf(r.ListPrice, r.Price)
+	return r
+}
+
+func roomRank(s string) int {
+	switch s {
+	case RoomAvailable:
+		return 0
+	case RoomOnRequest:
+		return 1
+	}
+	return 2
+}
+
+// SortRooms musait olanlar once (available < on_request < sold_out), ayni durumda fiyata gore artan; fiyatsizlar sona.
+func SortRooms(rooms []RoomOffer) []RoomOffer {
+	sort.SliceStable(rooms, func(i, j int) bool {
+		ri, rj := roomRank(rooms[i].Status), roomRank(rooms[j].Status)
+		if ri != rj {
+			return ri < rj
+		}
+		pi, pj := rooms[i].Price, rooms[j].Price
+		if pi == nil || pj == nil {
+			return pi != nil
+		}
+		return *pi < *pj
+	})
+	return rooms
 }
 
 // Unavailable bos (musait degil) fiyat kaydi uretir.

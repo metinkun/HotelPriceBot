@@ -24,6 +24,8 @@ var (
 	reMinGece     = regexp.MustCompile(`<div class="min-gece">([^<]*)</div>`)
 	reDigits      = regexp.MustCompile(`\d+`)
 	reUnavailable = regexp.MustCompile(`(?i)fiyat bilgisi bulunamad`)
+	// reRoomSoldOut oda blogunda "Aradiginiz tarihlerde musait degil" notu: fiyat gosterilir ama satilamaz.
+	reRoomSoldOut = regexp.MustCompile(`(?i)m[üu]sait\s*de[ğg]il|sat[ıi][şs]a\s*kapal[ıi]|stop\s*sale`)
 )
 
 // Offer tek bir oda + pansiyon teklifi.
@@ -36,6 +38,7 @@ type Offer struct {
 	Campaign  string
 	MinStay   int
 	Package   bool // otel+ucak paket fiyati
+	SoldOut   bool // "Aradiginiz tarihlerde musait degil" (fiyat gosterilir, satis yok)
 }
 
 func trCurrency(c string) string {
@@ -59,6 +62,7 @@ func parseOffers(html string) []Offer {
 			RoomName:  provider.DecodeEntities(provider.FirstMatch(reRoomTitle, seg)),
 			BoardType: provider.DecodeEntities(provider.FirstMatch(reBoardTitle, seg)),
 			Package:   strings.Contains(seg, `class="ucakfiyatadahil"`),
+			SoldOut:   reRoomSoldOut.MatchString(provider.DecodeEntities(provider.StripTags(seg))),
 		}
 		if tm := reTaksitRel.FindStringSubmatch(seg); tm != nil {
 			o.Price, _ = strconv.ParseFloat(tm[1], 64)
@@ -97,22 +101,71 @@ func parseOffers(html string) []Offer {
 // isUnavailable "Sectiginiz tarihler icin oda fiyat bilgisi bulunamadi" mesaji.
 func isUnavailable(html string) bool { return reUnavailable.MatchString(html) }
 
-// normalizePrice en ucuz teklifi NormalizedPrice'a cevirir.
+// roomOffers teklifleri RoomOffer listesine cevirir (otel+ucak paket satirlari haric; hepsi paketse hepsi).
+func roomOffers(offers []Offer) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	seen := map[string]bool{}
+	hasHotelOnly := false
+	for _, o := range offers {
+		if !o.Package {
+			hasHotelOnly = true
+			break
+		}
+	}
+	for _, o := range offers {
+		if o.Package && hasHotelOnly {
+			continue
+		}
+		key := fmt.Sprintf("%s|%s|%v", o.RoomName, o.BoardType, o.Price)
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		st := types.RoomAvailable
+		if o.SoldOut {
+			st = types.RoomSoldOut
+		}
+		ro := types.NewRoom(o.RoomName, o.BoardType, o.Price, o.ListPrice, o.Currency, st)
+		ro.CampaignName = types.StrOrNil(o.Campaign)
+		if o.MinStay > 0 {
+			ro.MinStayNights = types.Int(o.MinStay)
+		}
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice en ucuz teklifi NormalizedPrice'a cevirir; Rooms tum teklifler.
 func normalizePrice(html string, hotelName, city *string) *types.NormalizedPrice {
 	offers := parseOffers(html)
 	if len(offers) == 0 {
 		return types.Unavailable(hotelName, city)
 	}
-	best := offers[0]
-	for _, o := range offers[1:] {
-		if o.Price < best.Price {
+	// Lead: satilabilir (musait) tekliflerin en ucuzu; hepsi "musait degil" ise en ucuzu fiyatla ama Available=false.
+	var best *Offer
+	for i := range offers {
+		o := &offers[i]
+		if o.SoldOut {
+			continue
+		}
+		if best == nil || o.Price < best.Price {
 			best = o
+		}
+	}
+	available := best != nil
+	if best == nil {
+		best = &offers[0]
+		for i := range offers[1:] {
+			if offers[i+1].Price < best.Price {
+				best = &offers[i+1]
+			}
 		}
 	}
 	price := types.F64Pos(best.Price)
 	listPrice := types.F64Pos(best.ListPrice)
 	out := &types.NormalizedPrice{
-		Available:    true,
+		Rooms:        roomOffers(offers),
+		Available:    available,
 		HotelName:    hotelName,
 		City:         city,
 		RoomName:     types.StrOrNil(best.RoomName),
@@ -125,6 +178,9 @@ func normalizePrice(html string, hotelName, city *string) *types.NormalizedPrice
 	}
 	if best.MinStay > 0 {
 		out.MinStayNights = types.Int(best.MinStay)
+	}
+	if !available {
+		out.Note = types.Str("Musait degil; sitede gosterilen fiyat")
 	}
 	return out
 }

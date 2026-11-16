@@ -45,7 +45,30 @@ func trCurrency(c string) *string {
 	return types.Str(c)
 }
 
-// normalizePrice socket yanitini lead (en ucuz) teklif olarak NormalizedPrice'a cevirir.
+// roomOffers tum odalar: AVAILABLE -> available, ON_REQUEST -> on_request, digerleri (STOP_SALE, NO_ROOMS) sold_out.
+func roomOffers(list []Room) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	for _, r := range list {
+		if r.Fee <= 0 {
+			continue
+		}
+		st := types.RoomSoldOut
+		switch roomTier(r) {
+		case 0:
+			st = types.RoomAvailable
+		case 1:
+			st = types.RoomOnRequest
+		}
+		ro := types.NewRoom(r.RoomTitle, r.ConceptTitle, float64(r.Fee), float64(r.PosterPrice), r.Currency, st)
+		if len(r.RoomCampaign) > 0 && r.RoomCampaign[0].Name != "" {
+			ro.CampaignName = types.Str(r.RoomCampaign[0].Name)
+		}
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice oda listesini lead (en ucuz) teklif olarak NormalizedPrice'a cevirir; Rooms tum odalar.
 // Fiyatlar konaklama toplamidir (gecelik degil).
 func normalizePrice(page *HotelPage, av *AvailableHotel) *types.NormalizedPrice {
 	var hotelName, city *string
@@ -57,7 +80,9 @@ func normalizePrice(page *HotelPage, av *AvailableHotel) *types.NormalizedPrice 
 	}
 	best := cheapestRoom(av.Rooms)
 	if best == nil {
-		return types.Unavailable(hotelName, city)
+		u := types.Unavailable(hotelName, city)
+		u.Rooms = roomOffers(av.Rooms)
+		return u
 	}
 	price := types.F64Pos(float64(best.Fee))
 	var listPrice *float64
@@ -69,6 +94,7 @@ func normalizePrice(page *HotelPage, av *AvailableHotel) *types.NormalizedPrice 
 		campaign = types.Str(best.RoomCampaign[0].Name)
 	}
 	return &types.NormalizedPrice{
+		Rooms:        roomOffers(av.Rooms),
 		Available:    true,
 		HotelName:    hotelName,
 		City:         city,

@@ -236,11 +236,39 @@ func leadOffer(offers []offer) (*offer, bool) {
 	return nil, false
 }
 
-// normalizePrice teklif listesini ortak NormalizedPrice formatina cevirir.
+func roomStatus(s string) string {
+	switch s {
+	case statusAvailable:
+		return types.RoomAvailable
+	case statusOnRequest:
+		return types.RoomOnRequest
+	}
+	return types.RoomSoldOut
+}
+
+// roomOffers tum teklifler (stop-sale dahil, sold_out olarak).
+func roomOffers(offers []offer) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	for _, o := range offers {
+		if o.Price <= 0 {
+			continue
+		}
+		ro := types.NewRoom(o.RoomName, o.BoardName, o.Price, o.ListPrice, o.Currency, roomStatus(o.Status))
+		if r := math.Round(o.DiscountRate); r > 0 {
+			ro.DiscountRate = r
+		}
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice teklif listesini ortak NormalizedPrice formatina cevirir; Rooms tum teklifler.
 func normalizePrice(offers []offer, hotelName, city string) *types.NormalizedPrice {
 	o, available := leadOffer(offers)
 	if o == nil {
-		return types.Unavailable(types.StrOrNil(hotelName), types.StrOrNil(city))
+		u := types.Unavailable(types.StrOrNil(hotelName), types.StrOrNil(city))
+		u.Rooms = roomOffers(offers)
+		return u
 	}
 	price := types.F64Pos(o.Price)
 	var listPrice *float64
@@ -252,6 +280,7 @@ func normalizePrice(offers []offer, hotelName, city string) *types.NormalizedPri
 		rate = types.DiscountRateOf(listPrice, price)
 	}
 	np := &types.NormalizedPrice{
+		Rooms:        roomOffers(offers),
 		Available:    available,
 		HotelName:    types.StrOrNil(hotelName),
 		City:         types.StrOrNil(city),

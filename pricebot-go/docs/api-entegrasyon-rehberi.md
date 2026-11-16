@@ -71,9 +71,14 @@ Sonuç (`GET /api/v1/jobs/{requestId}?wait=20`):
   "result": {
     "hotelId": "ext_3248", "checkIn": "2026-12-15", "checkOut": "2026-12-18",
     "results": [
-      { "provider": "etstur", "found": true, "cached": false, "durationMs": 1091,
-        "price": { "available": true, "price": 48500, "listPrice": 52000, "currency": "TRY",
-                   "roomName": "Standart Oda", "boardType": "Her Şey Dahil", "discountRate": 7 } },
+      { "provider": "tatildukkani", "found": true, "cached": false, "durationMs": 1091,
+        "price": { "available": true, "price": 28462.5, "listPrice": 51750, "currency": "TL",
+                   "roomName": "Salamis garden", "boardType": "Ultra her şey dahil", "discountRate": 45,
+                   "rooms": [
+                     { "roomName": "Salamis garden", "boardType": "Ultra her şey dahil", "price": 28462.5, "listPrice": 51750, "discountRate": 45, "currency": "TL", "available": true, "status": "available" },
+                     { "roomName": "Junior villa", "boardType": "Ultra her şey dahil", "price": 61875, "listPrice": 112500, "discountRate": 45, "currency": "TL", "available": true, "status": "available" },
+                     { "roomName": "Salamis park", "boardType": "Ultra her şey dahil", "price": 27225, "listPrice": 49500, "discountRate": 45, "currency": "TL", "available": false, "status": "sold_out" }
+                   ] } },
       { "provider": "jolly", "found": true,
         "price": { "available": false, "price": null, "note": "Müsait değil" } }
     ]
@@ -83,6 +88,12 @@ Sonuç (`GET /api/v1/jobs/{requestId}?wait=20`):
 
 `status` değerleri: `queued`, `running`, `done`, `failed`. `price.available=false` ise otel o sitede o tarihte satışta değildir;
 bazı sitelerde fiyat yine de dolu gelebilir (`note` alanı açıklar). Sonuç 1 saat saklanır.
+
+**Tüm oda fiyatları:** `price.rooms` sitenin o tarih için listelediği her oda + pansiyon teklifini içerir (müsait olanlar
+önce, fiyata göre sıralı). `price.price` / `roomName` / `boardType` en ucuz müsait teklifin özetidir. Teklif durumu `status`:
+`available` (anında satış), `on_request` (site fiyat gösterir, "talep et" ile sorulur), `sold_out` (satışta değil; fiyat
+yine de yazıyorsa gösterilir). Etstur, Setur, Tatilsepeti ve Touristica sadece en uygun fiyatı yayınladığından bu sitelerde
+`rooms` boş gelir.
 
 ## 5. Limitler ve hata kodları
 

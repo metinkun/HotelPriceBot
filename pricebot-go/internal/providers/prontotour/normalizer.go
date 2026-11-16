@@ -41,7 +41,32 @@ func boardOf(r RoomDetail) *string {
 	return types.StrOrNil(strings.Join(strings.Fields(r.Mealy), " "))
 }
 
-// normalizePrice HotelDetail yanitini ortak formata cevirir (en ucuz satilabilir oda = lead teklif).
+// allRooms fiyati olan tum oda+pansiyon satirlari; kontenjansizlar sold_out (hicbirinde kontenjan yoksa site gibi hepsi satilabilir).
+func allRooms(list []RoomDetail, minStay *int) []types.RoomOffer {
+	rooms := []types.RoomOffer{}
+	anyAllot := false
+	for _, r := range list {
+		if r.Allotment && effective(r) > 0 {
+			anyAllot = true
+			break
+		}
+	}
+	for _, r := range list {
+		if effective(r) <= 0 {
+			continue
+		}
+		st := types.RoomAvailable
+		if anyAllot && !r.Allotment {
+			st = types.RoomSoldOut
+		}
+		ro := types.NewRoom(r.RoomName, types.Deref(boardOf(r)), effective(r), r.PriceTl, "TL", st)
+		ro.MinStayNights = minStay
+		rooms = append(rooms, ro)
+	}
+	return types.SortRooms(rooms)
+}
+
+// normalizePrice HotelDetail yanitini ortak formata cevirir (en ucuz satilabilir oda = lead teklif; Rooms tum odalar).
 func normalizePrice(d *HotelDetailResponse) *types.NormalizedPrice {
 	var hotelName, city *string
 	var minStay *int
@@ -55,10 +80,12 @@ func normalizePrice(d *HotelDetailResponse) *types.NormalizedPrice {
 	if d == nil {
 		return types.Unavailable(hotelName, city)
 	}
+	all := allRooms(d.HotelRoomDetailsList, minStay)
 	rooms := sellableRooms(d.HotelRoomDetailsList, false)
 	if len(rooms) == 0 {
 		p := types.Unavailable(hotelName, city)
 		p.MinStayNights = minStay
+		p.Rooms = all
 		return p
 	}
 	best := rooms[0]
@@ -68,6 +95,7 @@ func normalizePrice(d *HotelDetailResponse) *types.NormalizedPrice {
 		listPrice = types.F64(best.PriceTl)
 	}
 	return &types.NormalizedPrice{
+		Rooms:         all,
 		Available:     true,
 		HotelName:     hotelName,
 		City:          city,

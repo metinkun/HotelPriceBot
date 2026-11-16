@@ -215,7 +215,9 @@ type hotelResult struct {
 	IsAvailable       bool            `json:"isAvailable"`
 	IsPrice           bool            `json:"isPrice"`
 	AvabilityCriteria json.RawMessage `json:"avabilityCriteria"`
-	Destination       []struct {
+	// Availability (Kasim 2026 akisi): oda/fiyat listesi dogrudan sayfa yanitinda gelir; socket adimi kalkti.
+	Availability *AvailableHotel `json:"availability"`
+	Destination  []struct {
 		Name string `json:"name"`
 	} `json:"destination"`
 	HotelDestination struct {
@@ -231,6 +233,8 @@ type HotelPage struct {
 	AirportCode string
 	City        string
 	Criteria    json.RawMessage
+	// Availability sayfa yanitindaki oda/fiyat listesi (tarihli cagrida dolu; eski akista nil).
+	Availability *AvailableHotel
 }
 
 // fetchHotelPage POST /api/seo_page/slug: slug -> otel id, ad, sehir ve avabilityCriteria.
@@ -278,7 +282,7 @@ func parseHotelPage(data json.RawMessage) (*HotelPage, error) {
 	}
 	return &HotelPage{
 		HotelID: pd.TypeID, Title: title, Slug: pd.Slug, AirportCode: pd.AirportCode, City: city,
-		Criteria: hr.AvabilityCriteria,
+		Criteria: hr.AvabilityCriteria, Availability: hr.Availability,
 	}, nil
 }
 
@@ -309,7 +313,9 @@ func initSearch(ctx context.Context, hotelID int, checkIn, checkOut string, adul
 	return d.UID, nil
 }
 
-// fetchAvailability tam akis: sayfa -> init -> socket; oda/fiyat listesini doner.
+// fetchAvailability oda/fiyat listesini doner. Kasim 2026'dan beri site odalari dogrudan seo_page/slug
+// yanitinda (`result.availability.rooms`) veriyor; `searchlog/hotel/init` ve `socket-login` 404 doner.
+// Yanitta availability yoksa ama eski `avabilityCriteria` varsa eski socket akisi denenir.
 func fetchAvailability(ctx context.Context, slug, checkIn, checkOut string, adults int, childAges []int) (*HotelPage, *AvailableHotel, error) {
 	in, err := parseISO(checkIn)
 	if err != nil {
@@ -328,6 +334,12 @@ func fetchAvailability(ctx context.Context, slug, checkIn, checkOut string, adul
 	page, err := fetchHotelPage(ctx, slug, ci, co, adults, chd)
 	if err != nil {
 		return nil, nil, err
+	}
+	if page.Availability != nil {
+		return page, page.Availability, nil
+	}
+	if len(page.Criteria) == 0 || string(page.Criteria) == "null" {
+		return page, nil, fmt.Errorf("Tatildukkani sayfa yanitinda oda/fiyat bilgisi yok (availability bos); site akisi degismis olabilir")
 	}
 	socketToken, err := fetchSocketToken(ctx)
 	if err != nil {

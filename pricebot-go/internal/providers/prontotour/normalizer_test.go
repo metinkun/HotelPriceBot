@@ -215,3 +215,26 @@ func TestNormDate(t *testing.T) {
 		t.Errorf("TR formati hata vermeli")
 	}
 }
+
+// Rooms: sitenin listeledigi tum oda+pansiyon teklifleri; lead teklif listede ve musait olanlar once.
+func TestNormalizePriceRooms(t *testing.T) {
+	p := normalizePrice(loadDetail(t, "hotel_detail.json"))
+	if len(p.Rooms) < 2 {
+		t.Fatalf("en az 2 oda teklifi bekleniyordu: %d", len(p.Rooms))
+	}
+	found := false
+	for i, r := range p.Rooms {
+		if r.RoomName == "" || r.Price == nil || *r.Price <= 0 || r.Status == "" {
+			t.Errorf("eksik oda teklifi #%d: %+v", i, r)
+		}
+		if i > 0 && p.Rooms[i-1].Status == r.Status && p.Rooms[i-1].Price != nil && *p.Rooms[i-1].Price > *r.Price {
+			t.Errorf("siralama bozuk #%d: %v > %v", i, *p.Rooms[i-1].Price, *r.Price)
+		}
+		if p.Price != nil && *r.Price == *p.Price && r.Available {
+			found = true
+		}
+	}
+	if p.Available && !found {
+		t.Errorf("lead fiyat %v oda listesinde musait olarak yok", *p.Price)
+	}
+}

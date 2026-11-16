@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Ekran goruntusu araci (gelistirme): headless Chrome + CDP, puppeteer gerekmez (Node 22 WebSocket).
-// Kullanim: node ui-kit/shot.mjs <url> <out.png> [--token KEY=VALUE] [--width 1400] [--height 900] [--mobile] [--dark] [--wait 1500]
+// Kullanim: node ui-kit/shot.mjs <url> <out.png> [--token KEY=VALUE] [--width 1400] [--height 900] [--mobile] [--dark] [--wait 1500] [--click <css> ...]
 //   --token pricebot_admin_token=<jwt>  -> localStorage'a yazilir (giris atlanir)
 import { spawn } from "node:child_process";
 import { writeFileSync } from "node:fs";
@@ -36,6 +36,14 @@ try {
   setup.push(`localStorage.setItem("smartrate_theme", ${JSON.stringify(flag("--dark") ? "dark" : "light")});`);
   await send("Runtime.evaluate", { expression: setup.join("") });
   await send("Page.navigate", { url }); await sleep(wait);
+  // --click <selector> (tekrarlanabilir): sirayla tiklar, her tiklamadan sonra 900 ms bekler. Secici bulunamazsa uyarir.
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] !== "--click") continue;
+    const sel = args[++i];
+    const r = await send("Runtime.evaluate", { expression: `(() => { const el = document.querySelector(${JSON.stringify(sel)}); if (!el) return false; el.scrollIntoView({ block: "center" }); el.click(); return true; })()`, returnByValue: true });
+    if (!r.result?.value) console.error("click: secici bulunamadi:", sel);
+    await sleep(900);
+  }
   const metrics = await send("Page.getLayoutMetrics");
   const fullH = flag("--full") ? Math.min(Math.ceil(metrics.cssContentSize.height), 6000) : height;
   if (flag("--full")) await send("Emulation.setDeviceMetricsOverride", { width, height: fullH, deviceScaleFactor: 2, mobile: flag("--mobile") });

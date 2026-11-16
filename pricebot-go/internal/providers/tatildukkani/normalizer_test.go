@@ -179,3 +179,25 @@ func TestSioEventRoundTrip(t *testing.T) {
 		t.Errorf("payload yanlis: %s", payload)
 	}
 }
+
+// Kasim 2026 akisi: odalar seo_page/slug yanitindaki result.availability icinde gelir.
+func TestParseHotelPageAvailability(t *testing.T) {
+	var env struct {
+		Data json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal(read(t, "page_availability.json"), &env); err != nil {
+		t.Fatal(err)
+	}
+	page, err := parseHotelPage(env.Data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if page.HotelID != 1383 || page.Availability == nil || len(page.Availability.Rooms) != 3 {
+		t.Fatalf("beklenmeyen sayfa: %+v", page)
+	}
+	p := normalizePrice(page, page.Availability)
+	// ilk oda STOP_SALE (27225), lead AVAILABLE olan Salamis garden 28462.5 olmali
+	if !p.Available || p.Price == nil || *p.Price != 28462.5 || p.RoomName == nil || *p.RoomName != "Salamis garden" || *p.ListPrice != 51750 {
+		t.Fatalf("beklenmeyen fiyat: %+v", p)
+	}
+}

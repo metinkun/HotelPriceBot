@@ -91,6 +91,9 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   eski/yeni karşılaştırma modalı açılır (kelime bazlı renklendirme). Detay değişiklikleri sayfasında çift tıklama aynı modalı açar.
 - **Yorum / puan / etkinlik / kampanya**: snapshot'taki acente bölümlerinden otomatik türetilir (`details.Enrich`), diff'te ayrı etiketlerle
   raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
+- **Tüm oda fiyatları** (Kasım 2026): `NormalizedPrice.rooms` sitenin listelediği her oda + pansiyon teklifi (`status`: available /
+  on_request / sold_out); lead alanlar en ucuz müsait teklif. Sonuç tablosunda otel satırına tıklayınca tüm siteler için oda listesi açılır.
+  Oda listesi vermeyen siteler: etstur, setur, tatilsepeti (tek fiyatlı uçlar), touristica (oda adı okunmuyor).
 - **Fiyat + müsaitlik**: sonuç tablosunda her hücrede fiyat ve yeşil "müsait" / kırmızı "müsait değil" etiketi; Tatilbudur'da düğmesiz
   (satılmış) yanıttaki fiyat da gösterilir (`price.note`). Müsait olmayan fiyat "en ucuz" vurgusuna girmez.
 - **Şifre sıfırlama linki**: admin > Müşteri > Portal kullanıcıları > "Şifre sıfırlama linki" → tek kullanımlık, süreli link
