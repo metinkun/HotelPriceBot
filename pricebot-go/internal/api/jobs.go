@@ -29,6 +29,10 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 	if req.ChildAges == nil {
 		req.ChildAges = []int{}
 	}
+	if req.MaxWaitSeconds < 0 || req.MaxWaitSeconds > 120 {
+		badRequest(w, "maxWaitSeconds 0-120 araliginda olmali (0 = tum siteler bitene kadar bekle)")
+		return
+	}
 	switch req.Type {
 	case jobs.TypePrices:
 		pq := types.PriceQuery{HotelID: req.HotelID, CheckIn: req.CheckIn, CheckOut: req.CheckOut, Adults: req.Adults, Children: req.Children, ChildAges: req.ChildAges}

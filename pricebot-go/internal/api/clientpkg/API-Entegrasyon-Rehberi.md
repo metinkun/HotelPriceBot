@@ -113,6 +113,9 @@ Hata gövdesi her zaman `{"error": "...", "requestId": "..."}` biçimindedir; de
 
 - Sorguları `POST /api/v1/jobs` ile başlatıp `wait=20` ile bekleyin; dakikalık sınırı aşmamak için aynı anda en fazla
   5 iş açın.
+- İş, en yavaş site bitince tamamlanır; tarayıcı gerektiren siteler (touristica, gezinomi, coraltatil) 10–30 sn sürebilir.
+  Yanıt süresini sınırlamak için `"maxWaitSeconds": 8` verin (geç kalan siteler `timeout` olarak işaretlenir, kısmi sonuç
+  döner) veya `providers` ile hızlı siteleri seçin. İş sürerken de `GET /api/v1/jobs/{id}` biten sitelerin sonuçlarını verir.
 - Otel listesini günde bir kez `GET /api/v1/hotels` ile yenileyin; `hotelId` değerleri sabittir, değişmez.
 - Fiyatlar önbellekten dönebilir (`cached: true`, en fazla 5 dakika). Paketinizde `allowFresh` açıksa `"fresh": true`
   ile önbelleği atlayabilirsiniz.

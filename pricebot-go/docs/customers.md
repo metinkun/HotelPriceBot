@@ -91,6 +91,11 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   eski/yeni karşılaştırma modalı açılır (kelime bazlı renklendirme). Detay değişiklikleri sayfasında çift tıklama aynı modalı açar.
 - **Yorum / puan / etkinlik / kampanya**: snapshot'taki acente bölümlerinden otomatik türetilir (`details.Enrich`), diff'te ayrı etiketlerle
   raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
+- **İş süresi sınırı** (19 Kas 2026): `POST /api/v1/jobs` gövdesinde `maxWaitSeconds` (0-120); dolunca yanıt vermeyen siteler
+  `timeout` işaretlenir, kısmi sonuç `done` olarak döner, kalan site çağrıları iptal edilir. Tourlogic'in "API 10-15 sn" şikayetinin
+  nedeni: iş en yavaş (tarayıcılı) site bitince tamamlanıyor; portal kısmi sonuçları anında gösterdiği için hızlı algılanıyor.
+  Ayrıca app konteyneri bellek limiti 1.2 GB → 2.5 GB (`APP_MEMORY_LIMIT`): 3 tarayıcılı site + 14 paralel sorguda bellek baskısı
+  tüm siteleri yavaşlatıyordu.
 - **Tüm oda fiyatları** (Kasım 2026): `NormalizedPrice.rooms` sitenin listelediği her oda + pansiyon teklifi (`status`: available /
   on_request / sold_out); lead alanlar en ucuz müsait teklif. Sonuç tablosunda otel satırına tıklayınca tüm siteler için oda listesi açılır.
   Kasım 2026 sonu: 14 sitenin tamamı oda listesi veriyor (etstur room/multi, setur RSC rooms, tatilsepeti detay POST, touristica kart okuma).

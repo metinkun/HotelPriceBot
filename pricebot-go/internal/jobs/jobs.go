@@ -53,6 +53,36 @@ type Request struct {
 	Providers   []string `json:"providers,omitempty"`
 	AirportCode string   `json:"airportCode,omitempty"`
 	Fresh       bool     `json:"fresh,omitempty"`
+	// MaxWaitSeconds > 0 ise is en gec bu sure sonunda tamamlanir: yanit vermeyen siteler "timeout" olarak
+	// isaretlenir, kismi sonuc doner (0 = tum siteler bitene kadar bekle).
+	MaxWaitSeconds int `json:"maxWaitSeconds,omitempty"`
+}
+
+// waitWithDeadline tum provider goroutine'lerini bekler; MaxWaitSeconds dolarsa bitmeyenleri "timeout" yapar,
+// onTimeout ile hata listesine ekler ve kalan provider cagrilarini iptal eder. Doner: zaman asimi oldu mu.
+func (j *Job) waitWithDeadline(wg *sync.WaitGroup, mu *sync.Mutex, timedOut *bool, cancel context.CancelFunc, onTimeout func(provider, msg string)) bool {
+	done := make(chan struct{})
+	go func() { wg.Wait(); close(done) }()
+	if j.Request.MaxWaitSeconds <= 0 {
+		<-done
+		return false
+	}
+	select {
+	case <-done:
+		return false
+	case <-time.After(time.Duration(j.Request.MaxWaitSeconds) * time.Second):
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	*timedOut = true // ayni kilit altinda: gec gelen provider sonuclari artik yazilmaz
+	for name, st := range j.Progress {
+		if st == "pending" || st == "running" {
+			j.Progress[name] = "timeout"
+			onTimeout(name, fmt.Sprintf("Zaman asimi: site %d sn icinde yanit vermedi (maxWaitSeconds); sonuc kismi", j.Request.MaxWaitSeconds))
+		}
+	}
+	cancel()
+	return true
 }
 
 // Job dis dunyaya gosterilen is durumu.
@@ -312,6 +342,9 @@ func (m *Manager) run(id string) {
 	j.Status = StatusRunning
 	j.StartedAt = &now
 	_ = m.save(ctx, j)
+	// Provider cagrilari ayri bir alt baglamda: zaman asiminda yalnizca onlar iptal edilir, is kaydi (ctx) yazilmaya devam eder.
+	provCtx, provCancel := context.WithCancel(ctx)
+	defer provCancel()
 
 	finish := func(status Status, errMsg string) {
 		t := time.Now().UTC()
@@ -337,6 +370,7 @@ func (m *Manager) run(id string) {
 			j.Progress[mp.Provider] = "pending"
 		}
 		_ = m.save(ctx, j)
+		timedOut := false
 		var wg sync.WaitGroup
 		for i := range ms {
 			wg.Add(1)
@@ -347,9 +381,12 @@ func (m *Manager) run(id string) {
 				j.Progress[name] = "running"
 				_ = m.save(ctx, j)
 				mu.Unlock()
-				r, err := m.prices.PriceForMapping(ctx, &ms[i], q, j.Request.Fresh)
+				r, err := m.prices.PriceForMapping(provCtx, &ms[i], q, j.Request.Fresh)
 				mu.Lock()
 				defer mu.Unlock()
+				if timedOut {
+					return // is zaman asimiyla kapandi; gec gelen sonuc yazilmaz
+				}
 				if err != nil {
 					j.Progress[name] = "error"
 					agg.Errors = append(agg.Errors, services.ProviderError{Provider: name, Error: err.Error()})
@@ -361,7 +398,10 @@ func (m *Manager) run(id string) {
 				_ = m.save(ctx, j)
 			}(i)
 		}
-		wg.Wait()
+		j.waitWithDeadline(&wg, &mu, &timedOut, provCancel, func(p, msg string) {
+			agg.Errors = append(agg.Errors, services.ProviderError{Provider: p, Error: msg})
+			j.Result, _ = json.Marshal(agg)
+		})
 		finish(StatusDone, "")
 
 	case TypePackages:
@@ -377,6 +417,7 @@ func (m *Manager) run(id string) {
 		}
 		j.Result, _ = json.Marshal(agg)
 		_ = m.save(ctx, j)
+		timedOut := false
 		var wg sync.WaitGroup
 		for i := range ms {
 			wg.Add(1)
@@ -387,9 +428,12 @@ func (m *Manager) run(id string) {
 				j.Progress[name] = "running"
 				_ = m.save(ctx, j)
 				mu.Unlock()
-				r, err := m.packages.PackageForMapping(ctx, &ms[i], q, j.Request.Fresh)
+				r, err := m.packages.PackageForMapping(provCtx, &ms[i], q, j.Request.Fresh)
 				mu.Lock()
 				defer mu.Unlock()
+				if timedOut {
+					return
+				}
 				if err != nil {
 					j.Progress[name] = "error"
 					agg.Errors = append(agg.Errors, services.ProviderError{Provider: name, Error: err.Error()})
@@ -401,7 +445,10 @@ func (m *Manager) run(id string) {
 				_ = m.save(ctx, j)
 			}(i)
 		}
-		wg.Wait()
+		j.waitWithDeadline(&wg, &mu, &timedOut, provCancel, func(p, msg string) {
+			agg.Errors = append(agg.Errors, services.ProviderError{Provider: p, Error: msg})
+			j.Result, _ = json.Marshal(agg)
+		})
 		finish(StatusDone, "")
 
 	default:

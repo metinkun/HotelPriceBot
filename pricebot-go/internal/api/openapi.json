@@ -277,6 +277,14 @@
           "fresh": {
             "type": "boolean",
             "description": "Cache'i atla (plan izni gerekir)"
+          },
+          "maxWaitSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120,
+            "default": 0,
+            "example": 10,
+            "description": "Verilirse is en gec bu sure sonunda 'done' olur: yanit vermeyen siteler progress'te 'timeout', result.errors'ta 'Zaman asimi...' olarak listelenir ve kismi sonuc doner. 0 = tum siteler bitene kadar bekle. Tarayici gerektiren siteler (touristica, gezinomi, coraltatil) 10-30 sn surebilir."
           }
         }
       },
@@ -351,7 +359,7 @@
                 "error"
               ]
             },
-            "description": "provider -> durum"
+            "description": "site -> pending | running | done | error | timeout (maxWaitSeconds doldu)"
           },
           "result": {
             "description": "Kismi sonuc: biten provider'lar aninda gorunur",

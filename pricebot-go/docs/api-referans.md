@@ -152,6 +152,7 @@ X-API-Key: pb_live_...
 | `providers` | string[] | hayır | Boş = izinli tüm siteler. Eşleşmesi olmayan site sessizce atlanır. |
 | `airportCode` | string | paket için evet | Kalkış havalimanı IATA kodu (ör. `SAW`, `IST`, `ADB`). |
 | `fresh` | bool | hayır | Önbelleği atla (`allowFresh` gerekir; yoksa yok sayılır). |
+| `maxWaitSeconds` | int | hayır | 0–120. Verilirse iş en geç bu süre sonunda `done` olur; yanıt vermeyen siteler `progress`'te `timeout`, `result.errors` içinde "Zaman asimi..." olarak listelenir ve o ana kadarki sonuç döner. 0 (varsayılan) = tüm siteler bitene kadar bekle. **Yanıt süresini garanti etmek için önerilir** (ör. 8). |
 
 ```http
 POST {{BASE_URL}}/api/v1/jobs
@@ -289,7 +290,12 @@ Bir site hata verdiğinde `errors` dolu gelir, örneğin `"errors": [{"provider"
 Satışta olmayan bir odanın örneği: `{"roomName": "Salamis Park", "boardType": "Ultra her şey dahil", "currency": "TL", "listPrice": 49500, "price": 27225, "discountRate": 45, "available": false, "status": "sold_out"}`.
 
 `status` değerleri: `queued` → `running` → `done` | `failed`. `failed` durumunda `result` yerine `error` alanı gelir.
-`progress` site bazında `pending | running | done | error`. Bir site hata verirse diğerleri etkilenmez; hata
+`progress` site bazında `pending | running | done | error | timeout`.
+
+**Süre beklentisi:** siteler paralel sorgulanır; JSON API'li siteler 1–3 sn, tarayıcı gerektiren siteler (touristica,
+gezinomi, coraltatil) 10–30 sn sürebilir. İş, en yavaş site bitince tamamlanır. Sonuç `running` iken de kısmidir:
+`GET /api/v1/jobs/{id}` biten sitelerin sonuçlarını `result.results[]` içinde o anda döner; `maxWaitSeconds` ile
+tamamlanma süresini sınırlayabilir ya da `providers` ile yalnızca hızlı siteleri seçebilirsiniz. Bir site hata verirse diğerleri etkilenmez; hata
 `result.errors[]` içinde `{provider, error}` olarak listelenir.
 
 ### 2.6 Paket sorgusu (`type: "packages"`)
@@ -593,6 +599,8 @@ RID=$(curl -s -X POST $BASE/api/v1/jobs -H "X-API-Key: $KEY" -H 'Content-Type: a
 curl -s "$BASE/api/v1/jobs/$RID?wait=20" -H "X-API-Key: $KEY" | jq '.status, .result.results[] | {provider, price: .price.price, rooms: (.price.rooms|length)}'
 ```
 
+- Hızlı yanıt gerekiyorsa `maxWaitSeconds` verin (ör. 8): iş en geç 8 sn'de `done` olur, geç kalan siteler `timeout` olarak işaretlenir.
+  Sayfayı aşamalı dolduracaksanız `maxWaitSeconds` vermeden `GET /api/v1/jobs/{id}` ile 1 sn aralıkla sorgulayın; biten siteler hemen gelir.
 - `429` alındığında `Retry-After` kadar bekleyip tekrar deneyin; dakikada `ratePerMinute` istek sınırı vardır.
 - Tarayıcı gerektiren siteler (touristica, gezinomi, coraltatil) 10–30 sn sürebilir; `wait=30` ile tek istekte alın veya
   `pollAfterMs` aralığıyla sorgulayın.

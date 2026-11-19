@@ -13,6 +13,12 @@ services:
   app:
     ports: !reset []
     restart: always
+    # 3 headless tarayici saglayicisi (touristica, gezinomi, coraltatil) + 14 site ayni anda: 1.2 GB'da bellek
+    # baskisi tum siteleri yavaslatiyor (olculdu). 4 GB sunucuda 2.5 GB, 8 GB sunucuda 4 GB verin.
+    deploy:
+      resources:
+        limits:
+          memory: ${APP_MEMORY_LIMIT:-2500M}
     environment:
       APP_ENV: production
       LOG_FORMAT: json
