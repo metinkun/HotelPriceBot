@@ -293,7 +293,8 @@ Bir site hata verdiğinde `errors` dolu gelir, örneğin `"errors": [{"provider"
 Satışta olmayan bir odanın örneği: `{"roomName": "Salamis Park", "boardType": "Ultra her şey dahil", "currency": "TL", "listPrice": 49500, "price": 27225, "discountRate": 45, "available": false, "status": "sold_out"}`.
 
 `status` değerleri: `queued` → `running` → `done` | `failed`. `failed` durumunda `result` yerine `error` alanı gelir.
-`progress` site bazında `pending | running | done | error | timeout`.
+`progress` site bazında `pending | running | done | error | timeout | skipped`. `skipped`: istekte verilen ama çalıştırılmayan
+site (bakımda, bu otelde eşleşmesi yok veya paket desteklemiyor); nedeni `result.errors[]` içinde yazar.
 
 **Süre beklentisi:** siteler paralel sorgulanır; JSON API'li siteler 1–3 sn, tarayıcı gerektiren siteler (touristica,
 gezinomi, coraltatil) 10–30 sn sürebilir. İş, en yavaş site bitince tamamlanır. Sonuç `running` iken de kısmidir:
@@ -515,7 +516,8 @@ Tek site verildiğinde yanıt doğrudan paket sonucudur:
 ```
 
 Birden fazla site istendiğinde `{"hotelId", "airportCode", "checkIn", "checkOut", "results": [paket sonuçları], "errors": [], "notSupported": [...]}` döner
-(`notSupported`: paket desteklemeyen siteler). Bakımdaki bir site çoklu istekte atlanır; tek site isteğinde `503` döner.
+(`notSupported`: paket desteklemeyen siteler). Bakımdaki bir site çoklu istekte atlanır ve `errors[]` içinde "Site bakimda ... atlandi"
+olarak listelenir; tek site isteğinde `503` döner. `provider` parametresinde birden fazla site varsa yanıt her zaman çoklu şekildedir.
 
 ---
 

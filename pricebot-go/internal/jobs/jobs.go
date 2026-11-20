@@ -56,6 +56,9 @@ type Request struct {
 	// MaxWaitSeconds > 0 ise is en gec bu sure sonunda tamamlanir: yanit vermeyen siteler "timeout" olarak
 	// isaretlenir, kismi sonuc doner (0 = tum siteler bitene kadar bekle).
 	MaxWaitSeconds int `json:"maxWaitSeconds,omitempty"`
+	// Skipped istekte verilip calistirilmayan siteler (bakimda / eslesme yok / paket desteklemiyor) -> neden.
+	// Sonucta progress "skipped" ve result.errors icinde raporlanir.
+	Skipped map[string]string `json:"skipped,omitempty"`
 }
 
 // waitWithDeadline tum provider goroutine'lerini bekler; MaxWaitSeconds dolarsa bitmeyenleri "timeout" yapar,
@@ -369,6 +372,10 @@ func (m *Manager) run(id string) {
 		for _, mp := range ms {
 			j.Progress[mp.Provider] = "pending"
 		}
+		for name, why := range j.Request.Skipped {
+			j.Progress[name] = "skipped"
+			agg.Errors = append(agg.Errors, services.ProviderError{Provider: name, Error: why})
+		}
 		_ = m.save(ctx, j)
 		timedOut := false
 		var wg sync.WaitGroup
@@ -411,9 +418,13 @@ func (m *Manager) run(id string) {
 			finish(StatusFailed, err.Error())
 			return
 		}
-		agg := &services.MultiPackageResult{HotelID: q.HotelID, Results: []services.ProviderPackageResult{}, NotSupported: notSupported, NotMapped: notMapped}
+		agg := &services.MultiPackageResult{HotelID: q.HotelID, AirportCode: q.AirportCode, CheckIn: q.CheckIn, CheckOut: q.CheckOut, Results: []services.ProviderPackageResult{}, Errors: []services.ProviderError{}, NotSupported: notSupported, NotMapped: notMapped}
 		for _, mp := range ms {
 			j.Progress[mp.Provider] = "pending"
+		}
+		for name, why := range j.Request.Skipped {
+			j.Progress[name] = "skipped"
+			agg.Errors = append(agg.Errors, services.ProviderError{Provider: name, Error: why})
 		}
 		j.Result, _ = json.Marshal(agg)
 		_ = m.save(ctx, j)

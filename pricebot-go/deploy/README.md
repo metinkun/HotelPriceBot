@@ -12,6 +12,7 @@ curl -s https://api.smartrate.app/health   # version alani surumu gosterir
 ```
 
 - Guncelleme: `git pull && GIT_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+  (`/health` -> `commit` alani HEAD ile ayni olmali; farkliysa imaj eski/commit'siz calisma agacindan derlenmistir.)
 - `.env` icinde `PUBLIC_API_URL=https://api.smartrate.app` ve `PUBLIC_PORTAL_URL=https://demo.smartrate.app/portal/` (prod overlay varsayilan olarak bunlari verir;
   musteri paketi ve sifre sifirlama linkleri bu adresleri kullanir).
 - Loglar: `docker compose logs -f app` (JSON, her satirda reqId)

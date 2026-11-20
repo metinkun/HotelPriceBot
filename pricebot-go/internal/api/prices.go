@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"pricebot/internal/services"
 
 	"pricebot/internal/types"
 )
@@ -31,6 +32,7 @@ func (s *Server) getAllPrices(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	closed := s.closedSites(providers)
 	providers, err := s.providersForPlan(r, providers)
 	if err != nil {
 		writeError(w, r, err)
@@ -40,6 +42,9 @@ func (s *Server) getAllPrices(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeError(w, r, err)
 		return
+	}
+	for _, n := range closed {
+		res.Errors = append(res.Errors, services.ProviderError{Provider: n, Error: skippedMaintenance})
 	}
 	writeJSON(w, 200, res)
 }
@@ -151,13 +156,15 @@ func (s *Server) getPackages(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	requestedCount := len(list)
+	closed := s.closedSites(list)
 	list, err := s.providersForPlan(r, list)
 	if err != nil {
 		writeError(w, r, err)
 		return
 	}
 	fresh := s.freshAllowed(r, boolParam(q.Get("fresh")))
-	if len(list) == 1 {
+	if requestedCount == 1 && len(list) == 1 {
 		res, err := s.packages.GetPackagePrices(r.Context(), list[0], pq, fresh)
 		if err != nil {
 			writeError(w, r, err)
@@ -170,6 +177,9 @@ func (s *Server) getPackages(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeError(w, r, err)
 		return
+	}
+	for _, n := range closed {
+		res.Errors = append(res.Errors, services.ProviderError{Provider: n, Error: skippedMaintenance})
 	}
 	writeJSON(w, 200, res)
 }

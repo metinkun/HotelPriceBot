@@ -103,6 +103,10 @@ func (s *Server) updatePlan(w http.ResponseWriter, r *http.Request) {
 	}
 	p, err := s.db.UpdatePlan(r.Context(), id, in)
 	if err != nil {
+		if db.IsUniqueViolation(err) {
+			writeError(w, r, apperr.Conflictf("Bu plan kodu zaten var"))
+			return
+		}
 		notFoundOr(w, r, err, "Plan bulunamadi")
 		return
 	}
@@ -209,15 +213,36 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if in.PlanID != nil {
-		if p, err := s.db.GetPlan(r.Context(), *in.PlanID); err == nil {
-			if !p.IsActive {
-				writeError(w, r, apperr.BadRequestf("'%s' paketi pasif; pasif paket atanamaz", p.Name))
-				return
-			}
-			cur, _ := s.db.GetClient(r.Context(), id)
-			if cur != nil && p.Kind != "both" && p.Kind != cur.Kind && (in.Kind == nil || *in.Kind != p.Kind) {
-				writeError(w, r, apperr.BadRequestf("'%s' paketi yalnizca %s turu musterilere atanabilir", p.Name, strings.ToUpper(p.Kind)))
-				return
+		p, err := s.db.GetPlan(r.Context(), *in.PlanID)
+		if err != nil {
+			writeError(w, r, apperr.BadRequestf("planId gecersiz"))
+			return
+		}
+		if !p.IsActive {
+			writeError(w, r, apperr.BadRequestf("'%s' paketi pasif; pasif paket atanamaz", p.Name))
+			return
+		}
+		cur, _ := s.db.GetClient(r.Context(), id)
+		if cur != nil && p.Kind != "both" && p.Kind != cur.Kind && (in.Kind == nil || *in.Kind != p.Kind) {
+			writeError(w, r, apperr.BadRequestf("'%s' paketi yalnizca %s turu musterilere atanabilir", p.Name, strings.ToUpper(p.Kind)))
+			return
+		}
+	}
+	// Ad / e-posta baska bir musteriyle cakismasin
+	if in.Name != "" || (in.Email != nil && strings.TrimSpace(*in.Email) != "") {
+		if existing, err := s.db.ListClients(r.Context(), ""); err == nil {
+			for _, e := range existing {
+				if e.ID == id {
+					continue
+				}
+				if in.Name != "" && strings.EqualFold(strings.TrimSpace(e.Name), strings.TrimSpace(in.Name)) {
+					writeError(w, r, apperr.Conflictf("Ayni adda musteri zaten var (id %d)", e.ID))
+					return
+				}
+				if in.Email != nil && e.Email != nil && strings.TrimSpace(*in.Email) != "" && strings.EqualFold(strings.TrimSpace(*e.Email), strings.TrimSpace(*in.Email)) {
+					writeError(w, r, apperr.Conflictf("Ayni e-posta ile musteri zaten var (id %d)", e.ID))
+					return
+				}
 			}
 		}
 	}

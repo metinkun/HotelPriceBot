@@ -41,7 +41,28 @@ func (s *Server) adminClientSettings(w http.ResponseWriter, r *http.Request) {
 	if c != nil {
 		lim = db.EffectiveLimits(c, p)
 	}
-	writeJSON(w, 200, map[string]any{"settings": st, "providers": s.reg.Names(), "portalUsers": users, "hotels": hotels, "schedules": schedules, "client": c, "limits": lim, "devices": devices, "sitesOpen": s.sites.FilterEnabled(s.reg.Names())})
+	// effectiveProviders: paket izni ∩ musteri etkin siteleri ∩ acik siteler (API ve portalin gercekte kullandigi liste)
+	effective := s.reg.Names()
+	if c != nil {
+		if pl := limitsOf(c, p); len(pl.AllowedProviders) > 0 {
+			effective = pl.AllowedProviders
+		}
+	}
+	if len(st.EnabledProviders) > 0 {
+		en := map[string]bool{}
+		for _, n := range st.EnabledProviders {
+			en[n] = true
+		}
+		f := []string{}
+		for _, n := range effective {
+			if en[n] {
+				f = append(f, n)
+			}
+		}
+		effective = f
+	}
+	effective = s.sites.FilterEnabled(effective)
+	writeJSON(w, 200, map[string]any{"settings": st, "providers": s.reg.Names(), "effectiveProviders": effective, "portalUsers": users, "hotels": hotels, "schedules": schedules, "client": c, "limits": lim, "devices": devices, "sitesOpen": s.sites.FilterEnabled(s.reg.Names())})
 }
 
 // PUT /api/admin/clients/{id}/settings {clientType?, enabledProviders?}

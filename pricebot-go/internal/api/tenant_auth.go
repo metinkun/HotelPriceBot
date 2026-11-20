@@ -172,6 +172,22 @@ func (s *Server) logRequest(r *http.Request, id *auth.Identity, status int, dur 
 	}()
 }
 
+// closedSites istenen sitelerden bakimda (kapali) olanlar.
+func (s *Server) closedSites(requested []string) []string {
+	out := []string{}
+	if s.sites == nil {
+		return out
+	}
+	for _, n := range requested {
+		if !s.sites.Enabled(n) {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
+const skippedMaintenance = "Site bakimda (gecici olarak kapali); bu istekte atlandi"
+
 // providersForPlan istenen provider listesini plana gore daraltir; izinsiz istek varsa 403.
 func (s *Server) providersForPlan(r *http.Request, requested []string) ([]string, error) {
 	pl := planFrom(r.Context())

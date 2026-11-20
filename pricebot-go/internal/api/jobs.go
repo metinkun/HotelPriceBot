@@ -74,6 +74,11 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Secilen sitelerde otelin eslesmesi (ve paket destegi) var mi? Yoksa hak dusmeden 400.
+	// Kismen gecersizse calismayan siteler nedeniyle birlikte isin sonucunda raporlanir (progress "skipped").
+	skipped := map[string]string{}
+	for _, n := range s.closedSites(req.Providers) {
+		skipped[n] = skippedMaintenance
+	}
 	if len(req.Providers) > 0 {
 		mapped := map[string]bool{}
 		if hv, err := s.hotels.Get(r.Context(), req.HotelID); err == nil {
@@ -87,11 +92,13 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		unsupported := []string{}
 		for _, n := range provs {
 			if !mapped[n] {
+				skipped[n] = "Bu otelin bu sitede eslesmesi yok (GET /api/v1/hotels -> providers); atlandi"
 				continue
 			}
 			if req.Type == jobs.TypePackages {
 				if p, err := s.reg.Get(n); err != nil || !p.Capabilities().SupportsPackages {
 					unsupported = append(unsupported, n)
+					skipped[n] = "Site paket (otel+ucak) sorgusunu desteklemiyor; atlandi"
 					continue
 				}
 			}
@@ -108,6 +115,9 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 		provs = usable
 	}
 	req.Providers = provs
+	if len(skipped) > 0 {
+		req.Skipped = skipped
+	}
 	req.Fresh = s.freshAllowed(r, req.Fresh)
 
 	idn := auth.From(r.Context())
