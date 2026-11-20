@@ -228,11 +228,19 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	// Ad / e-posta baska bir musteriyle cakismasin
+	// Ad / e-posta baska bir AKTIF musteriyle cakismasin (degismeyen deger kontrol edilmez; pasif kayitlar muaf)
 	if in.Name != "" || (in.Email != nil && strings.TrimSpace(*in.Email) != "") {
+		if cur, err := s.db.GetClient(r.Context(), id); err == nil {
+			if in.Name != "" && strings.EqualFold(strings.TrimSpace(cur.Name), strings.TrimSpace(in.Name)) {
+				in.Name = "" // ayni ad: tekillik kontrolune girmez (UpdateClient bos adi degistirmez)
+			}
+			if in.Email != nil && cur.Email != nil && strings.EqualFold(strings.TrimSpace(*cur.Email), strings.TrimSpace(*in.Email)) {
+				in.Email = nil
+			}
+		}
 		if existing, err := s.db.ListClients(r.Context(), ""); err == nil {
 			for _, e := range existing {
-				if e.ID == id {
+				if e.ID == id || !e.IsActive {
 					continue
 				}
 				if in.Name != "" && strings.EqualFold(strings.TrimSpace(e.Name), strings.TrimSpace(in.Name)) {
