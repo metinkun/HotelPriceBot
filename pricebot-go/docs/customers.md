@@ -91,6 +91,10 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   eski/yeni karşılaştırma modalı açılır (kelime bazlı renklendirme). Detay değişiklikleri sayfasında çift tıklama aynı modalı açar.
 - **Yorum / puan / etkinlik / kampanya**: snapshot'taki acente bölümlerinden otomatik türetilir (`details.Enrich`), diff'te ayrı etiketlerle
   raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
+- **20 Kas 2026**: (1) admin > Müşteri > Oteller > "Sistem otelinden ekle" artık çoklu seçim (arama + liste + "listedekileri seç";
+  API `internalHotelIds[]`, limit toplu kontrol edilir). (2) Setur paket fiyatı = oda + seçili uçuşlar + seçili transfer (eskiden
+  sadece otel fiyatı dönüyordu). (3) Geçici site hatalarında (zaman aşımı, bağlantı, 5xx/429) bir kez otomatik yeniden deneme
+  (`services.retryTransient`); etstur paket zaman aşımı 40 sn. Tatilbudur 403 (Akamai) proxy olmadan çözülemez.
 - **İş süresi sınırı** (19 Kas 2026): `POST /api/v1/jobs` gövdesinde `maxWaitSeconds` (0-120); dolunca yanıt vermeyen siteler
   `timeout` işaretlenir, kısmi sonuç `done` olarak döner, kalan site çağrıları iptal edilir. Tourlogic'in "API 10-15 sn" şikayetinin
   nedeni: iş en yavaş (tarayıcılı) site bitince tamamlanıyor; portal kısmi sonuçları anında gösterdiği için hızlı algılanıyor.

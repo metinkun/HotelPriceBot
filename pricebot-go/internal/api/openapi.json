@@ -4475,7 +4475,7 @@
         "tags": [
           "Admin - Hesap Limitleri & Onaylar"
         ],
-        "summary": "Sistem otelini musteriye bagla (otel limiti kontrol edilir)",
+        "summary": "Sistem otel(ler)ini musteriye bagla (tek veya toplu; otel limiti kontrol edilir)",
         "security": [
           {
             "AdminBearer": []
@@ -4511,6 +4511,13 @@
                   },
                   "label": {
                     "type": "string"
+                  },
+                  "internalHotelIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Toplu baglama: birden fazla otel kimligi (internalHotelId ile birlikte kullanilabilir). Otel limiti toplam icin kontrol edilir; asilirsa hicbiri baglanmaz."
                   }
                 }
               }

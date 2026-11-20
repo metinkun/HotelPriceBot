@@ -379,3 +379,12 @@ button { font-family: inherit; }
 .sr-rooms td { padding: 7px 12px; }
 .sr-rooms tr.sr-best-row td { background: color-mix(in srgb, var(--ok) 10%, transparent); }
 .sr-rooms tr.sr-best-row td:nth-child(4) b { color: var(--ok); }
+
+/* Coklu secim listesi (modal icinde) */
+.sr-checklist { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.sr-checkrow { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 13px; }
+.sr-checkrow:last-child { border-bottom: 0; }
+.sr-checkrow:hover { background: var(--surface-2); }
+.sr-checkrow.on { background: var(--primary-soft); }
+.sr-checkrow input { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+.sr-checkrow-main { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

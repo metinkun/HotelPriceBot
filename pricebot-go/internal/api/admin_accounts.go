@@ -343,7 +343,8 @@ func (s *Server) adminHotelClients(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, list)
 }
 
-// POST /api/admin/clients/{id}/hotels {internalHotelId, label?} — mevcut sistem otelini musteriye bagla
+// POST /api/admin/clients/{id}/hotels {internalHotelId, label?} veya {internalHotelIds: [...], label?}
+// — mevcut sistem otel(ler)ini musteriye baglar (toplu). Limit asilirsa hicbiri baglanmaz.
 func (s *Server) adminLinkClientHotel(w http.ResponseWriter, r *http.Request) {
 	id, ok := pathID(r)
 	if !ok {
@@ -351,11 +352,25 @@ func (s *Server) adminLinkClientHotel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var body struct {
-		InternalHotelID string  `json:"internalHotelId"`
-		Label           *string `json:"label"`
+		InternalHotelID  string   `json:"internalHotelId"`
+		InternalHotelIDs []string `json:"internalHotelIds"`
+		Label            *string  `json:"label"`
 	}
-	if err := decodeBody(r, &body); err != nil || strings.TrimSpace(body.InternalHotelID) == "" {
-		badRequest(w, "internalHotelId zorunlu")
+	if err := decodeBody(r, &body); err != nil {
+		badRequest(w, "Gecersiz JSON govde")
+		return
+	}
+	ids := []string{}
+	seen := map[string]bool{}
+	for _, v := range append([]string{body.InternalHotelID}, body.InternalHotelIDs...) {
+		v = strings.TrimSpace(v)
+		if v != "" && !seen[v] {
+			seen[v] = true
+			ids = append(ids, v)
+		}
+	}
+	if len(ids) == 0 {
+		badRequest(w, "internalHotelId veya internalHotelIds zorunlu")
 		return
 	}
 	c, p, err := s.clientWithPlan(r.Context(), id)
@@ -363,18 +378,26 @@ func (s *Server) adminLinkClientHotel(w http.ResponseWriter, r *http.Request) {
 		notFoundOr(w, r, err, "Musteri bulunamadi")
 		return
 	}
-	if _, err := s.hotels.Get(r.Context(), body.InternalHotelID); err != nil {
-		writeError(w, r, err)
-		return
+	newCount := 0
+	for _, hid := range ids {
+		if _, err := s.hotels.Get(r.Context(), hid); err != nil {
+			writeError(w, r, apperr.NotFoundf("Otel bulunamadi: %s", hid))
+			return
+		}
+		if owns, _ := s.db.ClientOwnsHotel(r.Context(), id, hid); !owns {
+			newCount++
+		}
 	}
 	lim := db.EffectiveLimits(c, p)
-	if owns, _ := s.db.ClientOwnsHotel(r.Context(), id, body.InternalHotelID); !owns && lim.MaxHotels > 0 && s.db.CountClientHotels(r.Context(), id) >= lim.MaxHotels {
-		writeError(w, r, apperr.New(apperr.Forbidden, "Musterinin otel siniri dolu (%d). Limiti ozellestirin veya paketi degistirin.", lim.MaxHotels))
+	if lim.MaxHotels > 0 && newCount > 0 && s.db.CountClientHotels(r.Context(), id)+newCount > lim.MaxHotels {
+		writeError(w, r, apperr.New(apperr.Forbidden, "Musterinin otel siniri asilir (%d + %d yeni > %d). Limiti ozellestirin veya paketi degistirin.", s.db.CountClientHotels(r.Context(), id), newCount, lim.MaxHotels))
 		return
 	}
-	if err := s.db.LinkClientHotel(r.Context(), id, body.InternalHotelID, body.Label); err != nil {
-		writeError(w, r, err)
-		return
+	for _, hid := range ids {
+		if err := s.db.LinkClientHotel(r.Context(), id, hid, body.Label); err != nil {
+			writeError(w, r, err)
+			return
+		}
 	}
 	hotels, _ := s.db.ListClientHotels(r.Context(), id)
 	writeJSON(w, 201, hotels)

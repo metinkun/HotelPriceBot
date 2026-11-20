@@ -55,29 +55,24 @@ func (p *Provider) GetPackagePrices(ctx context.Context, m *provider.Mapping, q 
 	if slug == "" {
 		return nil, fmt.Errorf("Mapping metadata'da slug/sourceUrl eksik")
 	}
-	data, err := fetchPackagePage(ctx, slug, q.CheckIn, q.CheckOut, q.Adults, q.ChildAges, q.AirportCode, m.MetaString("arrivalCode"))
+	d, err := fetchPackageData(ctx, slug, q.CheckIn, q.CheckOut, q.Adults, q.ChildAges, q.AirportCode, m.MetaString("arrivalCode"))
 	if err != nil {
 		return nil, err
 	}
-	pr := normalize(data)
-	rooms := []types.NormalizedPackageRoom{}
-	if pr.Available {
-		rooms = append(rooms, types.NormalizedPackageRoom{
-			RoomID: "lowest", RoomName: "En uygun paket", NightCount: data.NightCount,
-			Boards: []types.NormalizedPackageBoard{{
-				BoardType: pr.BoardType, Currency: pr.Currency, ListPrice: pr.ListPrice, Price: pr.Price, DiscountRate: pr.DiscountRate,
-			}},
-		})
+	rooms := normalizePackageRooms(d)
+	flights, _, note := pkgExtras(d)
+	if flights <= 0 && len(rooms) > 0 {
+		note = "Setur bu kalkis icin ucus secemedi; fiyatlar yalnizca otel (+transfer) toplamidir."
 	}
 	hotelName := m.HotelName
 	if hotelName == nil {
-		hotelName = pr.HotelName
+		hotelName = decode(d.Data.Hotel.Name)
 	}
 	return &provider.PackageResult{
 		InternalHotelID: m.InternalHotelID, ProviderHotelID: m.ProviderHotelID, HotelName: hotelName,
 		AirportCode: q.AirportCode, CheckIn: q.CheckIn, CheckOut: q.CheckOut,
 		Available: len(rooms) > 0, RoomCount: len(rooms), Rooms: rooms,
-		Note: "Setur paket sayfasi yalnizca en uygun (lowest) paket fiyatini veriyor; oda bazli liste sunmuyor.",
+		Note: note,
 	}, nil
 }
 

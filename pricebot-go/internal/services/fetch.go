@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
+	"net"
+	"strings"
 	"time"
 
 	"pricebot/internal/cache"
@@ -153,20 +156,71 @@ func (f *Fetcher) Bulk(ctx context.Context, name string, p provider.Provider, ms
 }
 
 // safePrice / safePackage provider paniklerini hataya cevirir.
-func safePrice(ctx context.Context, p provider.Provider, m *provider.Mapping, q types.PriceQuery) (r *provider.PriceResult, err error) {
-	defer func() {
-		if rec := recover(); rec != nil {
-			r, err = nil, fmt.Errorf("provider panic: %v", rec)
+// isTransient gecici ag hatasi: zaman asimi, baglanti kopmasi, 5xx/429. Bir kez yeniden denemeye deger.
+func isTransient(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return true
+	}
+	var ne net.Error
+	if errors.As(err, &ne) && ne.Timeout() {
+		return true
+	}
+	msg := strings.ToLower(err.Error())
+	for _, s := range []string{"deadline exceeded", "timeout", "i/o timeout", "connection reset", "eof", "status code 5", "status code 429", "tls handshake"} {
+		if strings.Contains(msg, s) {
+			return true
 		}
-	}()
-	return p.GetPrice(ctx, m, q)
+	}
+	return false
 }
 
-func safePackage(ctx context.Context, pp provider.PackageProvider, m *provider.Mapping, q types.PackageQuery) (r *provider.PackageResult, err error) {
-	defer func() {
-		if rec := recover(); rec != nil {
-			r, err = nil, fmt.Errorf("provider panic: %v", rec)
-		}
-	}()
-	return pp.GetPackagePrices(ctx, m, q)
+// retryTransient fn'i calistirir; gecici hatada ve butce (ctx) yeterliyse kisa bekleyip BIR kez daha dener.
+func retryTransient[T any](ctx context.Context, name string, fn func() (T, error)) (T, error) {
+	r, err := fn()
+	if err == nil || !isTransient(err) || ctx.Err() != nil {
+		return r, err
+	}
+	if dl, ok := ctx.Deadline(); ok && time.Until(dl) < 25*time.Second {
+		return r, err
+	}
+	slog.Warn("provider gecici hata, yeniden deneniyor", "provider", name, "err", err.Error())
+	select {
+	case <-time.After(1500 * time.Millisecond):
+	case <-ctx.Done():
+		return r, err
+	}
+	r2, err2 := fn()
+	if err2 != nil {
+		return r2, fmt.Errorf("%w (yeniden deneme de basarisiz)", err2)
+	}
+	return r2, nil
+}
+
+func safePrice(ctx context.Context, p provider.Provider, m *provider.Mapping, q types.PriceQuery) (*provider.PriceResult, error) {
+	return retryTransient(ctx, p.Name(), func() (r *provider.PriceResult, err error) {
+		defer func() {
+			if rec := recover(); rec != nil {
+				r, err = nil, fmt.Errorf("provider panic: %v", rec)
+			}
+		}()
+		return p.GetPrice(ctx, m, q)
+	})
+}
+
+func safePackage(ctx context.Context, pp provider.PackageProvider, m *provider.Mapping, q types.PackageQuery) (*provider.PackageResult, error) {
+	name := ""
+	if p, ok := pp.(provider.Provider); ok {
+		name = p.Name()
+	}
+	return retryTransient(ctx, name, func() (r *provider.PackageResult, err error) {
+		defer func() {
+			if rec := recover(); rec != nil {
+				r, err = nil, fmt.Errorf("provider panic: %v", rec)
+			}
+		}()
+		return pp.GetPackagePrices(ctx, m, q)
+	})
 }

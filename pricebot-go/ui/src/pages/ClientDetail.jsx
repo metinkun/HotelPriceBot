@@ -38,7 +38,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
   const [newUser, setNewUser] = useState({ email: "", password: "", name: "" });
   const [devUser, setDevUser] = useState(null); // {user, devices}
   const [hotelModal, setHotelModal] = useState(false);
-  const [linkHotel, setLinkHotel] = useState({ internalHotelId: "", label: "" });
+  const [linkHotel, setLinkHotel] = useState({ ids: [], label: "", q: "" });
   const [logUser, setLogUser] = useState(""); // giris loglari: kullanici filtresi (email)
   const [resetInfo, setResetInfo] = useState(null); // sifre sifirlama linki sonucu
   const [userEdit, setUserEdit] = useState(null); // {id, email, name, pc, mobile}
@@ -115,9 +115,9 @@ export default function ClientDetail({ param: clientId, navigate }) {
     try { await api(`/api/admin/clients/${clientId}/limits/reset`, { method: "POST" }); toast.success("Limitler pakete sıfırlandı."); await load(); } catch (e) { toast.error(e.message); }
   };
   const linkSystemHotel = async () => {
-    if (!linkHotel.internalHotelId) throw new Error("Bir otel seçin.");
-    await api(`/api/admin/clients/${clientId}/hotels`, { method: "POST", body: { internalHotelId: linkHotel.internalHotelId, label: linkHotel.label || null } });
-    setHotelModal(false); setLinkHotel({ internalHotelId: "", label: "" }); toast.success("Otel müşteriye bağlandı."); await load();
+    if (!linkHotel.ids.length) throw new Error("En az bir otel seçin.");
+    await api(`/api/admin/clients/${clientId}/hotels`, { method: "POST", body: { internalHotelIds: linkHotel.ids, label: linkHotel.label || null } });
+    const n = linkHotel.ids.length; setHotelModal(false); setLinkHotel({ ids: [], label: "", q: "" }); toast.success(n === 1 ? "Otel müşteriye bağlandı." : `${n} otel müşteriye bağlandı.`); await load();
   };
   const unlinkHotel = async (h) => {
     if (!(await confirm({ title: "Bağlantı kaldırılsın mı?", message: `${hotelName(h.internalHotelId)} bu müşterinin listesinden çıkarılacak (sistemdeki otel silinmez).`, confirmText: "Kaldır", danger: true }))) return;
@@ -242,9 +242,26 @@ export default function ClientDetail({ param: clientId, navigate }) {
         </FormGrid>
       </FormModal>
 
-      <FormModal open={hotelModal} onClose={() => setHotelModal(false)} title="Sistem otelinden ekle" subtitle="Sistemde kayıtlı bir oteli bu müşterinin listesine bağlar; yeni eşleştirme yapılmaz." onSubmit={linkSystemHotel} submitText="Bağla">
-        <Field label="Otel" required><Select value={linkHotel.internalHotelId} onChange={(e) => setLinkHotel({ ...linkHotel, internalHotelId: e.target.value })} required><option value="">Seçin…</option>{linkable.map((h) => <option key={h.internalHotelId} value={h.internalHotelId}>{h.hotelName || h.internalHotelId} ({h.internalHotelId})</option>)}</Select></Field>
-        <Field label="Etiket" hint="Opsiyonel; müşterinin kendi adlandırması"><Input value={linkHotel.label} onChange={(e) => setLinkHotel({ ...linkHotel, label: e.target.value })} /></Field>
+      <FormModal open={hotelModal} onClose={() => setHotelModal(false)} title="Sistem otelinden ekle" subtitle="Sistemde kayıtlı otelleri bu müşterinin listesine toplu bağlar; yeni eşleştirme yapılmaz." onSubmit={linkSystemHotel} submitText={linkHotel.ids.length > 1 ? `${linkHotel.ids.length} oteli bağla` : "Bağla"} size="lg">
+        {(() => {
+          const q = linkHotel.q.trim().toLowerCase();
+          const shown = linkable.filter((h) => !q || (h.hotelName || "").toLowerCase().includes(q) || h.internalHotelId.toLowerCase().includes(q) || (h.meta?.city || "").toLowerCase().includes(q));
+          const allShownOn = shown.length > 0 && shown.every((h) => linkHotel.ids.includes(h.internalHotelId));
+          const toggle = (id) => setLinkHotel({ ...linkHotel, ids: linkHotel.ids.includes(id) ? linkHotel.ids.filter((x) => x !== id) : [...linkHotel.ids, id] });
+          const remaining = lim.limits.maxHotels > 0 ? lim.limits.maxHotels - data.hotels.length : null;
+          return (<>
+            <div className="sr-row center" style={{ gap: 8, marginBottom: 8 }}>
+              <Input placeholder="Otel adı, kimlik veya şehir ara…" value={linkHotel.q} onChange={(e) => setLinkHotel({ ...linkHotel, q: e.target.value })} style={{ flex: 1 }} />
+              <Button size="sm" variant="secondary" onClick={() => setLinkHotel({ ...linkHotel, ids: allShownOn ? linkHotel.ids.filter((id) => !shown.some((h) => h.internalHotelId === id)) : Array.from(new Set([...linkHotel.ids, ...shown.map((h) => h.internalHotelId)])) })} disabled={!shown.length}>{allShownOn ? "Listedekileri kaldır" : `Listedekileri seç (${shown.length})`}</Button>
+            </div>
+            <div className="sr-checklist">
+              {shown.length === 0 && <div className="muted small" style={{ padding: 10 }}>{linkable.length === 0 ? "Bağlanabilecek otel kalmadı (hepsi listede)." : "Eşleşen otel yok."}</div>}
+              {shown.map((h) => <label key={h.internalHotelId} className={"sr-checkrow" + (linkHotel.ids.includes(h.internalHotelId) ? " on" : "")}><input type="checkbox" checked={linkHotel.ids.includes(h.internalHotelId)} onChange={() => toggle(h.internalHotelId)} /><span className="sr-checkrow-main"><b>{h.hotelName || h.internalHotelId}</b><small className="muted"> {h.internalHotelId}{h.meta?.city ? " · " + h.meta.city : ""}{h.providers?.length ? ` · ${h.providers.length} site` : ""}</small></span></label>)}
+            </div>
+            <div className="sr-row center" style={{ justifyContent: "space-between", marginTop: 8 }}><span className="small muted">{linkHotel.ids.length} otel seçildi{remaining != null ? ` · limitte kalan yer: ${remaining}` : ""}</span>{remaining != null && linkHotel.ids.length > remaining && <Badge tone="bad" dot={false}>limit aşılıyor</Badge>}</div>
+            <Field label="Etiket" hint="Opsiyonel; seçilen tüm otellere aynı etiket yazılır"><Input value={linkHotel.label} onChange={(e) => setLinkHotel({ ...linkHotel, label: e.target.value })} /></Field>
+          </>);
+        })()}
       </FormModal>
 
       <Modal open={!!resetInfo} onClose={() => setResetInfo(null)} title="Şifre sıfırlama linki" subtitle={resetInfo ? `${resetInfo.email} · ${fmtDate(resetInfo.expiresAt)} tarihine kadar geçerli, tek kullanımlık` : ""} size="md"

@@ -80,3 +80,26 @@ func TestParseRooms(t *testing.T) {
 		t.Fatalf("on_request bekleniyordu: %+v", last)
 	}
 }
+
+func TestPackageRoomsIncludeFlightsAndTransfers(t *testing.T) {
+	b, err := os.ReadFile("testdata/package_initial.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := parsePackageData(string(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	flights, transfers, note := pkgExtras(d)
+	if flights != 14278 || transfers != 4800 {
+		t.Fatalf("ucus %v transfer %v beklenen 14278/4800 (%s)", flights, transfers, note)
+	}
+	rooms := normalizePackageRooms(d)
+	if len(rooms) < 2 || rooms[0].RoomName != "SALAMIS PARK ODA" {
+		t.Fatalf("odalar: %+v", rooms)
+	}
+	b0 := rooms[0].Boards[0]
+	if *b0.Price != 41078 || *b0.ListPrice != 59078 || *b0.BoardType != "Ultra Herşey Dahil" || *b0.Cancellation != "FREE_CANCELLATION" {
+		t.Fatalf("Salamis Park paket: %+v", b0)
+	}
+}

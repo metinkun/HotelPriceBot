@@ -73,3 +73,13 @@ Tarihli detay sayfasinin RSC akisinda `initialData.data.rooms[]` TUM oda x pansi
 (Available | AskSellPlan = sorulacak | N_A = fiyatsiz), `variations[].totalSellingPrice` (liste) /
 `totalDiscountedSellingPrice` (satis) / `discountPercent` / `currency`. `parseRooms(rscPayload(page))`;
 fixture `testdata/initial_data_rooms.txt`. (Isteğe bagli: `RSC: 1` basligi ile ~32 KB ham akis, 307 -> `&_rsc`.)
+
+
+## Paket fiyati (20 Kas 2026 duzeltmesi)
+
+Paket sayfasinda (`isPackage=true&dep=<IATA>&depIsCity=true`) `packageInitialData.data` uc parcadan olusur:
+`hotel.rooms[].informations[].variations[]` (oda+pansiyon OTEL fiyati), `flights[]` (`selected=true` gidis ve donus
+secenekleri, `price` tum yolcular icin) ve `transfers[]` (`selected=true` Departure/Return, `trySalePrice`). Sitede gosterilen
+paket fiyati bunlarin toplamidir: Salamis Park 22.000 + 6.468 + 7.810 + 2.400 + 2.400 = **41.078 TL**. Eski kod yalnizca
+`hotel.lowestPrice` (22.000, ucussuz) donuyordu. Yeni `package.go`: oda bazli liste + secili ucus/transfer notu.
+Fixture: `testdata/package_initial.txt`.

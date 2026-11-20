@@ -361,7 +361,7 @@ func (p *Provider) fetchPackage(ctx context.Context, roomSearchID, airportCode, 
 	if cookie != "" {
 		headers["cookie"] = cookie
 	}
-	resp, err := httpx.Post(ctx, packageURL, body, headers, 20*time.Second)
+	resp, err := httpx.Post(ctx, packageURL, body, headers, 40*time.Second)
 	if err != nil {
 		return nil, err
 	}
