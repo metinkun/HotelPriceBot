@@ -59,8 +59,11 @@ type ProviderPackageResult struct {
 
 type MultiPackageResult struct {
 	HotelID      string                  `json:"hotelId"`
+	AirportCode  string                  `json:"airportCode,omitempty"`
+	CheckIn      string                  `json:"checkIn,omitempty"`
+	CheckOut     string                  `json:"checkOut,omitempty"`
 	Results      []ProviderPackageResult `json:"results"`
-	Errors       []ProviderError         `json:"errors,omitempty"`
+	Errors       []ProviderError         `json:"errors"`
 	NotMapped    []string                `json:"notMapped,omitempty"`
 	NotSupported []string                `json:"notSupported,omitempty"`
 }
@@ -114,7 +117,7 @@ func (s *PackageService) GetMultiProviderPackagePrices(ctx context.Context, prov
 	if err != nil {
 		return nil, err
 	}
-	out := &MultiPackageResult{HotelID: q.HotelID, Results: []ProviderPackageResult{}, NotSupported: notSupported}
+	out := &MultiPackageResult{HotelID: q.HotelID, AirportCode: q.AirportCode, CheckIn: q.CheckIn, CheckOut: q.CheckOut, Results: []ProviderPackageResult{}, Errors: []ProviderError{}, NotSupported: notSupported}
 	if len(pkgProviders) == 0 {
 		return out, nil
 	}

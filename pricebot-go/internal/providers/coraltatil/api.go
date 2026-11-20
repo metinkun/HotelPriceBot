@@ -306,11 +306,13 @@ func (s *session) run(ctx context.Context, js string, out any, isStale func() bo
 		if err := s.ensure(attempt > 0); err != nil {
 			return err
 		}
+		_ = browser.Activate(s.ctx)
 		op, cancel := context.WithTimeout(s.ctx, opTimeout)
 		stop := context.AfterFunc(ctx, cancel)
 		err := evalAwait(op, js, out)
 		stop()
 		cancel()
+		_ = browser.Freeze(s.ctx) // bosta CPU tuketmesin
 		s.uses++
 		if err != nil {
 			lastErr = fmt.Errorf("Coral Tatil sayfa betigi calismadi: %w", err)

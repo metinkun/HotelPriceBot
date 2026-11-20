@@ -177,7 +177,7 @@ export default function ClientDetail({ param: clientId, navigate }) {
               <thead><tr><th>Limit</th><th className="num">Paket değeri</th><th>Geçerli değer</th><th>Bugünkü kullanım</th></tr></thead>
               <tbody>{LIMIT_ROWS.map(([k, label, use]) => <tr key={k} className={limEdit[k] !== lim.planLimits[k] ? "selected" : ""}>
                 <td>{label}</td><td className="num muted">{inf(lim.planLimits[k])}</td>
-                <td><Input type="number" min="0" value={limEdit[k]} onChange={(e) => setLimEdit({ ...limEdit, [k]: e.target.value })} style={{ width: 120 }} /></td>
+                <td><Input type="number" min="0" value={limEdit[k]} onChange={(e) => setLimEdit({ ...limEdit, [k]: e.target.value })} style={{ width: "100%", minWidth: 72, maxWidth: 140 }} /></td>
                 <td className="muted small">{use(usage)}</td></tr>)}
                 {[["allowApi", "API kullanıcısı"], ["allowPackages", "Paket (otel + uçak) sorgusu"], ["allowFresh", "Önbelleği atlama (fresh)"]].map(([k, label]) => <tr key={k} className={limEdit[k] !== lim.planLimits[k] ? "selected" : ""}>
                   <td>{label}</td><td className="num muted">{lim.planLimits[k] ? "açık" : "kapalı"}</td>

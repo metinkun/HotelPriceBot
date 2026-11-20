@@ -149,7 +149,7 @@ func (s *Server) hotelOverview(w http.ResponseWriter, r *http.Request, hotelID s
 		changes = f
 	}
 	out := map[string]any{
-		"hotel": map[string]any{"internalHotelId": hv.InternalHotelID, "hotelName": hv.HotelName, "meta": meta},
+		"hotel":     map[string]any{"internalHotelId": hv.InternalHotelID, "hotelName": hv.HotelName, "meta": meta},
 		"providers": provs, "scores": scores, "reviews": reviews, "events": events, "campaigns": camps, "changes": changes,
 		"labels": labels,
 	}
@@ -305,8 +305,8 @@ func (s *Server) portalSetScheduleActive(w http.ResponseWriter, r *http.Request)
 	}
 	var next *time.Time
 	if body.IsActive {
-		n, err := nextRunFrom(sc.Weekdays, sc.RunTime, sc.Timezone, sc.StartsOn)
-		if err == nil {
+		n, err := nextRunFrom(sc.Weekdays, sc.RunTime, sc.Timezone, sc.StartsOn, sc.EndsOn)
+		if err == nil && !n.IsZero() {
 			next = &n
 		}
 	}
@@ -468,18 +468,35 @@ func (s *Server) portalResetComplete(w http.ResponseWriter, r *http.Request) {
 }
 
 // nextRunFrom baslangic tarihi varsa oradan, yoksa simdiden itibaren ilk calisma.
-func nextRunFrom(weekdays []int16, runTime, tz string, startsOn *string) (time.Time, error) {
+// nextRunFrom bir sonraki calisma zamani; endsOn gecmisse veya sonraki calisma endsOn'dan sonraysa sifir zaman doner.
+func nextRunFrom(weekdays []int16, runTime, tz string, startsOn, endsOn *string) (time.Time, error) {
 	after := time.Now()
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		loc = time.FixedZone("TRT", 3*3600)
+	}
 	if startsOn != nil && *startsOn != "" {
-		loc, err := time.LoadLocation(tz)
-		if err != nil {
-			loc = time.FixedZone("TRT", 3*3600)
-		}
 		if d, err := time.ParseInLocation("2006-01-02", *startsOn, loc); err == nil && d.After(after) {
 			after = d.Add(-time.Minute)
 		}
 	}
-	return portal.NextRun(weekdays, runTime, tz, after)
+	n, err := portal.NextRun(weekdays, runTime, tz, after)
+	if err != nil {
+		return n, err
+	}
+	if endsOn != nil && *endsOn != "" {
+		if d, err := time.ParseInLocation("2006-01-02", *endsOn, loc); err == nil && n.After(d.Add(24*time.Hour-time.Second)) {
+			return time.Time{}, nil
+		}
+	}
+	return n, nil
+}
+
+func istanbul() *time.Location {
+	if loc, err := time.LoadLocation("Europe/Istanbul"); err == nil {
+		return loc
+	}
+	return time.FixedZone("TRT", 3*3600)
 }
 
 var _ = sort.Strings

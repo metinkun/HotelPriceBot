@@ -252,7 +252,11 @@ func writeError(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func badRequest(w http.ResponseWriter, msg string) {
-	writeJSON(w, 400, map[string]any{"error": msg})
+	out := map[string]any{"error": msg}
+	if rid := w.Header().Get("X-Request-Id"); rid != "" {
+		out["requestId"] = rid
+	}
+	writeJSON(w, 400, out)
 }
 
 func decodeBody(r *http.Request, v any) error {
@@ -278,7 +282,21 @@ func parseChildAges(s string) []int {
 func parseProviderList(s string) []string {
 	out := []string{}
 	for _, p := range strings.Split(s, ",") {
-		if p = strings.TrimSpace(p); p != "" {
+		if p = strings.ToLower(strings.TrimSpace(p)); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// normalizeProviders bos/tekrar eden girdileri atar, kucuk harfe cevirir (API girdisi harf duyarsiz).
+func normalizeProviders(in []string) []string {
+	out := []string{}
+	seen := map[string]bool{}
+	for _, p := range in {
+		p = strings.ToLower(strings.TrimSpace(p))
+		if p != "" && !seen[p] {
+			seen[p] = true
 			out = append(out, p)
 		}
 	}

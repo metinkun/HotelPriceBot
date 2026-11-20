@@ -159,7 +159,6 @@ func (s *Server) portalHotels(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, out)
 }
 
-
 // PUT /api/portal/hotels/{id} {urls?, hotelName?}  (ek site URL'i / ad)
 func (s *Server) portalUpdateHotel(w http.ResponseWriter, r *http.Request) {
 	id := auth.From(r.Context())
@@ -195,7 +194,6 @@ func (s *Server) portalUpdateHotel(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, res)
 }
 
-
 // ---- Aramalar ----
 
 func (s *Server) parseSearchRequest(r *http.Request) (portal.SearchRequest, error) {
@@ -204,7 +202,7 @@ func (s *Server) parseSearchRequest(r *http.Request) (portal.SearchRequest, erro
 		return req, apperr.BadRequestf("Gecersiz JSON govde")
 	}
 	if req.CheckIn != "" || req.CheckOut != "" {
-		ci, co, err := validateStay(req.CheckIn, req.CheckOut, max(req.Adults, 1), req.Children, req.ChildAges)
+		ci, co, err := validateStay(req.CheckIn, req.CheckOut, req.Adults, req.Children, req.ChildAges)
 		if err != nil {
 			return req, err
 		}
@@ -358,14 +356,19 @@ func (s *Server) scheduleInput(r *http.Request, b scheduleBody) (db.ScheduleInpu
 	if startsOn != nil && endsOn != nil && *endsOn < *startsOn {
 		return db.ScheduleInput{}, apperr.BadRequestf("Bitis tarihi baslangictan once olamaz")
 	}
+	if endsOn != nil && *endsOn < time.Now().In(istanbul()).Format("2006-01-02") {
+		return db.ScheduleInput{}, apperr.BadRequestf("Bitis tarihi gecmiste olamaz")
+	}
 	active := b.IsActive == nil || *b.IsActive
 	var next *time.Time
 	if active {
-		n, err := nextRunFrom(b.Weekdays, b.RunTime, b.Timezone, startsOn)
+		n, err := nextRunFrom(b.Weekdays, b.RunTime, b.Timezone, startsOn, endsOn)
 		if err != nil {
 			return db.ScheduleInput{}, err
 		}
-		next = &n
+		if !n.IsZero() {
+			next = &n
+		}
 	}
 	if b.Weekdays == nil {
 		b.Weekdays = []int16{}
@@ -428,7 +431,6 @@ func (s *Server) portalUpdateSchedule(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, sc)
 }
-
 
 // POST /api/portal/schedules/{id}/run — plani simdi calistir
 func (s *Server) portalRunSchedule(w http.ResponseWriter, r *http.Request) {

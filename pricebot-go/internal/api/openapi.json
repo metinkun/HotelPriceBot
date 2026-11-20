@@ -730,6 +730,18 @@
             "format": "date-time",
             "readOnly": true,
             "nullable": true
+          },
+          "startsOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Baslangic (YYYY-MM-DD, bos = hemen)"
+          },
+          "endsOn": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Bitis (YYYY-MM-DD, bos = suresiz; gecmiste olamaz)"
           }
         }
       },

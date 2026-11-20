@@ -85,6 +85,8 @@ X-API-Key: pb_live_...
   "dailyQuota": 2000,
   "ratePerMinute": 60,
   "usedToday": 0,
+  "dailySearches": 100,
+  "searchesToday": 0,
   "hotelCount": 3,
   "hotelsUrl": "/api/v1/hotels"
 }
@@ -92,10 +94,11 @@ X-API-Key: pb_live_...
 
 | Alan | Açıklama |
 |---|---|
-| `providers` | Sorgulayabileceğiniz siteler (paket + hesap ayarı). İstekte `providers` boş bırakılırsa bu liste kullanılır. |
+| `providers` | Sorgulayabileceğiniz siteler (paket izni ∩ hesap ayarı ∩ açık siteler; bakımdaki siteler listede yer almaz). İstekte `providers` boş bırakılırsa bu liste kullanılır. Site kodları harf duyarsızdır. |
 | `allowPackages` | `type: "packages"` (otel + uçak + transfer) sorgusu izni. |
 | `allowFresh` | `fresh: true` ile önbelleği atlama izni. |
-| `dailyQuota` / `usedToday` | Günlük site çağrısı kredisi ve bugünkü kullanım. |
+| `dailyQuota` / `usedToday` | Günlük site çağrısı kredisi ve bugünkü kullanım (senkron uçlar bundan düşer). |
+| `dailySearches` / `searchesToday` | Günlük arama hakkı ve bugünkü iş sayısı (`POST /api/v1/jobs` bundan düşer; `X-Quota-Limit/Used` başlıkları bu uçta arama hakkını gösterir). |
 | `ratePerMinute` | Dakikada izin verilen istek sayısı (aşılırsa 429). |
 | `hotelCount` | Size tanımlı otel sayısı. |
 
@@ -149,7 +152,7 @@ X-API-Key: pb_live_...
 | `adults` | int | evet | ≥ 1. |
 | `children` | int | hayır | Çocuk sayısı. |
 | `childAges` | int[] | hayır | Çocuk yaşları (`children` ile aynı uzunlukta). |
-| `providers` | string[] | hayır | Boş = izinli tüm siteler. Eşleşmesi olmayan site sessizce atlanır. |
+| `providers` | string[] | hayır | Boş = izinli tüm siteler. Eşleşmesi olmayan veya bakımdaki site atlanır; seçilen sitelerin hiçbirinde otelin eşleşmesi yoksa (ya da paket sorgusunda hiçbiri paketi desteklemiyorsa) iş açılmaz, `400` döner ve hak düşmez. |
 | `airportCode` | string | paket için evet | Kalkış havalimanı IATA kodu (ör. `SAW`, `IST`, `ADB`). |
 | `fresh` | bool | hayır | Önbelleği atla (`allowFresh` gerekir; yoksa yok sayılır). |
 | `maxWaitSeconds` | int | hayır | 0–120. Verilirse iş en geç bu süre sonunda `done` olur; yanıt vermeyen siteler `progress`'te `timeout`, `result.errors` içinde "Zaman asimi..." olarak listelenir ve o ana kadarki sonuç döner. 0 (varsayılan) = tüm siteler bitene kadar bekle. **Yanıt süresini garanti etmek için önerilir** (ör. 8). |
@@ -511,7 +514,8 @@ Tek site verildiğinde yanıt doğrudan paket sonucudur:
 }
 ```
 
-Birden fazla site istendiğinde `{"hotelId", "airportCode", "checkIn", "checkOut", "results": [paket sonuçları], "errors": []}` döner.
+Birden fazla site istendiğinde `{"hotelId", "airportCode", "checkIn", "checkOut", "results": [paket sonuçları], "errors": [], "notSupported": [...]}` döner
+(`notSupported`: paket desteklemeyen siteler). Bakımdaki bir site çoklu istekte atlanır; tek site isteğinde `503` döner.
 
 ---
 
@@ -575,7 +579,7 @@ Birden fazla site istendiğinde `{"hotelId", "airportCode", "checkIn", "checkOut
 | `available` | bool | Paket bulundu. |
 | `roomCount` | int | Oda sayısı. |
 | `rooms[]` | PackageRoom | `roomId`, `roomName`, `roomSize` (m², olabilir), `nightCount`, `boards[]`. |
-| `rooms[].boards[]` | PackageBoard | `boardType`, `currency`, `listPrice`, `price`, `discountRate`, `cancellation` (`FREE_CANCELLATION` vb. veya `null`). Fiyat otel + uçak (+ transfer) toplamıdır. |
+| `rooms[].boards[]` | PackageBoard | `boardType`, `currency`, `listPrice`, `price`, `discountRate`, `cancellation` (`FREE_CANCELLATION` vb. veya `null`). Fiyat otel + uçak (+ transfer) toplamıdır; `discountRate` paket liste/satış fiyatından hesaplanır. |
 | `note` | string | Site özelinde uyarı. |
 
 ---

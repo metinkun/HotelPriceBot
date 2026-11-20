@@ -14,6 +14,7 @@ import (
 
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/cdproto/fetch"
+	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 
 	"pricebot/internal/config"
@@ -292,6 +293,26 @@ func sleep(ctx context.Context, d time.Duration) error {
 
 // Sleep context'e duyarli bekleme (disa acik).
 func Sleep(ctx context.Context, d time.Duration) error { return sleep(ctx, d) }
+
+// Freeze kalici sekmeyi bosta "frozen" yasam dongusune alir: zamanlayicilar, animasyonlar ve reklam
+// betikleri durur (bosta %150-250 CPU olculmustu). Activate kullanim oncesi geri uyandirir.
+func Freeze(ctx context.Context) error {
+	if ctx == nil || ctx.Err() != nil {
+		return nil
+	}
+	op, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	return chromedp.Run(op, page.SetWebLifecycleState(page.SetWebLifecycleStateStateFrozen))
+}
+
+func Activate(ctx context.Context) error {
+	if ctx == nil || ctx.Err() != nil {
+		return nil
+	}
+	op, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+	return chromedp.Run(op, page.SetWebLifecycleState(page.SetWebLifecycleStateStateActive))
+}
 
 // Eval JS ifadesini calistirir; out nil ise sonuc yoksayilir.
 func Eval(ctx context.Context, js string, out any) error {

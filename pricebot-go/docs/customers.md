@@ -91,6 +91,12 @@ Portal API'si (`/api/portal/*`, Bearer JWT, rol `portal`): `auth/login`, `me`, `
   eski/yeni karşılaştırma modalı açılır (kelime bazlı renklendirme). Detay değişiklikleri sayfasında çift tıklama aynı modalı açar.
 - **Yorum / puan / etkinlik / kampanya**: snapshot'taki acente bölümlerinden otomatik türetilir (`details.Enrich`), diff'te ayrı etiketlerle
   raporlanır ve ayrı bildirim türleri üretir (`review`, `score`, `event`, `campaign`; diğerleri `detail_change`).
+- **20 Kas 2026 QA turu** (bkz. `/Users/muhammetgokturk/Desktop/MacStorage/Metin/test-results.md`): müşteri bazlı etkin siteler artık API
+  anahtarına da uygulanıyor; limit/paket PUT kısmi gövdede mevcut değerleri koruyor; paket indirim oranı liste/satıştan hesaplanıyor;
+  bakımdaki site çoklu istekte atlanıyor ve /me listesinde görünmüyor; aynı ad/e-posta müşteri 409, pasif paket atama 400; portal
+  arama adults 1-8; iş isteğinde eşleşmesiz/paket desteksiz site seçimi 400 (hak düşmez); 400 gövdelerinde requestId; site kodları harf
+  duyarsız; /me günlük arama hakkı; planlı arama bitişi geçmişte olamaz ve nextRunAt aralık dışında boş; boşta duran tarayıcı sekmeleri
+  donduruluyor (CPU); mobil limit kutuları.
 - **20 Kas 2026**: (1) admin > Müşteri > Oteller > "Sistem otelinden ekle" artık çoklu seçim (arama + liste + "listedekileri seç";
   API `internalHotelIds[]`, limit toplu kontrol edilir). (2) Setur paket fiyatı = oda + seçili uçuşlar + seçili transfer (eskiden
   sadece otel fiyatı dönüyordu). (3) Geçici site hatalarında (zaman aşımı, bağlantı, 5xx/429) bir kez otomatik yeniden deneme

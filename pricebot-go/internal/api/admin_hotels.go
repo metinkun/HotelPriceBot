@@ -87,4 +87,3 @@ func (s *Server) updateHotel(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, res)
 }
-

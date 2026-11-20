@@ -102,7 +102,7 @@ func normalizePackages(data *PriceResponse, nightCount *int) []types.NormalizedP
 				}
 				byRoom[key].Boards = append(byRoom[key].Boards, types.NormalizedPackageBoard{
 					BoardType: types.StrOrNil(rd.ConceptName), Currency: types.Str("TL"),
-					ListPrice: rd.FlightPackageTotalPrice, Price: types.F64(price), DiscountRate: orZero(rd.FlightPackageDiscountRate),
+					ListPrice: rd.FlightPackageTotalPrice, Price: types.F64(price), DiscountRate: types.DiscountRateOf(rd.FlightPackageTotalPrice, types.F64(price)),
 				})
 			}
 		}

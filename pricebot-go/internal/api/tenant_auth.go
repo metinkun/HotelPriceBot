@@ -70,6 +70,24 @@ func (s *Server) resolveKey(ctx context.Context, key string) (*auth.Identity, *P
 		id.PlanCode = ki.Plan.Code
 	}
 	pl := limitsOf(&ki.Client, ki.Plan)
+	// Musteri bazli etkin siteler (admin > Siteler & portal) plan izinlerini daha da daraltir.
+	if st, err := s.db.GetClientSettings(ctx, ki.Client.ID); err == nil && len(st.EnabledProviders) > 0 {
+		base := pl.AllowedProviders
+		if len(base) == 0 {
+			base = s.reg.Names()
+		}
+		en := map[string]bool{}
+		for _, n := range st.EnabledProviders {
+			en[n] = true
+		}
+		out := []string{}
+		for _, n := range base {
+			if en[n] {
+				out = append(out, n)
+			}
+		}
+		pl.AllowedProviders = out
+	}
 	if !pl.AllowAPI {
 		return nil, nil, apperr.New(apperr.Forbidden, "Bu paket API erisimi icermiyor")
 	}
@@ -120,7 +138,8 @@ func (s *Server) client(h http.HandlerFunc) http.Handler {
 				used := s.usage.UsedToday(r.Context(), id.ClientID)
 				w.Header().Set("X-Quota-Limit", fmt.Sprint(pl.DailyQuota))
 				w.Header().Set("X-Quota-Used", fmt.Sprint(used))
-				if used >= pl.DailyQuota {
+				infoOnly := r.URL.Path == "/api/v1/me" || r.URL.Path == "/api/v1/hotels"
+				if used >= pl.DailyQuota && !infoOnly {
 					writeError(w, r, apperr.New(apperr.TooMany, "Gunluk kredi kotasi doldu (%d/%d). Kota her gun 00:00 UTC'de yenilenir.", used, pl.DailyQuota))
 					return
 				}
@@ -156,10 +175,20 @@ func (s *Server) logRequest(r *http.Request, id *auth.Identity, status int, dur 
 // providersForPlan istenen provider listesini plana gore daraltir; izinsiz istek varsa 403.
 func (s *Server) providersForPlan(r *http.Request, requested []string) ([]string, error) {
 	pl := planFrom(r.Context())
-	for _, n := range requested {
-		if s.sites != nil && !s.sites.Enabled(n) {
-			return nil, apperr.New(apperr.Unavailable, "'%s' sitesi gecici olarak kapali (bakimda)", n)
+	if s.sites != nil && len(requested) > 0 {
+		open := []string{}
+		closed := []string{}
+		for _, n := range requested {
+			if s.sites.Enabled(n) {
+				open = append(open, n)
+			} else {
+				closed = append(closed, n)
+			}
 		}
+		if len(open) == 0 {
+			return nil, apperr.New(apperr.Unavailable, "'%s' sitesi gecici olarak kapali (bakimda)", strings.Join(closed, ", "))
+		}
+		requested = open // coklu istekte kapali siteler atlanir
 	}
 	if pl == nil || len(pl.AllowedProviders) == 0 {
 		if len(requested) == 0 && s.sites != nil {

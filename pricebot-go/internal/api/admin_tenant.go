@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -82,7 +83,16 @@ func (s *Server) updatePlan(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, "Gecersiz id")
 		return
 	}
+	existing, err := s.db.GetPlan(r.Context(), id)
+	if err != nil {
+		notFoundOr(w, r, err, "Plan bulunamadi")
+		return
+	}
+	// Kismi guncelleme: mevcut degerlerin uzerine yalnizca gonderilen alanlar yazilir.
 	var in db.PlanInput
+	if b, err := json.Marshal(existing); err == nil {
+		_ = json.Unmarshal(b, &in)
+	}
 	if err := decodeBody(r, &in); err != nil {
 		badRequest(w, "Gecersiz JSON govde")
 		return
@@ -122,9 +132,26 @@ func (s *Server) createClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if in.PlanID != nil {
-		if _, err := s.db.GetPlan(r.Context(), *in.PlanID); err != nil {
+		p, err := s.db.GetPlan(r.Context(), *in.PlanID)
+		if err != nil {
 			writeError(w, r, apperr.BadRequestf("planId gecersiz"))
 			return
+		}
+		if !p.IsActive {
+			writeError(w, r, apperr.BadRequestf("'%s' paketi pasif; pasif paket atanamaz", p.Name))
+			return
+		}
+	}
+	if existing, err := s.db.ListClients(r.Context(), ""); err == nil {
+		for _, e := range existing {
+			if strings.EqualFold(strings.TrimSpace(e.Name), strings.TrimSpace(in.Name)) {
+				writeError(w, r, apperr.Conflictf("Ayni adda musteri zaten var (id %d)", e.ID))
+				return
+			}
+			if in.Email != nil && e.Email != nil && strings.TrimSpace(*in.Email) != "" && strings.EqualFold(strings.TrimSpace(*e.Email), strings.TrimSpace(*in.Email)) {
+				writeError(w, r, apperr.Conflictf("Ayni e-posta ile musteri zaten var (id %d)", e.ID))
+				return
+			}
 		}
 	}
 	c, err := s.db.CreateClient(r.Context(), in)
@@ -183,6 +210,10 @@ func (s *Server) updateClient(w http.ResponseWriter, r *http.Request) {
 	}
 	if in.PlanID != nil {
 		if p, err := s.db.GetPlan(r.Context(), *in.PlanID); err == nil {
+			if !p.IsActive {
+				writeError(w, r, apperr.BadRequestf("'%s' paketi pasif; pasif paket atanamaz", p.Name))
+				return
+			}
 			cur, _ := s.db.GetClient(r.Context(), id)
 			if cur != nil && p.Kind != "both" && p.Kind != cur.Kind && (in.Kind == nil || *in.Kind != p.Kind) {
 				writeError(w, r, apperr.BadRequestf("'%s' paketi yalnizca %s turu musterilere atanabilir", p.Name, strings.ToUpper(p.Kind)))
@@ -378,6 +409,9 @@ func (s *Server) clientMe(w http.ResponseWriter, r *http.Request) {
 		if len(providers) == 0 {
 			providers = s.reg.Names()
 		}
+		if s.sites != nil {
+			providers = s.sites.FilterEnabled(providers) // bakimdaki siteler listede gorunmez
+		}
 		out["providers"] = providers
 		out["allowPackages"] = pl.AllowPackages
 		out["allowFresh"] = pl.AllowFresh
@@ -388,6 +422,10 @@ func (s *Server) clientMe(w http.ResponseWriter, r *http.Request) {
 		out["usedToday"] = s.usage.UsedToday(r.Context(), id.ClientID)
 		out["hotelCount"] = s.db.CountClientHotels(r.Context(), id.ClientID)
 		out["hotelsUrl"] = "/api/v1/hotels"
+		if pl != nil {
+			out["dailySearches"] = pl.DailySearches
+			out["searchesToday"] = s.db.ClientDailyToday(r.Context(), id.ClientID).Searches
+		}
 	}
 	writeJSON(w, 200, out)
 }

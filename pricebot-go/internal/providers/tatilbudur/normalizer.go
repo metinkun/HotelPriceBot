@@ -187,10 +187,11 @@ func normalizePackages(data *RoomPriceResponse) []types.NormalizedPackageRoom {
 		if dup {
 			continue
 		}
+		lp := types.F64Pos(num(attr(block, "poster_price")))
 		room.Boards = append(room.Boards, types.NormalizedPackageBoard{
 			BoardType: boardType, Currency: trCurrency(attr(block, "currency")),
-			ListPrice: types.F64Pos(num(attr(block, "poster_price"))), Price: types.F64(amount),
-			DiscountRate: num(attr(block, "discountRate")),
+			ListPrice: lp, Price: types.F64(amount),
+			DiscountRate: types.DiscountRateOf(lp, types.F64(amount)),
 		})
 	}
 	out := make([]types.NormalizedPackageRoom, 0, len(order))

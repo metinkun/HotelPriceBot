@@ -86,6 +86,7 @@ func (s *Server) adminUpdateClientSettings(w http.ResponseWriter, r *http.Reques
 		notFoundOr(w, r, err, "Musteri bulunamadi")
 		return
 	}
+	InvalidateKeyCache() // etkin siteler API anahtarina da uygulanir
 	InvalidateKeyCache()
 	st, _ := s.db.GetClientSettings(r.Context(), id)
 	writeJSON(w, 200, st)
@@ -186,7 +187,6 @@ func (s *Server) adminUpdatePortalUser(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, 200, map[string]any{"message": "Guncellendi.", "id": id})
 }
-
 
 // GET /api/admin/schedules — tum musterilerin planli aramalari
 func (s *Server) adminSchedules(w http.ResponseWriter, r *http.Request) {

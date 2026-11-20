@@ -111,7 +111,7 @@ func normalizePackageRoom(r PackageRoom) types.NormalizedPackageRoom {
 			} else {
 				b.Price = types.F64(sb.Price.Amount)
 			}
-			b.DiscountRate = sb.Price.DiscountRate
+			b.DiscountRate = types.DiscountRateOf(b.ListPrice, b.Price)
 		}
 		boards = append(boards, b)
 	}

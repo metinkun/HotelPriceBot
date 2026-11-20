@@ -116,7 +116,7 @@ func TestPackageMultiFormat(t *testing.T) {
 	if n.RoomID != "6530" || n.RoomName == "" || n.RoomSize == nil || *n.RoomSize != 30 || n.NightCount == nil || *n.NightCount != 3 {
 		t.Fatalf("oda alanlari hatali: %+v", n)
 	}
-	if len(n.Boards) != 1 || n.Boards[0].Price == nil || *n.Boards[0].Price != 44376.2 || *n.Boards[0].ListPrice != 51000 || n.Boards[0].DiscountRate != 40 {
+	if len(n.Boards) != 1 || n.Boards[0].Price == nil || *n.Boards[0].Price != 44376.2 || *n.Boards[0].ListPrice != 51000 || n.Boards[0].DiscountRate != 13 { // oran liste/satis fiyatindan hesaplanir (sitenin otel orani 40 degil)
 		t.Fatalf("board fiyati hatali: %+v", n.Boards)
 	}
 	if n.Boards[0].BoardType == nil || *n.Boards[0].BoardType != "Yarım Pansiyon" || n.Boards[0].Cancellation == nil || *n.Boards[0].Cancellation != "FREE_CANCELLATION" {

@@ -29,6 +29,8 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 	if req.ChildAges == nil {
 		req.ChildAges = []int{}
 	}
+	req.HotelID = strings.TrimSpace(req.HotelID)
+	req.Providers = normalizeProviders(req.Providers)
 	if req.MaxWaitSeconds < 0 || req.MaxWaitSeconds > 120 {
 		badRequest(w, "maxWaitSeconds 0-120 araliginda olmali (0 = tum siteler bitene kadar bekle)")
 		return
@@ -70,6 +72,40 @@ func (s *Server) createJob(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeError(w, r, err)
 		return
+	}
+	// Secilen sitelerde otelin eslesmesi (ve paket destegi) var mi? Yoksa hak dusmeden 400.
+	if len(req.Providers) > 0 {
+		mapped := map[string]bool{}
+		if hv, err := s.hotels.Get(r.Context(), req.HotelID); err == nil {
+			for _, p := range hv.Providers {
+				if p.IsActive {
+					mapped[p.Provider] = true
+				}
+			}
+		}
+		usable := []string{}
+		unsupported := []string{}
+		for _, n := range provs {
+			if !mapped[n] {
+				continue
+			}
+			if req.Type == jobs.TypePackages {
+				if p, err := s.reg.Get(n); err != nil || !p.Capabilities().SupportsPackages {
+					unsupported = append(unsupported, n)
+					continue
+				}
+			}
+			usable = append(usable, n)
+		}
+		if len(usable) == 0 {
+			if len(unsupported) > 0 {
+				writeError(w, r, apperr.BadRequestf("Secilen siteler paket (otel+ucak) sorgusunu desteklemiyor: %s", strings.Join(unsupported, ", ")))
+				return
+			}
+			writeError(w, r, apperr.BadRequestf("Secilen sitelerde bu otelin eslesmesi yok: %s (GET /api/v1/hotels -> providers)", strings.Join(provs, ", ")))
+			return
+		}
+		provs = usable
 	}
 	req.Providers = provs
 	req.Fresh = s.freshAllowed(r, req.Fresh)

@@ -54,7 +54,13 @@ func (s *Server) adminSetClientLimits(w http.ResponseWriter, r *http.Request) {
 		badRequest(w, "Gecersiz id")
 		return
 	}
-	var in db.Limits
+	c, p, err := s.clientWithPlan(r.Context(), id)
+	if err != nil {
+		notFoundOr(w, r, err, "Musteri bulunamadi")
+		return
+	}
+	// Kismi govde: gonderilmeyen alanlar mevcut gecerli limitlerden korunur (sifirlanmaz).
+	in := db.EffectiveLimits(c, p)
 	if err := decodeBody(r, &in); err != nil {
 		badRequest(w, "Gecersiz JSON govde")
 		return
@@ -64,11 +70,6 @@ func (s *Server) adminSetClientLimits(w http.ResponseWriter, r *http.Request) {
 			badRequest(w, "Limitler negatif olamaz (0 = sinirsiz)")
 			return
 		}
-	}
-	c, p, err := s.clientWithPlan(r.Context(), id)
-	if err != nil {
-		notFoundOr(w, r, err, "Musteri bulunamadi")
-		return
 	}
 	customized := in != db.LimitsFromPlan(p)
 	if err := s.db.SetClientLimits(r.Context(), c.ID, in, customized); err != nil {

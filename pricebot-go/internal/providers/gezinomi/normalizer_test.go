@@ -76,7 +76,7 @@ func TestNormalizeRealPackage(t *testing.T) {
 		t.Fatalf("ilk oda hatali: %+v", first)
 	}
 	b0 := first.Boards[0]
-	if types.Deref(b0.BoardType) != "Yarım Pansiyon" || b0.Price == nil || *b0.Price != 41166.09 || b0.ListPrice == nil || *b0.ListPrice != 60546.09 || b0.DiscountRate != 38 {
+	if types.Deref(b0.BoardType) != "Yarım Pansiyon" || b0.Price == nil || *b0.Price != 41166.09 || b0.ListPrice == nil || *b0.ListPrice != 60546.09 || b0.DiscountRate != 32 { // oran paket liste/satis fiyatindan hesaplanir
 		t.Errorf("ilk pansiyon hatali: %+v", b0)
 	}
 	if first.NightCount == nil || *first.NightCount != 3 {

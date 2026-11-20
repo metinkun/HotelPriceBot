@@ -85,6 +85,8 @@ func (p *pool) release(t *tab, broken bool) {
 	if broken {
 		p.stats.Failures.Add(1)
 		t.close()
+	} else if t.alive() {
+		_ = browser.Freeze(t.ctx) // bosta CPU tuketmesin
 	}
 	p.slots <- t
 }
@@ -113,6 +115,9 @@ func (p *pool) ensure(t *tab, detailURL string) error {
 		t.close()
 	}
 	needNav := !t.alive() || t.url != detailURL || time.Since(t.openedAt) > p.maxAge
+	if t.alive() {
+		_ = browser.Activate(t.ctx)
+	}
 	if !t.alive() {
 		t.close()
 		ctx, cancel, err := p.bm.NewPersistentPage(12 * time.Hour)
